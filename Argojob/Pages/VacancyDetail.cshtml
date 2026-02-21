@@ -1,0 +1,198 @@
+﻿@page "/vacancy/{id}"
+@model Agrojob.Pages.VacancyDetailModel
+@{
+    ViewData["Title"] = Model.Vacancy?.Title ?? "Вакансия";
+}
+
+@if (Model.Vacancy != null)
+{
+    <!-- Хлебные крошки -->
+    <div class="bg-light py-3">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a asp-page="/Index" class="text-success">Главная</a></li>
+                    <li class="breadcrumb-item"><a asp-page="/Vacancies" class="text-success">Все вакансии</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@Model.Vacancy.Title</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Детальная информация -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Основная информация -->
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-body p-4">
+                            <!-- Сезонный бейдж над заголовком -->
+                            @if (Model.Vacancy.IsSeasonal)
+                            {
+                                <div class="mb-2">
+                                    <span class="seasonal-tag d-inline-block">🌾 Сезонная работа</span>
+                                </div>
+                            }
+                            
+                            <!-- Заголовок вакансии -->
+                            <h1 class="display-5 fw-bold mb-3">@Model.Vacancy.Title</h1>
+                            
+                            <!-- Зарплата под заголовком с отступом -->
+                            <div class="mb-4">
+                                <div class="display-6 fw-bold text-success">@Model.Vacancy.Salary</div>
+                                <small class="text-muted">на руки</small>
+                            </div>
+                            
+                            <!-- Компания, локация, дата -->
+                            <div class="d-flex flex-wrap align-items-center gap-3 text-muted mb-4">
+                                <span><i class="bi bi-building me-1"></i>@Model.Vacancy.Company</span>
+                                <span><i class="bi bi-geo-alt me-1"></i>@Model.Vacancy.Location</span>
+                                <span><i class="bi bi-clock me-1"></i>@Model.Vacancy.PostedDate</span>
+                            </div>
+                            
+                            <hr class="my-4">
+                            
+                            <!-- Теги -->
+                            @if (Model.Vacancy.Tags.Any())
+                            {
+                                <div class="mb-4">
+                                    <h5 class="fw-semibold mb-3">Ключевые навыки</h5>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach (var tag in Model.Vacancy.Tags)
+                                        {
+                                            <span class="badge bg-light text-dark p-2 px-3">@tag</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            
+                            <!-- Описание -->
+                            <div class="mb-4">
+                                <h5 class="fw-semibold mb-3">Описание вакансии</h5>
+                                <p class="text-muted">@Model.Vacancy.Description</p>
+                            </div>
+                            
+                            <!-- Требования -->
+                            @if (Model.Vacancy.Requirements.Any())
+                            {
+                                <div class="mb-4">
+                                    <h5 class="fw-semibold mb-3">Требования к кандидату</h5>
+                                    <ul class="list-unstyled">
+                                        @foreach (var req in Model.Vacancy.Requirements)
+                                        {
+                                            <li class="mb-2">
+                                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                                @req
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                            
+                            <!-- Условия работы -->
+                            @if (Model.Vacancy.Offers.Any())
+                            {
+                                <div class="mb-4">
+                                    <h5 class="fw-semibold mb-3">Мы предлагаем</h5>
+                                    <ul class="list-unstyled">
+                                        @foreach (var offer in Model.Vacancy.Offers)
+                                        {
+                                            <li class="mb-2">
+                                                <i class="bi bi-star-fill text-warning me-2"></i>
+                                                @offer
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <!-- Контактная информация (уменьшенная) -->
+                    <div class="card shadow-sm border-0 mb-4 sticky-top" style="top: 100px;">
+                        <div class="card-header bg-success text-white py-2">
+                            <h6 class="mb-0"><i class="bi bi-person-badge me-2"></i>Контактная информация</h6>
+                        </div>
+                        <div class="card-body p-3">
+                            <div class="text-center mb-3">
+                                <div class="bg-light rounded-circle d-inline-flex p-2 mb-2">
+                                    <i class="bi bi-building fs-3 text-success"></i>
+                                </div>
+                                <h6 class="mb-0">@Model.Vacancy.Company</h6>
+                            </div>
+                            
+                            @if (!string.IsNullOrEmpty(Model.Vacancy.ContactPerson))
+                            {
+                                <div class="mb-2">
+                                    <label class="form-label text-muted small mb-0">Контактное лицо</label>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-person-fill text-success me-2 small"></i>
+                                        <span class="small">@Model.Vacancy.ContactPerson</span>
+                                    </div>
+                                </div>
+                            }
+                            
+                            @if (!string.IsNullOrEmpty(Model.Vacancy.ContactPhone))
+                            {
+                                <div class="mb-2">
+                                    <label class="form-label text-muted small mb-0">Телефон</label>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-telephone-fill text-success me-2 small"></i>
+                                        <a href="tel:@Model.Vacancy.ContactPhone" class="text-decoration-none text-dark small">
+                                            @Model.Vacancy.ContactPhone
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                            
+                            @if (!string.IsNullOrEmpty(Model.Vacancy.ContactEmail))
+                            {
+                                <div class="mb-3">
+                                    <label class="form-label text-muted small mb-0">Email</label>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-envelope-fill text-success me-2 small"></i>
+                                        <a href="mailto:@Model.Vacancy.ContactEmail" class="text-decoration-none text-dark small">
+                                            @Model.Vacancy.ContactEmail
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                            
+                            <hr class="my-2">
+                            
+                            <div class="d-grid gap-2">
+                                @if (!string.IsNullOrEmpty(Model.Vacancy.ContactPhone))
+                                {
+                                    <a href="tel:@Model.Vacancy.ContactPhone" class="btn btn-success btn-sm">
+                                        <i class="bi bi-telephone me-1"></i>Позвонить
+                                    </a>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Vacancy.ContactEmail))
+                                {
+                                    <a href="mailto:@Model.Vacancy.ContactEmail" class="btn btn-outline-success btn-sm">
+                                        <i class="bi bi-envelope me-1"></i>Написать
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+else
+{
+    <!-- 404 - вакансия не найдена -->
+    <div class="container py-5 my-5 text-center">
+        <i class="bi bi-exclamation-triangle display-1 text-warning"></i>
+        <h1 class="mt-4">Вакансия не найдена</h1>
+        <p class="lead text-muted">Запрошенная вакансия не существует или была удалена</p>
+        <a asp-page="/Vacancies" class="btn btn-success btn-lg mt-3">
+            <i class="bi bi-arrow-left me-2"></i>Вернуться к списку вакансий
+        </a>
+    </div>
+}

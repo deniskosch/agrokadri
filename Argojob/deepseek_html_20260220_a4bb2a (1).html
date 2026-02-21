@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>АгроКарьера | Сезонные и постоянные вакансии в АПК</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2E7D32;
+            --primary-dark: #1B5E20;
+            --secondary: #FF8F00;
+            --seasonal: #FF6B35;
+            --light: #F5F9F5;
+            --dark: #1C2E1C;
+            --gray: #6B7280;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark);
+            background-color: #FFFFFF;
+            scroll-behavior: smooth;
+        }
+        
+        /* Кастомные анимации */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .animate-fade-up {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        .animate-fade-left {
+            animation: fadeInLeft 0.8s ease forwards;
+        }
+        
+        .animate-fade-right {
+            animation: fadeInRight 0.8s ease forwards;
+        }
+        
+        .delay-1 {
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+        
+        .delay-2 {
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
+        
+        .delay-3 {
+            animation-delay: 0.6s;
+            opacity: 0;
+        }
+        
+        /* Навбар */
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            padding: 16px 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary) !important;
+            letter-spacing: -0.5px;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: var(--dark) !important;
+            margin: 0 12px;
+            transition: color 0.3s ease;
+            font-size: 0.95rem;
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 80%;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary) !important;
+        }
+        
+        .btn-outline-primary {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 8px 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46,125,50,0.3);
+        }
+        
+        /* Герой секция */
+        .hero-section {
+            padding: 140px 0 60px 0;
+            background: linear-gradient(135deg, #F8FFF8 0%, #FFFFFF 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(46,125,50,0.03) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
+        .hero-title {
+            font-size: 3.2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            color: var(--dark);
+        }
+        
+        .hero-highlight {
+            color: var(--primary);
+        }
+        
+        .hero-text {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 32px;
+        }
+        
+        /* Бейдж сезонных вакансий */
+        .seasonal-badge {
+            display: inline-block;
+            background-color: var(--seasonal);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        .seasonal-badge i {
+            margin-right: 8px;
+        }
+        
+        /* Поисковая строка */
+        .search-wrapper {
+            background: white;
+            border-radius: 16px;
+            padding: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            margin-top: 30px;
+        }
+        
+        .search-input {
+            border: none;
+            padding: 16px 20px;
+            font-size: 1rem;
+            width: 100%;
+            border-radius: 12px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46,125,50,0.1);
+        }
+        
+        .search-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .search-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(46,125,50,0.3);
+        }
+        
+        /* Фильтры */
+        .filters-section {
+            padding: 20px 0 40px;
+        }
+        
+        .filter-chip {
+            background-color: #F3F6F3;
+            border: 1px solid #E0E8E0;
+            color: var(--dark);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-block;
+            margin: 5px;
+        }
+        
+        .filter-chip:hover, .filter-chip.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46,125,50,0.2);
+        }
+        
+        /* Карточки вакансий */
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: var(--secondary);
+            border-radius: 2px;
+        }
+        
+        .section-subtitle {
+            color: var(--gray);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .vacancy-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            border: 1px solid #F0F5F0;
+            transition: all 0.3s ease;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+        
+        .vacancy-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+        
+        .vacancy-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+        
+        .vacancy-card:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+        
+        .vacancy-card:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+        
+        .vacancy-card:nth-child(6) {
+            animation-delay: 0.5s;
+        }
+        
+        .vacancy-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .vacancy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(46,125,50,0.1);
+            border-color: transparent;
+        }
+        
+        .vacancy-card:hover::before {
+            opacity: 1;
+        }
+        
+        .vacancy-card.seasonal {
+            border-left: 4px solid var(--seasonal);
+        }
+        
+        .seasonal-tag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--seasonal);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .company-badge {
+            display: inline-block;
+            background-color: #F0F8F0;
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .vacancy-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            padding-right: 80px;
+        }
+        
+        .company-name {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .salary {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+        }
+        
+        .salary small {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--gray);
+        }
+        
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .tag {
+            background-color: #F5F7F5;
+            color: var(--gray);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .posted-date {
+            color: var(--gray);
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-details {
+            width: 100%;
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+            padding: 10px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-details:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        /* Секция преимуществ */
+        .features-section {
+            padding: 60px 0;
+            background-color: var(--light);
+            margin-top: 40px;
+        }
+        
+        .feature-item {
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background-color: var(--light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: var(--primary);
+            font-size: 2rem;
+        }
+        
+        .feature-title {
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .feature-text {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        
+        /* Футер */
+        .footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: 80px;
+        }
+        
+        .footer-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 16px;
+        }
+        
+        .footer-text {
+            color: #A0B8A0;
+            font-size: 0.95rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: #A0B8A0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-left: 0;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .social-links a {
+            color: white;
+            background-color: rgba(255,255,255,0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px) rotate(360deg);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #A0B8A0;
+            font-size: 0.9rem;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            
+            .search-wrapper {
+                flex-direction: column;
+            }
+            
+            .search-btn {
+                width: 100%;
+            }
+            
+            .vacancy-title {
+                padding-right: 0;
+                margin-top: 10px;
+            }
+            
+            .seasonal-tag {
+                position: static;
+                display: inline-block;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Хедер / Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-tree-fill" style="color: var(--primary); margin-right: 8px;"></i>
+                АгроКарьера
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Работодателям</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Соискателям</a>
+                    </li>
+                    <li class="nav-item ms-lg-3">
+                        <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Войти
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <main>
+        <!-- Герой секция -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <span class="seasonal-badge animate-fade-up">
+                            <i class="bi bi-calendar-week"></i> Сезонные вакансии уже доступны
+                        </span>
+                        <h1 class="hero-title animate-fade-up delay-1">
+                            Найдите работу в <span class="hero-highlight">АПК</span><br>на сезон или постоянно
+                        </h1>
+                        <p class="hero-text animate-fade-up delay-1">
+                            АгроКарьера — специализированная платформа для поиска вакансий в агропромышленном комплексе. 
+                            С нами сотрудники находят работу мечты, а компании — лучшие кадры.
+                        </p>
+                        
+                        <!-- Поисковая строка -->
+                        <div class="search-wrapper d-flex flex-column flex-md-row animate-fade-up delay-2">
+                            <input type="text" class="search-input flex-grow-1" placeholder="Должность, компания или ключевые слова" id="searchInput">
+                            <button class="search-btn" id="searchBtn">
+                                <i class="bi bi-search me-2"></i>Найти вакансии
+                            </button>
+                        </div>
+                        
+                        <!-- Быстрые ссылки -->
+                        <div class="mt-4 d-flex gap-3 flex-wrap animate-fade-up delay-3">
+                            <span class="text-muted">Популярно:</span>
+                            <a href="#" class="text-decoration-none text-success">Сезонные работы</a>
+                            <a href="#" class="text-decoration-none text-success">Вахта</a>
+                            <a href="#" class="text-decoration-none text-success">Для студентов</a>
+                            <a href="#" class="text-decoration-none text-success">Без опыта</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 d-none d-lg-block animate-fade-right">
+                        <img src="C:\Users\denis\Downloads\17715940005344.png" alt="Агро иллюстрация" class="img-fluid" style="max-width: 100%; border-radius: 20px;">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Фильтры вакансий -->
+        <section class="filters-section">
+            <div class="container">
+                <div class="d-flex flex-wrap justify-content-center" id="filterChips">
+                    <span class="filter-chip active" data-filter="all">Все вакансии</span>
+                    <span class="filter-chip" data-filter="сезонные">🌾 Сезонные</span>
+                    <span class="filter-chip" data-filter="агроном">Агрономы</span>
+                    <span class="filter-chip" data-filter="ветеринар">Ветеринары</span>
+                    <span class="filter-chip" data-filter="механизатор">Механизаторы</span>
+                    <span class="filter-chip" data-filter="технолог">Технологи</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Список вакансий -->
+        <section class="vacancies-section">
+            <div class="container">
+                <h2 class="section-title">Актуальные вакансии</h2>
+                <p class="section-subtitle">Найдите работу своей мечты в агропромышленном комплексе</p>
+                
+                <!-- Индикатор загрузки -->
+                <div id="loadingSpinner" class="text-center py-5">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Загрузка...</span>
+                    </div>
+                </div>
+                
+                <!-- Сетка вакансий -->
+                <div class="row g-4" id="vacanciesContainer"></div>
+                
+                <!-- Кнопка загрузить еще -->
+                <div class="text-center mt-5" id="loadMoreBtnContainer">
+                    <button class="btn btn-outline-primary btn-lg px-5" id="loadMoreBtn">
+                        Загрузить еще вакансии
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Преимущества платформы -->
+        <section class="features-section">
+            <div class="container">
+                <h2 class="section-title text-center" style="margin-bottom: 60px;">Почему выбирают нас</h2>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+                            <h3 class="feature-title">Сезонные вакансии</h3>
+                            <p class="feature-text">Большой выбор временной и сезонной работы в сельском хозяйстве. Идеально для студентов и специалистов.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="bi bi-building"></i>
+                            </div>
+                            <h3 class="feature-title">Проверенные компании</h3>
+                            <p class="feature-text">Только реальные работодатели с подтвержденными вакансиями в агропромышленном комплексе.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="bi bi-lightning-charge"></i>
+                            </div>
+                            <h3 class="feature-title">Быстрый отклик</h3>
+                            <p class="feature-text">Откликайтесь на вакансии в один клик и получайте ответы от работодателей в течение дня.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="footer-brand">
+                        <i class="bi bi-tree-fill me-2"></i>АгроКарьера
+                    </div>
+                    <p class="footer-text">
+                        Специализированная платформа для поиска работы и сотрудников в агропромышленном комплексе. Сезонные и постоянные вакансии по всей России.
+                    </p>
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <h5>Работодателям</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Разместить вакансию</a></li>
+                        <li><a href="#">Поиск резюме</a></li>
+                        <li><a href="#">Тарифы</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <h5>Соискателям</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Создать резюме</a></li>
+                        <li><a href="#">Вакансии</a></li>
+                        <li><a href="#">Карьерный центр</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <h5>Мы в соцсетях</h5>
+                    <div class="social-links">
+                        <a href="#"><i class="bi bi-telegram"></i></a>
+                        <a href="#"><i class="bi bi-vk"></i></a>
+                        <a href="#"><i class="bi bi-youtube"></i></a>
+                    </div>
+                    <p class="footer-text mt-3">
+                        <i class="bi bi-envelope me-2"></i>info@agrocareer.ru<br>
+                        <i class="bi bi-telephone me-2"></i>8 (800) 123-45-67
+                    </p>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2025 АгроКарьера. Все права защищены.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Модальное окно входа -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Вход в личный кабинет</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" placeholder="example@mail.ru">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Пароль</label>
+                            <input type="password" class="form-control" placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Войти</button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <a href="#" class="text-success">Нет аккаунта? Зарегистрируйтесь</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Скрипты -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // База данных вакансий с сезонными
+        const vacanciesData = [
+            {
+                id: 1,
+                title: 'Агроном-полевод (сезонный)',
+                company: 'Агрохолдинг "Зеленые поля"',
+                location: 'Краснодарский край',
+                salary: '150 000 - 180 000 ₽',
+                tags: ['агроном', 'полеводство', 'сезонная работа'],
+                category: 'сезонные',
+                posted: '2 часа назад',
+                seasonal: true
+            },
+            {
+                id: 2,
+                title: 'Главный ветеринарный врач',
+                company: 'МТС "АгроФерма"',
+                location: 'Воронежская обл.',
+                salary: '150 000 - 200 000 ₽',
+                tags: ['ветеринар', 'животноводство', 'постоянная работа'],
+                category: 'ветеринар',
+                posted: 'Вчера',
+                seasonal: false
+            },
+            {
+                id: 3,
+                title: 'Сборщик урожая (сезонный)',
+                company: 'Фермерское хозяйство "Ягодное"',
+                location: 'Ленинградская обл.',
+                salary: '60 000 - 90 000 ₽',
+                tags: ['сбор урожая', 'сезонная работа', 'без опыта'],
+                category: 'сезонные',
+                posted: '1 час назад',
+                seasonal: true
+            },
+            {
+                id: 4,
+                title: 'Технолог пищевого производства',
+                company: 'АгроПродукт',
+                location: 'Белгород',
+                salary: '110 000 - 140 000 ₽',
+                tags: ['технолог', 'пищевое производство', 'HACCP'],
+                category: 'технолог',
+                posted: '3 часа назад',
+                seasonal: false
+            },
+            {
+                id: 5,
+                title: 'Механизатор на уборочную (сезонный)',
+                company: 'Агрохолдинг "Нива"',
+                location: 'Ростовская обл.',
+                salary: '120 000 - 150 000 ₽',
+                tags: ['механизатор', 'тракторист', 'сезонная работа'],
+                category: 'сезонные',
+                posted: '5 часов назад',
+                seasonal: true
+            },
+            {
+                id: 6,
+                title: 'Ветеринарный фельдшер',
+                company: 'Птицефабрика "Дружба"',
+                location: 'Ленинградская обл.',
+                salary: '70 000 - 90 000 ₽',
+                tags: ['ветеринар', 'птицеводство', 'вакцинация'],
+                category: 'ветеринар',
+                posted: 'Сегодня',
+                seasonal: false
+            },
+            {
+                id: 7,
+                title: 'Агроном по защите растений',
+                company: 'Агрохим-Центр',
+                location: 'Ставрополь',
+                salary: '100 000 - 130 000 ₽',
+                tags: ['агроном', 'защита растений', 'химия'],
+                category: 'агроном',
+                posted: 'Вчера',
+                seasonal: false
+            },
+            {
+                id: 8,
+                title: 'Рабочий в теплицу (сезонный)',
+                company: 'Тепличный комплекс "Цветы"',
+                location: 'Московская обл.',
+                salary: '50 000 - 70 000 ₽',
+                tags: ['теплица', 'растениеводство', 'сезонная работа'],
+                category: 'сезонные',
+                posted: '30 минут назад',
+                seasonal: true
+            },
+            {
+                id: 9,
+                title: 'Инженер КИПиА',
+                company: 'Элеватор "Южный"',
+                location: 'Краснодар',
+                salary: '130 000 - 160 000 ₽',
+                tags: ['инженер', 'автоматизация', 'электрика'],
+                category: 'инженер',
+                posted: '2 дня назад',
+                seasonal: false
+            },
+            {
+                id: 10,
+                title: 'Зоотехник-селекционер',
+                company: 'Племенной завод',
+                location: 'Воронеж',
+                salary: '90 000 - 120 000 ₽',
+                tags: ['зоотехник', 'селекция', 'животноводство'],
+                category: 'ветеринар',
+                posted: '1 день назад',
+                seasonal: false
+            }
+        ];
+
+        // Переменные для пагинации и фильтрации
+        let currentFilter = 'all';
+        let visibleCount = 6;
+        const increment = 3;
+
+        // Функция рендера вакансий
+        function renderVacancies() {
+            const container = document.getElementById('vacanciesContainer');
+            const loading = document.getElementById('loadingSpinner');
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            
+            // Показываем загрузку
+            loading.style.display = 'block';
+            container.innerHTML = '';
+
+            // Имитация загрузки с сервера
+            setTimeout(() => {
+                let filtered = vacanciesData;
+                if (currentFilter !== 'all') {
+                    filtered = vacanciesData.filter(v => v.category === currentFilter);
+                }
+
+                const toShow = filtered.slice(0, visibleCount);
+
+                if (toShow.length === 0) {
+                    container.innerHTML = '<div class="col-12 text-center py-5"><h4>По вашему запросу ничего не найдено</h4><p class="text-muted">Попробуйте изменить фильтр</p></div>';
+                } else {
+                    toShow.forEach((vacancy, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'col-lg-6';
+                        
+                        let seasonalTag = '';
+                        if (vacancy.seasonal) {
+                            seasonalTag = '<span class="seasonal-tag">🌾 Сезонная</span>';
+                        }
+                        
+                        // Добавляем класс для сезонных вакансий
+                        const seasonalClass = vacancy.seasonal ? 'seasonal' : '';
+                        
+                        card.innerHTML = `
+                            <div class="vacancy-card ${seasonalClass}" style="animation-delay: ${index * 0.1}s">
+                                ${seasonalTag}
+                                <span class="company-badge">${vacancy.location}</span>
+                                <h3 class="vacancy-title">${vacancy.title}</h3>
+                                <div class="company-name">
+                                    <i class="bi bi-building"></i>
+                                    ${vacancy.company}
+                                </div>
+                                <div class="salary">
+                                    ${vacancy.salary} <small>на руки</small>
+                                </div>
+                                <div class="tags">
+                                    ${vacancy.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                                </div>
+                                <div class="posted-date">
+                                    <i class="bi bi-clock"></i> Опубликовано: ${vacancy.posted}
+                                </div>
+                                <button class="btn-details" data-id="${vacancy.id}">
+                                    Подробнее <i class="bi bi-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                }
+
+                // Обновление видимости кнопки "Загрузить еще"
+                if (filtered.length <= visibleCount) {
+                    loadMoreBtn.style.display = 'none';
+                } else {
+                    loadMoreBtn.style.display = 'inline-block';
+                }
+
+                loading.style.display = 'none';
+            }, 500);
+        }
+
+        // Обработчики фильтров
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.dataset.filter;
+                visibleCount = 6; // Сбрасываем пагинацию
+                renderVacancies();
+            });
+        });
+
+        // Кнопка "Загрузить еще"
+        document.getElementById('loadMoreBtn').addEventListener('click', function() {
+            visibleCount += increment;
+            renderVacancies();
+        });
+
+        // Поиск
+        document.getElementById('searchBtn').addEventListener('click', function() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (searchTerm) {
+                alert('Поиск: ' + searchTerm + ' (демо-режим)');
+            }
+        });
+
+        // Делегирование событий для кнопок "Подробнее"
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn-details') || e.target.closest('.btn-details')) {
+                const btn = e.target.closest('.btn-details');
+                const id = btn.dataset.id;
+                const vacancy = vacanciesData.find(v => v.id == id);
+                alert(`Открыта вакансия: ${vacancy.title}\nКомпания: ${vacancy.company}\n(демо-режим)`);
+            }
+        });
+
+        // Эффект для навбара
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.boxShadow = '0 5px 30px rgba(0,0,0,0.1)';
+                navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.05)';
+                navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+
+        // Инициализация
+        renderVacancies();
+    </script>
+</body>
+</html>
