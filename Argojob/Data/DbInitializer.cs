@@ -20,13 +20,13 @@ namespace Agrojob.Data
 
             context.SaveChanges();
 
-            // 2. СОЗДАЕМ ТЕСТОВЫЕ КОМПАНИИ
-            var companies = CreateCompanies(context);
-            context.SaveChanges();
+            //// 2. СОЗДАЕМ ТЕСТОВЫЕ КОМПАНИИ
+            //var companies = CreateCompanies(context);
+            //context.SaveChanges();
 
-            // 3. СОЗДАЕМ ТЕСТОВЫЕ ВАКАНСИИ
-            CreateVacancies(context, companies);
-            context.SaveChanges();
+            //// 3. СОЗДАЕМ ТЕСТОВЫЕ ВАКАНСИИ
+            //CreateVacancies(context, companies);
+            //context.SaveChanges();
         }
 
         private static void ClearExistingData(ApplicationDbContext context)
