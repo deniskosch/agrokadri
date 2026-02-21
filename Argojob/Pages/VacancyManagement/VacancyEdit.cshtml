@@ -1,0 +1,188 @@
+﻿@page "{id?}"
+@model Agrojob.Pages.VacancyManagement.VacancyEditModel
+@{
+    ViewData["Title"] = Model.IsEditMode ? "Редактирование вакансии" : "Создание вакансии";
+}
+
+<!-- Хлебные крошки -->
+<div class="bg-light py-3">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a asp-page="/Index" class="text-success">Главная</a></li>
+                <li class="breadcrumb-item"><a asp-page="/VacancyManagement/MyVacancies" class="text-success">Мои вакансии</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@(Model.IsEditMode ? "Редактирование" : "Создание")</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Форма -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-success text-white py-3">
+                        <h4 class="mb-0">
+                            <i class="bi @(Model.IsEditMode ? "bi-pencil-square" : "bi-plus-circle") me-2"></i>
+                            @(Model.IsEditMode ? "Редактировать вакансию" : "Создать новую вакансию")
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post">
+                            <input type="hidden" asp-for="IsEditMode" />
+                            @if (Model.IsEditMode)
+                            {
+                                <input type="hidden" asp-for="Input.Id" />
+                            }
+
+                            <!-- Основная информация -->
+                            <h5 class="fw-semibold mb-3">Основная информация</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-12">
+                                    <label asp-for="Input.Title" class="form-label fw-semibold">Название вакансии <span class="text-danger">*</span></label>
+                                    <input asp-for="Input.Title" class="form-control" placeholder="Например: Агроном-полевод">
+                                        <span asp-validation-for="Input.Title" class="text-danger small"></span>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label asp-for="Input.CompanyId" class="form-label fw-semibold">Компания <span class="text-danger">*</span></label>
+                                        <select asp-for="Input.CompanyId" class="form-select" asp-items="Model.Companies">
+                                            <option value="">-- Выберите компанию --</option>
+                                        </select>
+                                        <span asp-validation-for="Input.CompanyId" class="text-danger small"></span>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label asp-for="Input.LocationId" class="form-label fw-semibold">Локация <span class="text-danger">*</span></label>
+                                        <select asp-for="Input.LocationId" class="form-select" asp-items="Model.Locations">
+                                            <option value="">-- Выберите город/регион --</option>
+                                        </select>
+                                        <span asp-validation-for="Input.LocationId" class="text-danger small"></span>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label asp-for="Input.CategoryId" class="form-label fw-semibold">Категория <span class="text-danger">*</span></label>
+                                        <select asp-for="Input.CategoryId" class="form-select" asp-items="Model.Categories">
+                                            <option value="">-- Выберите категорию --</option>
+                                        </select>
+                                        <span asp-validation-for="Input.CategoryId" class="text-danger small"></span>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-check mt-4">
+                                            <input asp-for="Input.IsSeasonal" class="form-check-input" />
+                                            <label asp-for="Input.IsSeasonal" class="form-check-label fw-semibold">
+                                                Сезонная работа
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Зарплата -->
+                                <h5 class="fw-semibold mb-3">Зарплата</h5>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-12">
+                                        <label asp-for="Input.Salary" class="form-label fw-semibold">Условия оплаты</label>
+                                        <input asp-for="Input.Salary" class="form-control" placeholder="Например: 100 000 - 150 000 ₽ или Договорная">
+                                            <small class="text-muted">Укажите вилку зарплаты или "Договорная"</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Описание -->
+                                    <h5 class="fw-semibold mb-3">Описание вакансии <span class="text-danger">*</span></h5>
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-md-12">
+                                            <textarea asp-for="Input.Description" class="form-control" rows="5" placeholder="Подробно опишите вакансию, обязанности, условия работы..."></textarea>
+                                            <span asp-validation-for="Input.Description" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Требования -->
+                                    <h5 class="fw-semibold mb-3">Требования к кандидату</h5>
+                                    <div class="mb-4">
+                                        @for (int i = 0; i < 5; i++)
+                                        {
+                                            <div class="mb-2">
+                                                <input type="text" class="form-control" name="Input.Requirements[@i]"
+                                                       value="@(Model.Input.Requirements.Count > i ? Model.Input.Requirements[i] : "")"
+                                                       placeholder="Требование @(i + 1) (необязательно)">
+                                            </div>
+                                        }
+                                        <small class="text-muted">Вы можете заполнить от 1 до 5 требований</small>
+                                    </div>
+
+                                    <!-- Условия работы -->
+                                    <h5 class="fw-semibold mb-3">Мы предлагаем</h5>
+                                    <div class="mb-4">
+                                        @for (int i = 0; i < 5; i++)
+                                        {
+                                            <div class="mb-2">
+                                                <input type="text" class="form-control" name="Input.Offers[@i]"
+                                                       value="@(Model.Input.Offers.Count > i ? Model.Input.Offers[i] : "")"
+                                                       placeholder="Условие @(i + 1) (необязательно)">
+                                            </div>
+                                        }
+                                        <small class="text-muted">Вы можете заполнить от 1 до 5 условий</small>
+                                    </div>
+
+                                    <!-- Теги -->
+                                    <h5 class="fw-semibold mb-3">Ключевые навыки (теги)</h5>
+                                    <div class="mb-4">
+                                        <div class="row g-2">
+                                            @for (int i = 0; i < Model.AllTags.Count; i++)
+                                            {
+                                                var tag = Model.AllTags[i];
+                                                <div class="col-md-3 col-sm-4 col-6">
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" name="Input.SelectedTagIds" value="@tag.Id" id="tag_@tag.Id"
+                                                        @(Model.Input.SelectedTagIds?.Contains(tag.Id) == true ? "checked" : "")>
+                                                        <label class="form-check-label" for="tag_@tag.Id">@tag.Name</label>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                        <small class="text-muted">Выберите подходящие теги для вакансии</small>
+                                    </div>
+
+                                    <!-- Контактная информация -->
+                                    <h5 class="fw-semibold mb-3">Контактная информация</h5>
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-md-4">
+                                            <label asp-for="Input.ContactPerson" class="form-label fw-semibold">Контактное лицо</label>
+                                            <input asp-for="Input.ContactPerson" class="form-control" placeholder="Иванов Иван">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label asp-for="Input.ContactPhone" class="form-label fw-semibold">Телефон</label>
+                                                <input asp-for="Input.ContactPhone" class="form-control" placeholder="+7 (999) 123-45-67">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label asp-for="Input.ContactEmail" class="form-label fw-semibold">Email</label>
+                                                    <input asp-for="Input.ContactEmail" class="form-control" placeholder="hr@company.ru">
+                                                    </div>
+                                                </div>
+
+                                                <hr class="my-4">
+
+                                                <!-- Кнопки -->
+                                                <div class="d-flex justify-content-between">
+                                                    <a asp-page="/VacancyManagement/MyVacancies" class="btn btn-outline-secondary">
+                                                        <i class="bi bi-arrow-left me-1"></i>Отмена
+                                                    </a>
+                                                    <button type="submit" class="btn btn-success px-5">
+                                                        <i class="bi bi-check-circle me-1"></i>
+                                                        @(Model.IsEditMode ? "Сохранить изменения" : "Опубликовать вакансию")
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    @section Scripts {
+                        <partial name="_ValidationScriptsPartial" />
+                    }

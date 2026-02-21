@@ -28,5 +28,8 @@ namespace Agrojob.Models
 
         // Связь с вакансиями
         public virtual ICollection<Vacancy> Vacancies { get; set; } = new List<Vacancy>();
+
+        // Связь с пользователями (многие-ко-многим)
+        public virtual ICollection<CompanyUser> CompanyUsers { get; set; } = new List<CompanyUser>();
     }
 }

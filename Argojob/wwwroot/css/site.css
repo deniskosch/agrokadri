@@ -616,4 +616,135 @@ body {
     }
 }
 
+/* ===== СТИЛИ ДЛЯ ВЫПАДАЮЩИХ СПИСКОВ ===== */
 
+/* Основной стиль для навбара */
+.navbar {
+    padding: 0.5rem 1rem;
+}
+
+.nav-link {
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    transition: color 0.2s ease;
+}
+
+/* Стили для дропдауна */
+.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+}
+
+.dropdown-menu {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    min-width: 220px;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Элементы выпадающего списка */
+.dropdown-item {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+    color: #333;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+    .dropdown-item i {
+        font-size: 1.1rem;
+        color: #6c757d;
+        width: 1.5rem;
+        text-align: center;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: #2E7D32;
+        padding-left: 1.5rem;
+    }
+
+        .dropdown-item:hover i {
+            color: #2E7D32;
+        }
+
+/* Разделитель */
+.dropdown-divider {
+    margin: 0.3rem 0;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Кнопка входа */
+.btn-outline-primary {
+    border-color: #2E7D32;
+    color: #2E7D32;
+    padding: 0.4rem 1.2rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #2E7D32;
+        border-color: #2E7D32;
+        color: white;
+    }
+
+/* Аватар пользователя */
+.nav-link i.bi-person-circle {
+    font-size: 1.2rem;
+    color: #2E7D32;
+}
+
+/* Активное состояние */
+.dropdown-item:active {
+    background-color: #2E7D32;
+    color: white;
+}
+
+    .dropdown-item:active i {
+        color: white;
+    }
+
+/* Адаптивность */
+@media (max-width: 991.98px) {
+    .dropdown-menu {
+        box-shadow: none;
+        border: 1px solid #e9ecef;
+        margin-top: 0;
+    }
+
+    .dropdown:hover .dropdown-menu {
+        display: none;
+    }
+
+    .dropdown.show .dropdown-menu {
+        display: block;
+    }
+}
+
+/* Убираем зеленую полоску для выпадающего списка */
+.nav-item.dropdown .nav-link::after {
+    display: none !important;
+}
+
+/* Если полоска все еще видна, убираем и псевдоэлемент */
+.nav-item.dropdown .nav-link::before,
+.nav-item.dropdown .nav-link::after {
+    display: none !important;
+}

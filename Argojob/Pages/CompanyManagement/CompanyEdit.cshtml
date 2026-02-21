@@ -1,0 +1,113 @@
+﻿@page "{id?}"
+@model Agrojob.Pages.CompanyManagement.CompanyEditModel
+@{
+    ViewData["Title"] = Model.IsEditMode ? "Редактирование компании" : "Создание компании";
+}
+
+<!-- Хлебные крошки -->
+<div class="bg-light py-3">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a asp-page="/Index" class="text-success">Главная</a></li>
+                <li class="breadcrumb-item"><a asp-page="/CompanyManagement/MyCompanies" class="text-success">Мои компании</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@(Model.IsEditMode ? "Редактирование" : "Создание")</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Форма -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-success text-white py-3">
+                        <h4 class="mb-0">
+                            <i class="bi @(Model.IsEditMode ? "bi-pencil-square" : "bi-plus-circle") me-2"></i>
+                            @(Model.IsEditMode ? "Редактировать компанию" : "Создать новую компанию")
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post">
+                            <input type="hidden" asp-for="IsEditMode" />
+                            @if (Model.IsEditMode)
+                            {
+                                <input type="hidden" asp-for="Input.Id" />
+                            }
+
+                            <!-- Основная информация -->
+                            <h5 class="fw-semibold mb-3">Основная информация</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-12">
+                                    <label asp-for="Input.Name" class="form-label fw-semibold">Название компании <span class="text-danger">*</span></label>
+                                    <input asp-for="Input.Name" class="form-control" placeholder="Например: Агрохолдинг Зеленые поля">
+                                        <span asp-validation-for="Input.Name" class="text-danger small"></span>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <label asp-for="Input.Description" class="form-label fw-semibold">Описание компании</label>
+                                        <textarea asp-for="Input.Description" class="form-control" rows="4" placeholder="Расскажите о компании, сфере деятельности, преимуществах..."></textarea>
+                                        <small class="text-muted">Необязательно, но поможет соискателям лучше узнать вас</small>
+                                    </div>
+                                </div>
+
+                                <!-- Контактная информация -->
+                                <h5 class="fw-semibold mb-3">Контактная информация</h5>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label asp-for="Input.ContactPerson" class="form-label fw-semibold">Контактное лицо</label>
+                                        <input asp-for="Input.ContactPerson" class="form-control" placeholder="Иванов Иван Иванович">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label asp-for="Input.ContactPhone" class="form-label fw-semibold">Телефон</label>
+                                            <input asp-for="Input.ContactPhone" class="form-control" placeholder="+7 (999) 123-45-67">
+                                                <span asp-validation-for="Input.ContactPhone" class="text-danger small"></span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label asp-for="Input.ContactEmail" class="form-label fw-semibold">Email</label>
+                                                <input asp-for="Input.ContactEmail" class="form-control" placeholder="info@company.ru">
+                                                    <span asp-validation-for="Input.ContactEmail" class="text-danger small"></span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Дополнительная информация (только для админов) -->
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <div class="row g-3 mb-4">
+                                                    <div class="col-md-6">
+                                                        <div class="form-check">
+                                                            <input asp-for="Input.IsVerified" class="form-check-input" />
+                                                            <label asp-for="Input.IsVerified" class="form-check-label fw-semibold">
+                                                                Проверенная компания
+                                                            </label>
+                                                        </div>
+                                                        <small class="text-muted">Только для администраторов</small>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                            <hr class="my-4">
+
+                                            <!-- Кнопки -->
+                                            <div class="d-flex justify-content-between">
+                                                <a asp-page="/CompanyManagement/MyCompanies" class="btn btn-outline-secondary">
+                                                    <i class="bi bi-arrow-left me-1"></i>Отмена
+                                                </a>
+                                                <button type="submit" class="btn btn-success px-5">
+                                                    <i class="bi bi-check-circle me-1"></i>
+                                                    @(Model.IsEditMode ? "Сохранить изменения" : "Создать компанию")
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                @section Scripts {
+                    <partial name="_ValidationScriptsPartial" />
+                }

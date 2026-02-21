@@ -10,5 +10,15 @@ namespace Agrojob.Repositories
         Task<Company?> GetCompanyByNameAsync(string name);
         Task<int> GetVacanciesCountAsync(int companyId);
         Task<IEnumerable<Company>> SearchCompaniesAsync(string searchTerm);
+
+        // Новые методы для работы с пользователями
+        Task<IEnumerable<Company>> GetCompaniesByUserAsync(string userId);
+        Task<bool> IsUserInCompanyAsync(string userId, int companyId);
+        Task<string?> GetUserRoleInCompanyAsync(string userId, int companyId);
+        Task<bool> AddUserToCompanyAsync(string userId, int companyId, string? role = null);
+        Task<bool> RemoveUserFromCompanyAsync(string userId, int companyId);
+        Task<bool> UpdateUserRoleAsync(string userId, int companyId, string newRole);
+
+        Task<IEnumerable<CompanyUser>> GetCompanyUsersWithDetailsAsync(int companyId);
     }
 }

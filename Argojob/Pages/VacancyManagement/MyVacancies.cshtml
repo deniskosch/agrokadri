@@ -1,0 +1,230 @@
+﻿@page "/my-vacancies"
+@model Agrojob.Pages.VacancyManagement.MyVacanciesModel
+@{
+    ViewData["Title"] = "Мои вакансии";
+}
+
+<!-- Хлебные крошки -->
+<div class="bg-light py-3">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a asp-page="/Index" class="text-success">Главная</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Мои вакансии</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Заголовок и кнопка создания -->
+<section class="py-4">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="section-title mb-0">Мои вакансии</h1>
+            <a asp-page="/VacancyManagement/VacancyEdit" class="btn btn-success">
+                <i class="bi bi-plus-circle me-2"></i>Создать вакансию
+            </a>
+        </div>
+
+        <!-- Статистика -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-6">
+                <div class="card bg-success bg-opacity-10 border-0">
+                    <div class="card-body text-center">
+                        <h3 class="fw-bold text-success">@Model.TotalCount</h3>
+                        <span class="text-muted">Всего</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="card bg-primary bg-opacity-10 border-0">
+                    <div class="card-body text-center">
+                        <h3 class="fw-bold text-primary">@Model.ActiveCount</h3>
+                        <span class="text-muted">Активные</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="card bg-warning bg-opacity-10 border-0">
+                    <div class="card-body text-center">
+                        <h3 class="fw-bold text-warning">@Model.InactiveCount</h3>
+                        <span class="text-muted">Неактивные</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="card bg-info bg-opacity-10 border-0">
+                    <div class="card-body text-center">
+                        <h3 class="fw-bold text-info">@Model.TotalViews</h3>
+                        <span class="text-muted">Просмотров</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Таблица вакансий -->
+        @if (Model.Vacancies.Any())
+        {
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4">Название</th>
+                                    <th>Компания</th>
+                                    <th>Локация</th>
+                                    <th>Зарплата</th>
+                                    <th>Дата</th>
+                                    <th>Статус</th>
+                                    <th>Просмотры</th>
+                                    <th class="text-end pe-4">Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var vacancy in Model.Vacancies)
+                                {
+                                    <tr>
+                                        <td class="ps-4">
+                                            <a asp-page="/VacancyDetail" asp-route-id="@vacancy.Id" class="text-decoration-none fw-semibold text-success">
+                                                @vacancy.Title
+                                            </a>
+                                            @if (vacancy.IsSeasonal)
+                                            {
+                                                <span class="badge bg-warning bg-opacity-10 text-warning ms-2">🌾 Сезонная</span>
+                                            }
+                                        </td>
+                                        <td>@vacancy.Company</td>
+                                        <td>@vacancy.Location</td>
+                                        <td class="fw-semibold">@vacancy.Salary</td>
+                                        <td>
+                                            <small class="text-muted">@vacancy.PostedDate</small>
+                                        </td>
+                                        <td>
+                                            @if (vacancy.IsActive)
+                                            {
+                                                <span class="badge bg-success bg-opacity-10 text-success">Активна</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary bg-opacity-10 text-secondary">Неактивна</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark">
+                                                <i class="bi bi-eye me-1"></i>@vacancy.ViewsCount
+                                            </span>
+                                        </td>
+                                        <td class="text-end pe-4">
+                                            <div class="btn-group btn-group-sm">
+                                                <a asp-page="/VacancyManagement/VacancyEdit" asp-route-id="@vacancy.Id" class="btn btn-outline-primary" title="Редактировать">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-outline-danger" title="Удалить"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                        data-id="@vacancy.Id" data-title="@vacancy.Title">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                @if (vacancy.IsActive)
+                                                {
+                                                    <a asp-page-handler="ToggleStatus" asp-route-id="@vacancy.Id"
+                                                           class="btn btn-outline-warning" title="Деактивировать">
+                                                        <i class="bi bi-pause-circle"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a asp-page-handler="ToggleStatus" asp-route-id="@vacancy.Id"
+                                                           class="btn btn-outline-success" title="Активировать">
+                                                        <i class="bi bi-play-circle"></i>
+                                                    </a>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Пагинация -->
+            @if (Model.TotalPages > 1)
+            {
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                            <a class="page-link text-success" asp-page="MyVacancies" asp-route-page="@(Model.CurrentPage - 1)">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                <a class="page-link @(i == Model.CurrentPage ? "bg-success border-success text-white" : "text-success")"
+                                   asp-page="MyVacancies" asp-route-page="@i">@i</a>
+                            </li>
+                        }
+                        
+                        <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                            <a class="page-link text-success" asp-page="MyVacancies" asp-route-page="@(Model.CurrentPage + 1)">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-briefcase display-1 text-muted"></i>
+                <h4 class="mt-3">У вас пока нет вакансий</h4>
+                <p class="text-muted">Создайте свою первую вакансию и найдите сотрудников</p>
+                <a asp-page="/VacancyManagement/VacancyEdit" class="btn btn-success btn-lg mt-2">
+                    <i class="bi bi-plus-circle me-2"></i>Создать вакансию
+                </a>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Модальное окно подтверждения удаления -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Подтверждение удаления</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Вы действительно хотите удалить вакансию <strong id="deleteTitle"></strong>?</p>
+                <p class="text-muted small">Это действие нельзя отменить.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                <form method="post" asp-page-handler="Delete" id="deleteForm">
+                    <input type="hidden" name="id" id="deleteId" value="" />
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Настройка модального окна удаления
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var id = button.getAttribute('data-id');
+            var title = button.getAttribute('data-title');
+            
+            document.getElementById('deleteId').value = id;
+            document.getElementById('deleteTitle').textContent = title;
+        });
+    </script>
+}

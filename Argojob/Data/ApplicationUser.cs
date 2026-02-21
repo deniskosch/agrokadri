@@ -11,5 +11,9 @@ namespace Agrojob.Data
 
         // Связь с созданными вакансиями
         public virtual ICollection<Vacancy> CreatedVacancies { get; set; } = new List<Vacancy>();
+        public virtual ICollection<CompanyUser> CompanyUsers { get; set; } = new List<CompanyUser>();
+
+        public virtual ICollection<Resume> Resumes { get; set; } = new List<Resume>();
+        public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
     }
 }

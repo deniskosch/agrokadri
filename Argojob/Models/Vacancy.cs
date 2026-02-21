@@ -45,5 +45,6 @@ namespace Agrojob.Models
         public virtual ICollection<VacancyTag> VacancyTags { get; set; } = new List<VacancyTag>();
         public virtual ICollection<Requirement> Requirements { get; set; } = new List<Requirement>();
         public virtual ICollection<Offer> Offers { get; set; } = new List<Offer>();
+        public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
     }
 }

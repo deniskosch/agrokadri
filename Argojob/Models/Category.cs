@@ -16,5 +16,6 @@ namespace Agrojob.Models
         public string? Description { get; set; }
 
         public virtual ICollection<Vacancy> Vacancies { get; set; } = new List<Vacancy>();
+        public virtual ICollection<Resume> Resumes { get; set; } = new List<Resume>();
     }
 }

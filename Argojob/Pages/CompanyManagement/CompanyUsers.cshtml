@@ -1,0 +1,175 @@
+﻿@page "/company-users/{id}"
+@model Agrojob.Pages.CompanyManagement.CompanyUsersModel
+@{
+    ViewData["Title"] = $"Пользователи компании - {Model.CompanyName}";
+}
+
+<!-- Хлебные крошки -->
+<div class="bg-light py-3">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a asp-page="/Index" class="text-success">Главная</a></li>
+                <li class="breadcrumb-item"><a asp-page="/CompanyManagement/MyCompanies" class="text-success">Мои компании</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Управление пользователями</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Заголовок -->
+<section class="py-4">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="section-title mb-0">Пользователи компании: @Model.CompanyName</h1>
+            <a asp-page="/CompanyManagement/MyCompanies" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Назад
+            </a>
+        </div>
+
+        <!-- Форма добавления пользователя -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-success text-white py-3">
+                <h5 class="mb-0"><i class="bi bi-person-plus me-2"></i>Добавить пользователя</h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" asp-page-handler="AddUser">
+                    <input type="hidden" name="companyId" value="@Model.CompanyId" />
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <input type="email" class="form-control" name="email" placeholder="Email пользователя" required />
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select" name="role">
+                                <option value="Manager">Менеджер</option>
+                                <option value="Viewer">Наблюдатель</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-plus-circle me-1"></i>Добавить
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Список пользователей -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-light py-3">
+                <h5 class="mb-0"><i class="bi bi-people me-2"></i>Список пользователей</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4">Пользователь</th>
+                                <th>Email</th>
+                                <th>Роль</th>
+                                <th>Дата добавления</th>
+                                <th class="text-end pe-4">Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model.Users)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-light rounded-circle p-2 me-2">
+                                                <i class="bi bi-person-fill text-success"></i>
+                                            </div>
+                                            <span>@(user.FullName ?? "Не указано")</span>
+                                            @if (user.Email == User.Identity.Name)
+                                            {
+                                                <span class="badge bg-success bg-opacity-10 text-success ms-2">Это вы</span>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td>@user.Email</td>
+                                    <td>
+                                        @if (user.Role == "Admin")
+                                        {
+                                            <span class="badge bg-warning bg-opacity-10 text-warning">Администратор</span>
+                                        }
+                                        else if (user.Role == "Manager")
+                                        {
+                                            <span class="badge bg-primary bg-opacity-10 text-primary">Менеджер</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary">Наблюдатель</span>
+                                        }
+                                    </td>
+                                    <td>@user.JoinedAt.ToString("dd.MM.yyyy")</td>
+                                    <td class="text-end pe-4">
+                                        @if (user.Email != User.Identity.Name)
+                                        {
+                                            <div class="btn-group btn-group-sm">
+                                                <a asp-page-handler="ChangeRole" asp-route-companyId="@Model.CompanyId"
+                                                       asp-route-userId="@user.UserId" asp-route-newRole="Manager"
+                                                       class="btn btn-outline-primary" title="Сделать менеджером">
+                                                    <i class="bi bi-person-up"></i>
+                                                </a>
+                                                <a asp-page-handler="ChangeRole" asp-route-companyId="@Model.CompanyId"
+                                                       asp-route-userId="@user.UserId" asp-route-newRole="Viewer"
+                                                       class="btn btn-outline-info" title="Сделать наблюдателем">
+                                                    <i class="bi bi-person-down"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-outline-danger" title="Удалить"
+                                                        data-bs-toggle="modal" data-bs-target="#removeUserModal"
+                                                        data-userid="@user.UserId" data-useremail="@user.Email">
+                                                    <i class="bi bi-person-x"></i>
+                                                </button>
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Модальное окно удаления пользователя -->
+<div class="modal fade" id="removeUserModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Удаление пользователя</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Вы действительно хотите удалить пользователя <strong id="removeUserEmail"></strong> из компании?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                <form method="post" asp-page-handler="RemoveUser">
+                    <input type="hidden" name="companyId" id="removeCompanyId" value="@Model.CompanyId" />
+                    <input type="hidden" name="userId" id="removeUserId" value="" />
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Настройка модального окна удаления пользователя
+        var removeUserModal = document.getElementById('removeUserModal');
+        removeUserModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var userId = button.getAttribute('data-userid');
+            var userEmail = button.getAttribute('data-useremail');
+            
+            document.getElementById('removeUserId').value = userId;
+            document.getElementById('removeUserEmail').textContent = userEmail;
+        });
+    </script>
+}

@@ -14,6 +14,8 @@ namespace Agrojob.UoW
         ITagRepository Tags { get; }
         IRequirementRepository Requirements { get; }
         IOfferRepository Offers { get; }
+        IResumeRepository Resumes { get; }
+        IApplicationRepository Applications { get; }
 
         Task<int> CompleteAsync();
         Task BeginTransactionAsync();

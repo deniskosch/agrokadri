@@ -16,6 +16,8 @@ namespace Agrojob.UoW
         private ITagRepository? _tagRepository;
         private IRequirementRepository? _requirementRepository;
         private IOfferRepository? _offerRepository;
+        private IResumeRepository? _resumeRepository;
+        private IApplicationRepository? _applicationRepository;
 
         private Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction? _transaction;
 
@@ -44,6 +46,11 @@ namespace Agrojob.UoW
 
         public IOfferRepository Offers =>
             _offerRepository ??= new OfferRepository(_context);
+        public IResumeRepository Resumes =>
+        _resumeRepository ??= new ResumeRepository(_context);
+
+        public IApplicationRepository Applications =>
+            _applicationRepository ??= new ApplicationRepository(_context);
 
         public async Task<int> CompleteAsync()
         {
