@@ -1,0 +1,272 @@
+﻿@page "/application/{id}"
+@using Agrojob.Models
+@using Agrojob.ViewModels
+@model Agrojob.Pages.ApplicationsManagement.ApplicationDetailModel
+@{
+    ViewData["Title"] = $"Отклик на вакансию: {Model.Application?.VacancyTitle}";
+}
+
+@if (Model.Application != null)
+{
+    <!-- Хлебные крошки -->
+    <div class="bg-light py-3">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a asp-page="/Index" class="text-success">Главная</a></li>
+                    <li class="breadcrumb-item"><a asp-page="/EmployerManagementMenu" class="text-success">Панель работодателя</a></li>
+                    <li class="breadcrumb-item">
+                        <a asp-page="/VacancyManagement/MyVacancies" class="text-success">Мои вакансии</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-page="VacancyApplications" asp-route-vacancyId="@Model.Application.VacancyId" class="text-success">
+                            Отклики на вакансию
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Отклик #@Model.Application.Id</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Детальная информация -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Информация о соискателе и отклике -->
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 fw-semibold">
+                                <i class="bi bi-person-badge me-2 text-success"></i>
+                                Информация о соискателе
+                            </h5>
+                            <span class="badge bg-@Model.Application.StatusColor bg-opacity-10 text-@Model.Application.StatusColor p-2">
+                                <i class="bi @Model.Application.Status.GetIconClass() me-1"></i>
+                                @Model.Application.StatusDisplay
+                            </span>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bg-light rounded-circle p-3 me-3">
+                                            <i class="bi bi-person-circle fs-1 text-success"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="fw-bold mb-1">@Model.Application.ApplicantName</h4>
+                                            <p class="text-muted mb-0">ID: @Model.Application.UserId</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="text-muted small mb-1">Email</label>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-envelope-fill text-success me-2"></i>
+                                            <a href="mailto:@Model.Application.ApplicantEmail" class="text-decoration-none">
+                                                @Model.Application.ApplicantEmail
+                                            </a>
+                                        </div>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(Model.Application.ApplicantPhone))
+                                    {
+                                        <div class="mb-3">
+                                            <label class="text-muted small mb-1">Телефон</label>
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-telephone-fill text-success me-2"></i>
+                                                <a href="tel:@Model.Application.ApplicantPhone" class="text-decoration-none">
+                                                    @Model.Application.ApplicantPhone
+                                                </a>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <h6 class="fw-semibold mb-3">Сопроводительное письмо</h6>
+                                    @if (!string.IsNullOrEmpty(Model.Application.CoverLetter))
+                                    {
+                                        <p class="text-muted">@Model.Application.CoverLetter</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="text-muted fst-italic">Сопроводительное письмо не указано</p>
+                                    }
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="text-muted small mb-1">Дата отклика</p>
+                                    <p class="fw-semibold">@Model.Application.AppliedAt.ToString("dd.MM.yyyy HH:mm")</p>
+                                </div>
+                                @if (Model.Application.StatusUpdatedAt.HasValue)
+                                {
+                                    <div class="col-md-6">
+                                        <p class="text-muted small mb-1">Последнее обновление статуса</p>
+                                        <p class="fw-semibold">@Model.Application.StatusUpdatedAt.Value.ToString("dd.MM.yyyy HH:mm")</p>
+                                    </div>
+                                }
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(Model.Application.EmployerComment))
+                            {
+                                <hr class="my-4">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h6 class="fw-semibold mb-3">Комментарий работодателя</h6>
+                                        <div class="bg-light p-3 rounded">
+                                            <p class="mb-0">@Model.Application.EmployerComment</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Резюме соискателя -->
+                    @if (Model.Application.Resume != null)
+                    {
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="mb-0 fw-semibold">
+                                    <i class="bi bi-file-text me-2 text-success"></i>
+                                    Резюме: @Model.Application.Resume.Title
+                                </h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <p class="text-muted small mb-1">ФИО</p>
+                                        <p class="fw-semibold">@Model.Application.Resume.FullName</p>
+                                    </div>
+                                    @if (Model.Application.Resume.ExperienceYears.HasValue)
+                                    {
+                                        <div class="col-md-6">
+                                            <p class="text-muted small mb-1">Опыт работы</p>
+                                            <p class="fw-semibold">@Model.Application.Resume.ExperienceYears лет</p>
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.Application.Resume.DesiredSalary))
+                                    {
+                                        <div class="col-md-6">
+                                            <p class="text-muted small mb-1">Желаемая зарплата</p>
+                                            <p class="fw-semibold">@Model.Application.Resume.DesiredSalary</p>
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.Application.Resume.Location))
+                                    {
+                                        <div class="col-md-6">
+                                            <p class="text-muted small mb-1">Локация</p>
+                                            <p class="fw-semibold">@Model.Application.Resume.Location</p>
+                                        </div>
+                                    }
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(Model.Application.Resume.Education))
+                                {
+                                    <hr class="my-4">
+                                    <h6 class="fw-semibold mb-3">Образование</h6>
+                                    <p class="text-muted">@Model.Application.Resume.Education</p>
+                                }
+
+                                @if (!string.IsNullOrEmpty(Model.Application.Resume.Experience))
+                                {
+                                    <hr class="my-4">
+                                    <h6 class="fw-semibold mb-3">Опыт работы</h6>
+                                    <p class="text-muted">@Model.Application.Resume.Experience</p>
+                                }
+
+                                @if (!string.IsNullOrEmpty(Model.Application.Resume.Skills))
+                                {
+                                    <hr class="my-4">
+                                    <h6 class="fw-semibold mb-3">Навыки</h6>
+                                    <p class="text-muted">@Model.Application.Resume.Skills</p>
+                                }
+
+                                @if (!string.IsNullOrEmpty(Model.Application.Resume.About))
+                                {
+                                    <hr class="my-4">
+                                    <h6 class="fw-semibold mb-3">О себе</h6>
+                                    <p class="text-muted">@Model.Application.Resume.About</p>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Информация о вакансии -->
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-header bg-success text-white py-2">
+                            <h6 class="mb-0"><i class="bi bi-briefcase me-2"></i>Вакансия</h6>
+                        </div>
+                        <div class="card-body p-3">
+                            <h6 class="fw-bold mb-2">@Model.Application.VacancyTitle</h6>
+                            <p class="text-muted small mb-3">@Model.Application.CompanyName</p>
+                            
+                            <a asp-page="/VacancyDetail" asp-route-id="@Model.Application.VacancyId"
+                                   class="btn btn-outline-success w-100 btn-sm">
+                                <i class="bi bi-eye me-1"></i>Просмотреть вакансию
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Изменение статуса -->
+                    <div class="card shadow-sm border-0 mb-4 sticky-top" style="top: 100px;">
+                        <div class="card-header bg-success text-white py-2">
+                            <h6 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Изменить статус</h6>
+                        </div>
+                        <div class="card-body p-3">
+                            <form method="post" asp-page-handler="UpdateStatus">
+                                <input type="hidden" name="applicationId" value="@Model.Application.Id" />
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Новый статус</label>
+                                    <select name="newStatus" class="form-select">
+                                        @foreach (var status in Model.Application.Status.GetType().GetEnumValues())
+                                        {
+                                            var statusEnum = (ApplicationStatus)status;
+                                            var displayName = statusEnum.GetDisplayName();
+                                            var isSelected = statusEnum == Model.Application.Status;
+                                            <option value="@statusEnum" selected="@isSelected">@displayName</option>
+                                        }
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Комментарий (необязательно)</label>
+                                    <textarea name="employerComment" class="form-control" rows="3"
+                                              placeholder="Оставьте комментарий для соискателя...">@Model.Application.EmployerComment</textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="bi bi-check-circle me-1"></i>Обновить статус
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+else
+{
+    <!-- 404 - отклик не найден -->
+    <div class="container py-5 my-5 text-center">
+        <i class="bi bi-exclamation-triangle display-1 text-warning"></i>
+        <h1 class="mt-4">Отклик не найден</h1>
+        <p class="lead text-muted">Запрошенный отклик не существует или был удален</p>
+        <a asp-page="/VacancyManagement/MyVacancies" class="btn btn-success btn-lg mt-3">
+            <i class="bi bi-arrow-left me-2"></i>К моим вакансиям
+        </a>
+    </div>
+}

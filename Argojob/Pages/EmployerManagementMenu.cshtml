@@ -1,0 +1,216 @@
+﻿@page
+@model Agrojob.Pages.EmployerManagementMenuModel
+@{
+    ViewData["Title"] = "Панель работодателя";
+}
+
+<!-- Хлебные крошки -->
+<div class="bg-light py-3">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a asp-page="/Index" class="text-success">Главная</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Панель работодателя</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Заголовок -->
+<section class="py-4">
+    <div class="container">
+        <h1 class="section-title">Панель работодателя</h1>
+        <p class="section-subtitle">Управляйте вашими компаниями, вакансиями и откликами</p>
+
+        <!-- Карточки меню -->
+        <div class="row g-4 mt-2">
+            <!-- Мои вакансии -->
+            <div class="col-md-6 col-lg-3">
+                <a asp-page="/VacancyManagement/MyVacancies" class="text-decoration-none">
+                    <div class="card employer-menu-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="menu-icon bg-primary bg-opacity-10 text-primary mb-3">
+                                <i class="bi bi-briefcase fs-1"></i>
+                            </div>
+                            <h4 class="fw-bold mb-2">Мои вакансии</h4>
+                            <p class="text-muted mb-0">Управление, создание и редактирование вакансий</p>
+                            <div class="mt-3">
+                                <span class="badge bg-primary bg-opacity-10 text-primary">@Model.VacanciesCount</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Отклики соискателей -->
+            <div class="col-md-6 col-lg-3">
+                <a asp-page="/ApplicationsManagement/AllCompanyApplications" asp-route-companyId="all" class="text-decoration-none">
+                    <div class="card employer-menu-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="menu-icon bg-success bg-opacity-10 text-success mb-3">
+                                <i class="bi bi-envelope-paper fs-1"></i>
+                            </div>
+                            <h4 class="fw-bold mb-2">Отклики соискателей</h4>
+                            <p class="text-muted mb-0">Просмотр и обработка откликов на ваши вакансии</p>
+                            <div class="mt-3">
+                                <span class="badge bg-success bg-opacity-10 text-success">@Model.ApplicationsCount</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Мои компании -->
+            <div class="col-md-6 col-lg-3">
+                <a asp-page="/CompanyManagement/MyCompanies" class="text-decoration-none">
+                    <div class="card employer-menu-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="menu-icon bg-warning bg-opacity-10 text-warning mb-3">
+                                <i class="bi bi-building fs-1"></i>
+                            </div>
+                            <h4 class="fw-bold mb-2">Мои компании</h4>
+                            <p class="text-muted mb-0">Управление компаниями и сотрудниками</p>
+                            <div class="mt-3">
+                                <span class="badge bg-warning bg-opacity-10 text-warning">@Model.CompaniesCount</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Обучение (системе) -->
+            <div class="col-md-6 col-lg-3">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#trainingModal" class="text-decoration-none">
+                    <div class="card employer-menu-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="menu-icon bg-info bg-opacity-10 text-info mb-3">
+                                <i class="bi bi-mortarboard fs-1"></i>
+                            </div>
+                            <h4 class="fw-bold mb-2">Обучение</h4>
+                            <p class="text-muted mb-0">Как пользоваться системой, советы и инструкции</p>
+                            <div class="mt-3">
+                                <span class="badge bg-info bg-opacity-10 text-info">5 материалов</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Дополнительная информация -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card bg-light border-0">
+                    <div class="card-body p-4">
+                        <h5 class="fw-semibold mb-3">
+                            <i class="bi bi-info-circle-fill text-success me-2"></i>
+                            Быстрые действия
+                        </h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a asp-page="/VacancyManagement/VacancyEdit" class="btn btn-outline-success btn-sm">
+                                <i class="bi bi-plus-circle me-1"></i>Создать вакансию
+                            </a>
+                            <a asp-page="/CompanyManagement/CompanyEdit" class="btn btn-outline-success btn-sm">
+                                <i class="bi bi-plus-circle me-1"></i>Добавить компанию
+                            </a>
+                            <a asp-page="/ApplicationsManagement/AllCompanyApplications" asp-route-companyId="all" asp-route-status="pending" class="btn btn-outline-warning btn-sm">
+                                <i class="bi bi-clock-history me-1"></i>Новые отклики
+                            </a>
+                            <a asp-page="/VacancyManagement/MyVacancies" asp-route-status="active" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-play-circle me-1"></i>Активные вакансии
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Модальное окно обучения -->
+<div class="modal fade" id="trainingModal" tabindex="-1" aria-labelledby="trainingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="trainingModalLabel">
+                    <i class="bi bi-mortarboard me-2"></i>Обучение работе с системой
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                                    <i class="bi bi-briefcase fs-4 text-primary"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="fw-bold">Управление вакансиями</h6>
+                                <p class="small text-muted">Как создавать, редактировать и публиковать вакансии</p>
+                                <a href="#" class="small text-success">Смотреть видео →</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                                    <i class="bi bi-envelope-paper fs-4 text-success"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="fw-bold">Работа с откликами</h6>
+                                <p class="small text-muted">Как просматривать, фильтровать и отвечать на отклики</p>
+                                <a href="#" class="small text-success">Смотреть видео →</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+                                    <i class="bi bi-building fs-4 text-warning"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="fw-bold">Управление компаниями</h6>
+                                <p class="small text-muted">Как добавлять компании и управлять сотрудниками</p>
+                                <a href="#" class="small text-success">Смотреть видео →</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <div class="bg-danger bg-opacity-10 rounded-circle p-3">
+                                    <i class="bi bi-bar-chart fs-4 text-danger"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="fw-bold">Статистика и аналитика</h6>
+                                <p class="small text-muted">Как отслеживать эффективность вакансий</p>
+                                <a href="#" class="small text-success">Смотреть видео →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-4">
+                <div class="text-center">
+                    <h6 class="fw-semibold mb-3">Полезные материалы</h6>
+                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                        <span class="badge bg-light text-dark p-2">Руководство пользователя (PDF)</span>
+                        <span class="badge bg-light text-dark p-2">Часто задаваемые вопросы</span>
+                        <span class="badge bg-light text-dark p-2">Видеоуроки</span>
+                        <span class="badge bg-light text-dark p-2">Вебинары</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <a href="#" class="btn btn-info text-white">Все материалы</a>
+            </div>
+        </div>
+    </div>
+</div>

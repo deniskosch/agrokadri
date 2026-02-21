@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 using Agrojob.Models;
 using Agrojob.Repositories;
 using Agrojob.UoW;
 using Agrojob.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Agrojob.Pages
 {
@@ -24,6 +26,10 @@ namespace Agrojob.Pages
 
         public VacancyDetailViewModel? Vacancy { get; set; }
 
+        // Для модалки отклика
+        public List<Resume> UserResumes { get; set; } = new();
+        public bool HasApplied { get; set; }
+
         public async Task<IActionResult> OnGetAsync(int id)
         {
             var vacancy = await _unitOfWork.Vacancies.GetVacancyWithDetailsAsync(id);
@@ -34,6 +40,19 @@ namespace Agrojob.Pages
             }
 
             Vacancy = MapToViewModel(vacancy);
+
+            // Если пользователь авторизован, загружаем его резюме и проверяем отклик
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    var resumes = await _unitOfWork.Resumes.GetResumesByUserAsync(userId);
+                    UserResumes = resumes.Where(r => r.IsActive).ToList();
+
+                    HasApplied = await _unitOfWork.Applications.HasUserAppliedToVacancyAsync(userId, id);
+                }
+            }
 
             return Page();
         }
@@ -79,6 +98,56 @@ namespace Agrojob.Pages
                 return $"{(int)diff.TotalDays} дн. назад";
             else
                 return postedDate.ToString("dd.MM.yyyy");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> OnPostApplyAsync(int vacancyId, int resumeId, string? coverLetter)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Challenge();
+            }
+
+            // Проверяем, не откликался ли уже
+            var hasApplied = await _unitOfWork.Applications.HasUserAppliedToVacancyAsync(userId, vacancyId);
+            if (hasApplied)
+            {
+                TempData["ErrorMessage"] = "Вы уже откликались на эту вакансию";
+                return RedirectToPage(new { id = vacancyId });
+            }
+
+            // Проверяем, существует ли резюме и принадлежит ли пользователю
+            var resume = await _unitOfWork.Resumes.GetByIdAsync(resumeId);
+            if (resume == null || resume.UserId != userId)
+            {
+                TempData["ErrorMessage"] = "Резюме не найдено";
+                return RedirectToPage(new { id = vacancyId });
+            }
+
+            // Проверяем, активна ли вакансия
+            var vacancy = await _unitOfWork.Vacancies.GetByIdAsync(vacancyId);
+            if (vacancy == null || !vacancy.IsActive)
+            {
+                TempData["ErrorMessage"] = "Вакансия не активна";
+                return RedirectToPage(new { id = vacancyId });
+            }
+
+            // Создаем отклик
+            var application = new Application
+            {
+                VacancyId = vacancyId,
+                UserId = userId,
+                ResumeId = resumeId,
+                CoverLetter = coverLetter,
+                Status = ApplicationStatus.Pending,
+                AppliedAt = DateTime.UtcNow
+            };
+
+            await _unitOfWork.Applications.AddAsync(application);
+
+            TempData["SuccessMessage"] = "Отклик успешно отправлен!";
+            return RedirectToPage(new { id = vacancyId });
         }
     }
 }

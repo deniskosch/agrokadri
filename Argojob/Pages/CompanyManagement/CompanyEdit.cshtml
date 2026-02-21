@@ -10,6 +10,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a asp-page="/Index" class="text-success">Главная</a></li>
+                <li class="breadcrumb-item"><a asp-page="/EmployerManagementMenu" class="text-success">Панель работодателя</a></li>
                 <li class="breadcrumb-item"><a asp-page="/CompanyManagement/MyCompanies" class="text-success">Мои компании</a></li>
                 <li class="breadcrumb-item active" aria-current="page">@(Model.IsEditMode ? "Редактирование" : "Создание")</li>
             </ol>

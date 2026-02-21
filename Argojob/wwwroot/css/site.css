@@ -748,3 +748,106 @@ body {
 .nav-item.dropdown .nav-link::after {
     display: none !important;
 }
+
+/* Карточки меню работодателя */
+.employer-menu-card {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid #F0F5F0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+}
+
+    .employer-menu-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 30px rgba(46,125,50,0.1);
+        border-color: transparent;
+    }
+
+    .employer-menu-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .employer-menu-card:hover::before {
+        opacity: 1;
+    }
+
+.menu-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    transition: all 0.3s ease;
+}
+
+.employer-menu-card:hover .menu-icon {
+    transform: scale(1.1);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .employer-menu-card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Карточки меню соискателя */
+.employee-menu-card {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid #F0F5F0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+}
+
+    .employee-menu-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 30px rgba(46,125,50,0.1);
+        border-color: transparent;
+    }
+
+    .employee-menu-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .employee-menu-card:hover::before {
+        opacity: 1;
+    }
+
+.menu-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    transition: all 0.3s ease;
+}
+
+.employee-menu-card:hover .menu-icon {
+    transform: scale(1.1);
+}

@@ -163,26 +163,102 @@
                             
                             <hr class="my-2">
                             
-                            <div class="d-grid gap-2">
-                                @if (!string.IsNullOrEmpty(Model.Vacancy.ContactPhone))
+                            <!-- КНОПКА ОТКЛИКНУТЬСЯ -->
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                if (Model.HasApplied)
                                 {
-                                    <a href="tel:@Model.Vacancy.ContactPhone" class="btn btn-success btn-sm">
-                                        <i class="bi bi-telephone me-1"></i>Позвонить
-                                    </a>
+                                    <div class="alert alert-success mb-0 py-2 text-center">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Вы уже откликнулись
+                                    </div>
                                 }
-                                @if (!string.IsNullOrEmpty(Model.Vacancy.ContactEmail))
+                                else
                                 {
-                                    <a href="mailto:@Model.Vacancy.ContactEmail" class="btn btn-outline-success btn-sm">
-                                        <i class="bi bi-envelope me-1"></i>Написать
-                                    </a>
+                                    <button type="button" class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#applyModal">
+                                        <i class="bi bi-send me-1"></i>Откликнуться
+                                    </button>
                                 }
-                            </div>
+                            }
+                            else
+                            {
+                                <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Page("/VacancyDetail", new { id = Model.Id })" class="btn btn-outline-success w-100">
+                                    <i class="bi bi-box-arrow-in-right me-1"></i>Войдите, чтобы откликнуться
+                                </a>
+                            }
+                            
+                            @if (!string.IsNullOrEmpty(Model.Vacancy.ContactPhone))
+                            {
+                                <a href="tel:@Model.Vacancy.ContactPhone" class="btn btn-success btn-sm mt-2 w-100">
+                                    <i class="bi bi-telephone me-1"></i>Позвонить
+                                </a>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Vacancy.ContactEmail))
+                            {
+                                <a href="mailto:@Model.Vacancy.ContactEmail" class="btn btn-outline-success btn-sm mt-2 w-100">
+                                    <i class="bi bi-envelope me-1"></i>Написать
+                                </a>
+                            }
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ОТКЛИКА -->
+    <div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="applyModalLabel">
+                        <i class="bi bi-send me-2"></i>Отклик на вакансию
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" asp-page-handler="Apply">
+                    <input type="hidden" name="vacancyId" value="@Model.Id" />
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Выберите резюме <span class="text-danger">*</span></label>
+                            @if (Model.UserResumes.Any())
+                            {
+                                <select name="resumeId" class="form-select" required>
+                                    <option value="">-- Выберите резюме --</option>
+                                    @foreach (var resume in Model.UserResumes)
+                                    {
+                                        <option value="@resume.Id">@resume.Title (@(resume.IsPublished ? "опубликовано" : "черновик"))</option>
+                                    }
+                                </select>
+                                <small class="text-muted">
+                                    <a asp-page="/ResumeManagement/ResumeEdit" class="text-success">Создать новое резюме</a>
+                                </small>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning py-2">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    У вас нет резюме.
+                                    <a asp-page="/ResumeManagement/ResumeEdit" class="alert-link">Создайте резюме</a> сначала.
+                                </div>
+                            }
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Сопроводительное письмо</label>
+                            <textarea name="coverLetter" class="form-control" rows="4" placeholder="Расскажите, почему вы подходите на эту позицию..."></textarea>
+                            <small class="text-muted">Необязательно, но поможет выделиться</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-success" @(Model.UserResumes.Any() ? "" : "disabled")>
+                            <i class="bi bi-check-circle me-1"></i>Отправить отклик
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 }
 else
 {
@@ -195,4 +271,14 @@ else
             <i class="bi bi-arrow-left me-2"></i>Вернуться к списку вакансий
         </a>
     </div>
+}
+
+@section Scripts {
+    <script>
+        // Автоматическое открытие модалки если есть параметр в URL
+        if (window.location.hash === '#apply') {
+            var applyModal = new bootstrap.Modal(document.getElementById('applyModal'));
+            applyModal.show();
+        }
+    </script>
 }
