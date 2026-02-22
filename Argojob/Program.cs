@@ -27,6 +27,13 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.AddAuthentication()
+    .AddYandex(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Yandex:ClientId"];
+        options.ClientSecret = builder.Configuration["Authentication:Yandex:ClientSecret"];
+        options.CallbackPath = "/signin-yandex";
+    });
 
 builder.Services.AddRazorPages();
 
