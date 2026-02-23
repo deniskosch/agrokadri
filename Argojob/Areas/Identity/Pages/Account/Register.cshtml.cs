@@ -98,6 +98,12 @@ namespace Agrojob.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+
+            // ЭТО ПОЛЕ УЖЕ ЕСТЬ В МОДЕЛИ! Не нужно добавлять, оно уже там есть.
+            // Я просто показываю, что оно должно быть.
+            [Required(ErrorMessage = "Пожалуйста, выберите роль")]
+            public string UserRole { get; set; }
         }
 
 
@@ -121,7 +127,17 @@ namespace Agrojob.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+
+                    if (Input.UserRole == "employer")
+                    {
+                        await _userManager.AddToRoleAsync(user, "Employer");
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, "Employee");
+                    }
+
+                    _logger.LogInformation($"User created (Role = {Input.UserRole}) a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

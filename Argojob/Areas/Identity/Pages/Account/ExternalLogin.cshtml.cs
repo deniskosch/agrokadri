@@ -85,6 +85,9 @@ namespace Agrojob.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             public string Email { get; set; }
+
+            [Required(ErrorMessage = "Пожалуйста, выберите роль")]
+            public string UserRole { get; set; }
         }
         
         public IActionResult OnGet() => RedirectToPage("./Login");
@@ -160,6 +163,15 @@ namespace Agrojob.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
+                    if (Input.UserRole == "employer")
+                    {
+                        await _userManager.AddToRoleAsync(user, "Employer");
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, "Employee");
+                    }
+
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {

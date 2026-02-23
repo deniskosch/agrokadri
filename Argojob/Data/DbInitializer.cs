@@ -1,4 +1,6 @@
 ﻿using Agrojob.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Agrojob.Data
@@ -28,7 +30,7 @@ namespace Agrojob.Data
             //CreateVacancies(context, companies);
             //context.SaveChanges();
         }
-
+        
         private static void ClearExistingData(ApplicationDbContext context)
         {
             // Очищаем в правильном порядке (с учетом внешних ключей)

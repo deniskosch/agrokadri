@@ -1,32 +1,121 @@
 ﻿@page
 @model ExternalLoginModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Регистрация";
 }
 
-<h1>@ViewData["Title"]</h1>
-<h2 id="external-login-title">Associate your @Model.ProviderDisplayName account.</h2>
-<hr />
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+                    
+                    <div class="text-center mb-4">
+                        <h3 class="mb-1">@ViewData["Title"]</h3>
+                        <p class="text-muted small">Завершите регистрацию через @Model.ProviderDisplayName</p>
+                    </div>
 
-<p id="external-login-description" class="text-info">
-    You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
-    Please enter an email address for this site below and click the Register button to finish
-    logging in.
-</p>
+                    <div class="alert alert-success py-2 small mb-4">
+                        <i class="bi bi-check-circle-fill me-1"></i>
+                        Вы успешно авторизовались через <strong>@Model.ProviderDisplayName</strong>.
+                        Пожалуйста, укажите email и выберите роль для завершения регистрации.
+                    </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="email" placeholder="Please enter your email."/>
-                <label asp-for="Input.Email" class="form-label"></label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    <form asp-page-handler="Confirmation"
+                          asp-route-returnUrl="@Model.ReturnUrl"
+                          method="post">
+                          
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger py-2 small"
+                             role="alert"></div>
+                        
+                        <!-- Выбор роли -->
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold text-muted mb-3">
+                                Выберите роль
+                            </label>
+
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <input type="radio"
+                                           asp-for="Input.UserRole"
+                                           id="roleEmployee"
+                                           value="employee"
+                                           class="role-radio" />
+
+                                    <label for="roleEmployee"
+                                           class="btn btn-outline-primary w-100 py-3 role-btn">
+                                        <i class="bi bi-person-workspace d-block fs-1 mb-2"></i>
+                                        <span class="fw-bold">Я соискатель</span>
+                                    </label>
+                                </div>
+
+                                <div class="col-6">
+                                    <input type="radio"
+                                           asp-for="Input.UserRole"
+                                           id="roleEmployer"
+                                           value="employer"
+                                           class="role-radio" />
+
+                                    <label for="roleEmployer"
+                                           class="btn btn-outline-primary w-100 py-3 role-btn">
+                                        <i class="bi bi-building d-block fs-1 mb-2"></i>
+                                        <span class="fw-bold">Я работодатель</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <span asp-validation-for="Input.UserRole"
+                                  class="text-danger small"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Email"
+                                   class="form-control"
+                                   autocomplete="email"
+                                   placeholder="name@example.com" />
+                            <label asp-for="Input.Email">Email</label>
+                            <span asp-validation-for="Input.Email"
+                                  class="text-danger small"></span>
+                        </div>
+
+                        <!-- Кнопка -->
+                        <div class="d-grid mb-3">
+                            <button type="submit"
+                                    class="btn btn-primary py-2">
+                                Зарегистрироваться
+                            </button>
+                        </div>
+
+                        <!-- Ссылка назад -->
+                        <div class="text-center small">
+                            <a asp-page="./Login"
+                                   class="text-decoration-none">
+                                <i class="bi bi-arrow-left me-1"></i>
+                                Вернуться ко входу
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
+        </div>
     </div>
 </div>
+
+<style>
+    /* скрываем radio */
+    .role-radio {
+        display: none;
+    }
+    
+        /* стили для активной плитки */
+        .role-radio:checked + .role-btn {
+            background-color: var(--primary) !important;
+            border-color: var(--primary) !important;
+            color: white !important;
+        }
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

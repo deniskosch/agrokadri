@@ -60,8 +60,18 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApplicationDbContext>();
     context.Database.Migrate();
+
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+    await roleManager.CreateAsync(new IdentityRole() { Name = "Admin", });
+    await roleManager.CreateAsync(new IdentityRole() { Name = "Employer", });
+    await roleManager.CreateAsync(new IdentityRole() { Name = "Employee", });
+
     DbInitializer.Initialize(context);
 }
+
+    
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

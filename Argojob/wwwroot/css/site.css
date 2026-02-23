@@ -1,11 +1,16 @@
 :root {
     --primary: #2E7D32;
     --primary-dark: #1B5E20;
+    --primary-rgb: 46, 125, 50;
     --secondary: #FF8F00;
+    --secondary-rgb: 255, 143, 0;
     --seasonal: #FF6B35;
     --light: #F5F9F5;
     --dark: #1C2E1C;
     --gray: #6B7280;
+    --white: #FFFFFF;
+    --light-gray: #F3F6F3;
+    --border-color: #E0E8E0;
 }
 
 * {
@@ -17,11 +22,11 @@
 body {
     font-family: 'Inter', sans-serif;
     color: var(--dark);
-    background-color: #FFFFFF;
+    background-color: var(--white);
     scroll-behavior: smooth;
 }
 
-/* Кастомные анимации */
+/* ===== АНИМАЦИИ ===== */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -58,6 +63,18 @@ body {
     }
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @keyframes pulse {
     0% {
         transform: scale(1);
@@ -72,6 +89,7 @@ body {
     }
 }
 
+/* ===== КЛАССЫ АНИМАЦИЙ ===== */
 .animate-fade-up {
     animation: fadeInUp 0.8s ease forwards;
 }
@@ -99,7 +117,132 @@ body {
     opacity: 0;
 }
 
-/* Навбар */
+/* ===== BOOTSTRAP ПЕРЕОПРЕДЕЛЕНИЯ ===== */
+/* Основные цвета */
+.text-primary {
+    color: var(--primary) !important;
+}
+
+.bg-primary {
+    background-color: var(--primary) !important;
+}
+
+.bg-light {
+    background-color: var(--light) !important;
+}
+
+.text-secondary {
+    color: var(--secondary) !important;
+}
+
+/* Кнопка primary */
+.btn-primary {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: var(--white) !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    padding: 0.5rem 1.5rem !important;
+    transition: all 0.3s ease !important;
+}
+
+    .btn-primary:hover {
+        background-color: var(--primary-dark) !important;
+        border-color: var(--primary-dark) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.3) !important;
+    }
+
+    .btn-primary:active,
+    .btn-primary:focus {
+        background-color: var(--primary-dark) !important;
+        border-color: var(--primary-dark) !important;
+        box-shadow: 0 0 0 0.25rem rgba(var(--primary-rgb), 0.5) !important;
+    }
+
+    .btn-primary:disabled {
+        background-color: var(--primary) !important;
+        border-color: var(--primary) !important;
+        opacity: 0.65;
+    }
+
+/* Кнопка outline-primary */
+.btn-outline-primary {
+    border: 2px solid var(--primary) !important;
+    color: var(--primary) !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    padding: 0.5rem 1.5rem !important;
+    transition: all 0.3s ease !important;
+    background-color: transparent !important;
+}
+
+    .btn-outline-primary:hover {
+        background-color: var(--primary) !important;
+        border-color: var(--primary) !important;
+        color: var(--white) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.3) !important;
+    }
+
+/* Кнопка outline-secondary */
+.btn-outline-secondary {
+    border: 2px solid var(--secondary) !important;
+    color: var(--secondary) !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+}
+
+    .btn-outline-secondary:hover {
+        background-color: var(--secondary) !important;
+        border-color: var(--secondary) !important;
+        color: var(--white) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(var(--secondary-rgb), 0.3) !important;
+    }
+
+/* Ссылки */
+a {
+    color: var(--primary) !important;
+    transition: color 0.3s ease !important;
+    text-decoration: none;
+}
+
+    a:hover {
+        color: var(--primary-dark) !important;
+    }
+
+/* Чекбокс */
+.form-check-input:checked {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+}
+
+.form-check-input:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(var(--primary-rgb), 0.25) !important;
+}
+
+/* Поля ввода */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(var(--primary-rgb), 0.25) !important;
+}
+
+/* Валидация */
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.alert-danger {
+    background-color: #f8d7da !important;
+    border-color: #f5c6cb !important;
+    color: #721c24 !important;
+}
+
+/* ===== НАВБАР ===== */
 .navbar {
     background-color: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
@@ -121,6 +264,7 @@ body {
     transition: color 0.3s ease;
     font-size: 0.95rem;
     position: relative;
+    padding: 0.5rem 1rem !important;
 }
 
     .nav-link::after {
@@ -143,27 +287,71 @@ body {
         color: var(--primary) !important;
     }
 
-.btn-outline-primary {
-    border: 2px solid var(--primary);
-    color: var(--primary);
-    font-weight: 600;
-    border-radius: 8px;
-    padding: 8px 24px;
-    transition: all 0.3s ease;
+/* Убираем подчеркивание для дропдауна */
+.nav-item.dropdown .nav-link::after {
+    display: none !important;
 }
 
-    .btn-outline-primary:hover {
-        background-color: var(--primary);
-        border-color: var(--primary);
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(46,125,50,0.3);
+/* ===== ДРОПДАУН ===== */
+.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+}
+
+.dropdown-menu {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    min-width: 220px;
+    animation: fadeIn 0.2s ease;
+}
+
+.dropdown-item {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+    color: var(--dark);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+    .dropdown-item i {
+        font-size: 1.1rem;
+        color: var(--gray);
+        width: 1.5rem;
+        text-align: center;
     }
 
-/* Герой секция */
+    .dropdown-item:hover {
+        background-color: var(--light);
+        color: var(--primary);
+        padding-left: 1.5rem;
+    }
+
+        .dropdown-item:hover i {
+            color: var(--primary);
+        }
+
+    .dropdown-item:active {
+        background-color: var(--primary);
+        color: var(--white);
+    }
+
+        .dropdown-item:active i {
+            color: var(--white);
+        }
+
+.dropdown-divider {
+    margin: 0.3rem 0;
+    border-top: 1px solid var(--border-color);
+}
+
+/* ===== ГЕРОЙ СЕКЦИЯ ===== */
 .hero-section {
     padding: 0px 0 60px 0;
-    background: linear-gradient(135deg, #F8FFF8 0%, #FFFFFF 100%);
+    background: linear-gradient(135deg, #F8FFF8 0%, var(--white) 100%);
     position: relative;
     overflow: hidden;
 }
@@ -175,7 +363,7 @@ body {
         right: -10%;
         width: 600px;
         height: 600px;
-        background: radial-gradient(circle, rgba(46,125,50,0.03) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(var(--primary-rgb), 0.03) 0%, transparent 70%);
         border-radius: 50%;
     }
 
@@ -193,28 +381,17 @@ body {
     display: inline-block;
 }
 
-    /*.hero-highlight::after {
-        content: '';
-        position: absolute;
-        bottom: 5px;
-        left: 0;
-        width: 100%;
-        height: 8px;
-        background-color: rgba(46,125,50,0.2);
-        z-index: -1;
-    }*/
-
 .hero-text {
     font-size: 1.1rem;
     color: var(--gray);
     margin-bottom: 32px;
 }
 
-/* Бейдж сезонных вакансий */
+/* ===== БЕЙДЖИ ===== */
 .seasonal-badge {
     display: inline-block;
     background-color: var(--seasonal);
-    color: white;
+    color: var(--white);
     padding: 8px 20px;
     border-radius: 30px;
     font-weight: 600;
@@ -227,7 +404,7 @@ body {
         margin-right: 8px;
     }
 
-/* Поисковая строка */
+/* ===== ПОИСК ===== */
 .search-wrapper {
     background: white;
     border-radius: 16px;
@@ -246,7 +423,7 @@ body {
 
     .search-input:focus {
         outline: none;
-        box-shadow: 0 0 0 3px rgba(46,125,50,0.1);
+        box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
     }
 
 .search-btn {
@@ -263,17 +440,17 @@ body {
     .search-btn:hover {
         background-color: var(--primary-dark);
         transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(46,125,50,0.3);
+        box-shadow: 0 10px 20px rgba(var(--primary-rgb), 0.3);
     }
 
-/* Фильтры */
+/* ===== ФИЛЬТРЫ ===== */
 .filters-section {
     padding: 20px 0 40px;
 }
 
 .filter-chip {
-    background-color: #F3F6F3;
-    border: 1px solid #E0E8E0;
+    background-color: var(--light-gray);
+    border: 1px solid var(--border-color);
     color: var(--dark);
     padding: 8px 20px;
     border-radius: 30px;
@@ -285,15 +462,16 @@ body {
     margin: 5px;
 }
 
-    .filter-chip:hover, .filter-chip.active {
+    .filter-chip:hover,
+    .filter-chip.active {
         background-color: var(--primary);
-        color: white;
+        color: var(--white);
         border-color: var(--primary);
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(46,125,50,0.2);
+        box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.2);
     }
 
-/* Карточки вакансий */
+/* ===== ЗАГОЛОВКИ СЕКЦИЙ ===== */
 .section-title {
     font-size: 2rem;
     font-weight: 700;
@@ -318,6 +496,7 @@ body {
     font-size: 1.1rem;
 }
 
+/* ===== КАРТОЧКИ ВАКАНСИЙ ===== */
 .vacancy-card {
     background: white;
     border-radius: 20px;
@@ -366,7 +545,7 @@ body {
 
     .vacancy-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(46,125,50,0.1);
+        box-shadow: 0 20px 40px rgba(var(--primary-rgb), 0.1);
         border-color: transparent;
     }
 
@@ -469,10 +648,63 @@ body {
 
     .btn-details:hover {
         background-color: var(--primary);
-        color: white;
+        color: var(--white);
     }
 
-/* Секция преимуществ */
+/* ===== КАРТОЧКИ МЕНЮ ===== */
+.employer-menu-card,
+.employee-menu-card {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid #F0F5F0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+}
+
+    .employer-menu-card:hover,
+    .employee-menu-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 30px rgba(var(--primary-rgb), 0.1);
+        border-color: transparent;
+    }
+
+    .employer-menu-card::before,
+    .employee-menu-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .employer-menu-card:hover::before,
+    .employee-menu-card:hover::before {
+        opacity: 1;
+    }
+
+.menu-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    transition: all 0.3s ease;
+}
+
+.employer-menu-card:hover .menu-icon,
+.employee-menu-card:hover .menu-icon {
+    transform: scale(1.1);
+}
+
+/* ===== СЕКЦИЯ ПРЕИМУЩЕСТВ ===== */
 .features-section {
     padding: 60px 0;
     background-color: var(--light);
@@ -517,7 +749,7 @@ body {
     font-size: 0.95rem;
 }
 
-/* Футер */
+/* ===== ФУТЕР ===== */
 .footer {
     background-color: var(--dark);
     color: white;
@@ -590,7 +822,7 @@ body {
     font-size: 0.9rem;
 }
 
-/* Адаптивность */
+/* ===== АДАПТИВНОСТЬ ===== */
 @media (max-width: 768px) {
     .hero-title {
         font-size: 2.2rem;
@@ -614,118 +846,17 @@ body {
         display: inline-block;
         margin-bottom: 10px;
     }
-}
 
-/* ===== СТИЛИ ДЛЯ ВЫПАДАЮЩИХ СПИСКОВ ===== */
-
-/* Основной стиль для навбара */
-.navbar {
-    padding: 0.5rem 1rem;
-}
-
-.nav-link {
-    font-weight: 500;
-    padding: 0.5rem 1rem !important;
-    transition: color 0.2s ease;
-}
-
-/* Стили для дропдауна */
-.dropdown:hover .dropdown-menu {
-    display: block;
-    margin-top: 0;
-}
-
-.dropdown-menu {
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    padding: 0.5rem 0;
-    margin-top: 0.5rem;
-    min-width: 220px;
-    animation: fadeIn 0.2s ease;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    .employer-menu-card,
+    .employee-menu-card {
+        margin-bottom: 1rem;
     }
 }
 
-/* Элементы выпадающего списка */
-.dropdown-item {
-    padding: 0.6rem 1.2rem;
-    font-size: 0.95rem;
-    color: #333;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-}
-
-    .dropdown-item i {
-        font-size: 1.1rem;
-        color: #6c757d;
-        width: 1.5rem;
-        text-align: center;
-    }
-
-    .dropdown-item:hover {
-        background-color: #f8f9fa;
-        color: #2E7D32;
-        padding-left: 1.5rem;
-    }
-
-        .dropdown-item:hover i {
-            color: #2E7D32;
-        }
-
-/* Разделитель */
-.dropdown-divider {
-    margin: 0.3rem 0;
-    border-top: 1px solid #e9ecef;
-}
-
-/* Кнопка входа */
-.btn-outline-primary {
-    border-color: #2E7D32;
-    color: #2E7D32;
-    padding: 0.4rem 1.2rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-    .btn-outline-primary:hover {
-        background-color: #2E7D32;
-        border-color: #2E7D32;
-        color: white;
-    }
-
-/* Аватар пользователя */
-.nav-link i.bi-person-circle {
-    font-size: 1.2rem;
-    color: #2E7D32;
-}
-
-/* Активное состояние */
-.dropdown-item:active {
-    background-color: #2E7D32;
-    color: white;
-}
-
-    .dropdown-item:active i {
-        color: white;
-    }
-
-/* Адаптивность */
 @media (max-width: 991.98px) {
     .dropdown-menu {
         box-shadow: none;
-        border: 1px solid #e9ecef;
+        border: 1px solid var(--border-color);
         margin-top: 0;
     }
 
@@ -738,116 +869,11 @@ body {
     }
 }
 
-/* Убираем зеленую полоску для выпадающего списка */
-.nav-item.dropdown .nav-link::after {
-    display: none !important;
-}
-
-/* Если полоска все еще видна, убираем и псевдоэлемент */
-.nav-item.dropdown .nav-link::before,
-.nav-item.dropdown .nav-link::after {
-    display: none !important;
-}
-
-/* Карточки меню работодателя */
-.employer-menu-card {
-    background: white;
-    border-radius: 20px;
-    border: 1px solid #F0F5F0;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    overflow: hidden;
-    position: relative;
-}
-
-    .employer-menu-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 30px rgba(46,125,50,0.1);
-        border-color: transparent;
-    }
-
-    .employer-menu-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--primary), var(--secondary));
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .employer-menu-card:hover::before {
-        opacity: 1;
-    }
-
-.menu-icon {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-    transition: all 0.3s ease;
-}
-
-.employer-menu-card:hover .menu-icon {
-    transform: scale(1.1);
-}
-
-/* Адаптивность */
-@media (max-width: 768px) {
-    .employer-menu-card {
-        margin-bottom: 1rem;
-    }
-}
-
-/* Карточки меню соискателя */
-.employee-menu-card {
-    background: white;
-    border-radius: 20px;
-    border: 1px solid #F0F5F0;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    overflow: hidden;
-    position: relative;
-}
-
-    .employee-menu-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 30px rgba(46,125,50,0.1);
-        border-color: transparent;
-    }
-
-    .employee-menu-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--primary), var(--secondary));
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .employee-menu-card:hover::before {
-        opacity: 1;
-    }
-
-.menu-icon {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-    transition: all 0.3s ease;
-}
-
-.employee-menu-card:hover .menu-icon {
-    transform: scale(1.1);
+.role-radio:checked + .role-btn,
+.role-radio:checked + .role-btn:hover {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: var(--white) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.3) !important;
 }
