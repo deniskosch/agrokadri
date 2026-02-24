@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - Agrojob</title>
+	<title>@ViewData["Title"] - агрокадры.рф</title>
 	<script type="importmap"></script>
 
 	<!-- Bootstrap 5 CSS -->
@@ -15,9 +15,13 @@
 
 	@* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />*@
 	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/loader.css" asp-append-version="true" />
 	@* <link rel="stylesheet" href="~/Agrojob.styles.css" asp-append-version="true" />  *@
 </head>
 <body>
+	<div class="loader-wrapper" id="loaderWrapper">
+		<div class="loader"></div>
+	</div>
 
 	@await Html.PartialAsync("_Header")
 	<div style="padding: 140px 0 0px 0;"></div>
@@ -31,5 +35,29 @@
 	<script src="~/js/site.js" asp-append-version="true"></script> *@
 
 	@await RenderSectionAsync("Scripts", required: false)
+
+	<script>
+		// Скрываем лоадер после полной загрузки страницы
+		window.addEventListener('load', function() {
+		const loaderWrapper = document.getElementById('loaderWrapper');
+			
+		// Добавляем класс для плавного исчезновения
+		loaderWrapper.classList.add('fade-out');
+			
+		// Удаляем из DOM после завершения анимации
+		setTimeout(function() {
+		loaderWrapper.style.display = 'none';
+		}, 500);
+		});
+
+		// На случай, если load уже произошел до выполнения скрипта
+		if (document.readyState === 'complete') {
+		const loaderWrapper = document.getElementById('loaderWrapper');
+		loaderWrapper.classList.add('fade-out');
+		setTimeout(function() {
+		loaderWrapper.style.display = 'none';
+		}, 500);
+		}
+	</script>
 </body>
 </html>

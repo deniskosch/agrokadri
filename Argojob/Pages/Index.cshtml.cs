@@ -54,7 +54,7 @@ namespace Agrojob.Pages
                 }
             }
 
-            // Применяем поиск
+            // Применяем поиск (оставляем для совместимости, но поиск теперь через страницу вакансий)
             if (!string.IsNullOrEmpty(SearchTerm))
             {
                 var searchLower = SearchTerm.ToLower();
@@ -106,10 +106,11 @@ namespace Agrojob.Pages
                 return postedDate.ToString("dd.MM.yyyy");
         }
 
-        public async Task<IActionResult> OnPostSearchAsync(string searchTerm)
-        {
-            return RedirectToPage(new { filter = CurrentFilter, search = searchTerm });
-        }
+        // Удаляем OnPostSearchAsync так как теперь используем GET на страницу вакансий
+        // public async Task<IActionResult> OnPostSearchAsync(string searchTerm)
+        // {
+        //     return RedirectToPage(new { filter = CurrentFilter, search = searchTerm });
+        // }
 
         public async Task<IActionResult> OnPostLoadMoreAsync(string currentFilter, int currentVisibleCount)
         {

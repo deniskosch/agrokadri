@@ -225,6 +225,21 @@ namespace Agrojob.Pages.EmployerManagement
             TempData["SuccessMessage"] = "Поздравляем! Теперь вы соискатель!";
             return RedirectToPage("/EmployeeManagement/EmployeeManagementMenu");
         }
+
+        public async Task<IActionResult> OnPostActivateVacancyAsync(int vacancyId)
+        {
+            var res = await _unitOfWork.Vacancies.PublishVacancyAsync(vacancyId);
+            await _unitOfWork.CompleteAsync();
+
+            return RedirectToPage();
+        }
+        public async Task<IActionResult> OnPostDeactivateVacancyAsync(int vacancyId)
+        {
+            var res = await _unitOfWork.Vacancies.ArchiveVacancyAsync(vacancyId);
+            await _unitOfWork.CompleteAsync();
+
+            return RedirectToPage();
+        }
     }
 
     public class CompanyViewModel

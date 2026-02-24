@@ -22,22 +22,22 @@
                         С нами сотрудники находят работу мечты, а компании — лучшие кадры.
                     </p>
                         
-                    <!-- Поисковая строка -->
-                    <form method="post" asp-page-handler="Search" class="search-wrapper d-flex flex-column flex-md-row animate-fade-up delay-2">
-                        <input type="text" class="search-input flex-grow-1 form-control" name="searchTerm" value="@Model.SearchTerm" placeholder="Должность, компания или ключевые слова">
-                        <button type="submit" class="search-btn btn btn-outline-primary">
+                    <!-- Поисковая строка - теперь GET запрос на страницу вакансий -->
+                    <form method="get" asp-page="/Vacancies" class="search-wrapper d-flex flex-column flex-md-row animate-fade-up delay-2">
+                        <input type="text" class="search-input flex-grow-1 form-control m-1" name="search" value="@Model.SearchTerm" placeholder="Должность, компания или ключевые слова">
+                        <button type="submit" class="search-btn btn btn-outline-primary m-1">
                             <i class="bi bi-search me-2"></i>Найти вакансии
                         </button>
                     </form>
                         
                     <!-- Быстрые ссылки -->
-                    <div class="mt-4 d-flex gap-3 flex-wrap align-items-center animate-fade-up delay-3">
+                    @* <div class="mt-4 d-flex gap-3 flex-wrap align-items-center animate-fade-up delay-3">
                         <span class="text-muted small">Популярно:</span>
                         <a asp-page="Index" asp-route-filter="сезонные" class="text-decoration-none text-success">Сезонные работы</a>
                         <a href="#" class="text-decoration-none text-success">Вахта</a>
                         <a href="#" class="text-decoration-none text-success">Для студентов</a>
                         <a href="#" class="text-decoration-none text-success">Без опыта</a>
-                    </div>
+                    </div> *@
                 </div>
                 
                 <div class="col-lg-6 d-none d-lg-block animate-fade-right">
@@ -52,92 +52,107 @@
             <div class="container">
                 <h2 class="section-title">Актуальные вакансии</h2>
                 <p class="section-subtitle">Найдите работу своей мечты в агропромышленном комплексе</p>
-    
-                <!-- Сетка вакансий -->
-                <div class="row g-4">
-                    @foreach (var vacancy in Model.DisplayedVacancies)
-                    {
-                        <div class="col-lg-6">
-                            <div class="vacancy-card @(vacancy.IsSeasonal ? "seasonal" : "") h-100 position-relative">
-                                @if (vacancy.IsSeasonal)
-                                {
-                                    <span class="seasonal-tag position-absolute top-0 end-0 m-3">🌾 Сезонная</span>
-                                }
-                                <span class="company-badge d-inline-block mb-3">@vacancy.Location</span>
-                                <h3 class="vacancy-title h4 fw-bold">@vacancy.Title</h3>
-                                <div class="company-name d-flex align-items-center mb-3">
-                                    <i class="bi bi-building me-2"></i>
-                                    @vacancy.Company
-                                </div>
-                                <div class="salary mb-3">
-                                    @vacancy.Salary <small class="text-muted">на руки</small>
-                                </div>
-                                <div class="tags d-flex flex-wrap gap-2 mb-3">
-                                    @foreach (var tag in vacancy.Tags)
+
+                @if (Model.DisplayedVacancies.Any())
+                {
+                    <!-- Сетка вакансий -->
+                    <div class="row g-4">
+                        @foreach (var vacancy in Model.DisplayedVacancies)
+                        {
+                            <div class="col-lg-6">
+                                <div class="vacancy-card @(vacancy.IsSeasonal ? "seasonal" : "") h-100 position-relative">
+                                    @if (vacancy.IsSeasonal)
                                     {
-                                        <span class="tag">@tag</span>
+                                        <span class="seasonal-tag position-absolute top-0 end-0 m-3">🌾 Сезонная</span>
                                     }
+                                    <span class="company-badge d-inline-block mb-3">@vacancy.Location</span>
+                                    <h3 class="vacancy-title h4 fw-bold">@vacancy.Title</h3>
+                                    <div class="company-name d-flex align-items-center mb-3">
+                                        <i class="bi bi-building me-2"></i>
+                                        @vacancy.Company
+                                    </div>
+                                    <div class="salary mb-3">
+                                        @vacancy.Salary ₽
+                                    </div>
+                                    <div class="tags d-flex flex-wrap gap-2 mb-3">
+                                        @foreach (var tag in vacancy.Tags)
+                                        {
+                                            <span class="tag">@tag</span>
+                                        }
+                                    </div>
+                                    <div class="posted-date d-flex align-items-center mb-4">
+                                        <i class="bi bi-clock me-2"></i> Опубликовано: @vacancy.PostedDate
+                                    </div>
+                                    <a asp-page="VacancyDetail" asp-route-id="@vacancy.Id" class="btn-outline-primary d-block text-center">
+                                        Подробнее <i class="bi bi-arrow-right ms-2"></i>
+                                    </a>
                                 </div>
-                                <div class="posted-date d-flex align-items-center mb-4">
-                                    <i class="bi bi-clock me-2"></i> Опубликовано: @vacancy.PostedDate
-                                </div>
-                                <a asp-page="VacancyDetail" asp-route-id="@vacancy.Id" class="btn-outline-primary d-block text-center">
-                                    Подробнее <i class="bi bi-arrow-right ms-2"></i>
-                                </a>
                             </div>
+                        }
+                    </div>
+
+                    <!-- Кнопка загрузить еще -->
+                    @if (Model.HasMoreVacancies)
+                    {
+                        <div class="text-center mt-5">
+                            <form method="post" asp-page-handler="LoadMore">
+                                <input type="hidden" name="currentFilter" value="@Model.CurrentFilter" />
+                                <input type="hidden" name="currentVisibleCount" value="@Model.VisibleCount" />
+                                <button type="submit" class="btn btn-outline-primary btn-lg px-5">
+                                    Загрузить еще вакансии
+                                </button>
+                            </form>
                         </div>
                     }
-                </div>
-    
-                <!-- Кнопка загрузить еще -->
-                @if (Model.HasMoreVacancies)
+                }
+                else
                 {
-                    <div class="text-center mt-5">
-                        <form method="post" asp-page-handler="LoadMore">
-                            <input type="hidden" name="currentFilter" value="@Model.CurrentFilter" />
-                            <input type="hidden" name="currentVisibleCount" value="@Model.VisibleCount" />
-                            <button type="submit" class="btn btn-outline-primary btn-lg px-5">
-                                Загрузить еще вакансии
-                            </button>
-                        </form>
+                    <!-- Заглушка если нет вакансий -->
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox display-1 text-muted"></i>
+                        <h4 class="mt-3">Нет актуальных вакансий</h4>
+                        <p class="text-muted">На данный момент нет активных вакансий. Попробуйте зайти позже.</p>
+                        <a asp-page="/Vacancies" class="btn btn-primary mt-2">
+                            <i class="bi bi-search me-2"></i>Смотреть все вакансии
+                        </a>
                     </div>
                 }
             </div>
         </section>
 
         <!-- Преимущества платформы -->
-        <section class="features-section">
-            <div class="container">
-                <h2 class="section-title text-center mb-5" style="margin-bottom: 60px !important;">Почему выбирают нас</h2>
-                <div class="row g-4">
-                    <div class="col-md-4">
-                        <div class="feature-item text-center h-100">
-                            <div class="feature-icon mx-auto mb-3">
-                                <i class="bi bi-calendar-check"></i>
-                            </div>
-                            <h3 class="feature-title h5 fw-bold">Сезонные вакансии</h3>
-                            <p class="feature-text text-muted">Большой выбор временной и сезонной работы в сельском хозяйстве. Идеально для студентов и специалистов.</p>
+        @*     <section class="features-section">
+        <div class="container">
+            <h2 class="section-title text-center mb-5" style="margin-bottom: 60px !important;">Почему выбирают нас</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-item text-center h-100">
+                        <div class="feature-icon mx-auto mb-3">
+                            <i class="bi bi-calendar-check"></i>
                         </div>
+                        <h3 class="feature-title h5 fw-bold">Сезонные вакансии</h3>
+                        <p class="feature-text text-muted">Большой выбор временной и сезонной работы в сельском хозяйстве. Идеально для студентов и специалистов.</p>
                     </div>
-                    <div class="col-md-4">
-                        <div class="feature-item text-center h-100">
-                            <div class="feature-icon mx-auto mb-3">
-                                <i class="bi bi-building"></i>
-                            </div>
-                            <h3 class="feature-title h5 fw-bold">Проверенные компании</h3>
-                            <p class="feature-text text-muted">Только реальные работодатели с подтвержденными вакансиями в агропромышленном комплексе.</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-item text-center h-100">
+                        <div class="feature-icon mx-auto mb-3">
+                            <i class="bi bi-building"></i>
                         </div>
+                        <h3 class="feature-title h5 fw-bold">Проверенные компании</h3>
+                        <p class="feature-text text-muted">Только реальные работодатели с подтвержденными вакансиями в агропромышленном комплексе.</p>
                     </div>
-                    <div class="col-md-4">
-                        <div class="feature-item text-center h-100">
-                            <div class="feature-icon mx-auto mb-3">
-                                <i class="bi bi-lightning-charge"></i>
-                            </div>
-                            <h3 class="feature-title h5 fw-bold">Быстрый отклик</h3>
-                            <p class="feature-text text-muted">Откликайтесь на вакансии в один клик и получайте ответы от работодателей в течение дня.</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-item text-center h-100">
+                        <div class="feature-icon mx-auto mb-3">
+                            <i class="bi bi-lightning-charge"></i>
                         </div>
+                        <h3 class="feature-title h5 fw-bold">Быстрый отклик</h3>
+                        <p class="feature-text text-muted">Откликайтесь на вакансии в один клик и получайте ответы от работодателей в течение дня.</p>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section> *@
     </main>

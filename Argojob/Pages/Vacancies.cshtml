@@ -35,7 +35,7 @@
                             <form method="get" asp-page="Vacancies">
                                 <div class="input-group">
                                     <input type="text" class="form-control form-control-sm" name="search" value="@Model.Search" placeholder="Должность или компания">
-                                    <button type="submit" class="btn btn-primary btn-sm">
+                                    <button type="submit" class="btn btn-primary btn-sm" style="margin-left: 5px;">
                                         <i class="bi bi-search"></i>
                                     </button>
                                 </div>
@@ -65,7 +65,7 @@
                         </div>
 
                         <!-- Тип занятости -->
-                        <div class="mb-3">
+                        @* <div class="mb-3">
                             <label class="form-label small text-muted mb-1">Тип занятости</label>
                             <div class="list-group list-group-flush">
                                 <a asp-page="Vacancies"
@@ -90,7 +90,7 @@
                                     Только постоянные
                                 </a>
                             </div>
-                        </div>
+                        </div> *@
 
                         <hr class="my-3">
 
@@ -133,7 +133,7 @@
                                         @vacancy.Company
                                     </div>
                                     <div class="salary">
-                                        @vacancy.Salary <small>на руки</small>
+                                        @vacancy.Salary ₽
                                     </div>
                                     <div class="tags">
                                         @foreach (var tag in vacancy.Tags.Take(3))

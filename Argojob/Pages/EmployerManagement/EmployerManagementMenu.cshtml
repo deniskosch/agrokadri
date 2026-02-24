@@ -236,11 +236,42 @@
                                                     </a>
                                                     <a asp-page="/EmployerManagement/ApplicationManagement/VacancyApplications"
                                                            asp-route-vacancyId="@vacancy.Id"
-                                                           class="btn btn-outline-success"
+                                                           class="btn btn-outline-primary"
                                                            title="Отклики"
                                                            style="border-color: #2E7D32; color: #2E7D32;">
                                                         <i class="bi bi-envelope-paper"></i>
                                                     </a>
+                                                    <!-- Отдельная форма для деактивации/активации -->
+                                                    @if (vacancy.IsActive)
+                                                    {
+                                                        <!-- Для деактивации - используем OnPostDeactivateVacancyAsync -->
+                                                        <form method="post" asp-page-handler="DeactivateVacancy" style="display: inline;">
+                                                            <input type="hidden" name="vacancyId" value="@vacancy.Id" />
+                                                            @Html.AntiForgeryToken()
+                                                            <button type="submit"
+                                                                    class="btn btn-outline-secondary"
+                                                                    title="Деактивировать вакансию"
+                                                                    onclick="return confirm('Вы уверены, что хотите деактивировать эту вакансию?');"
+                                                                    style="border-color: #FF8F00; color: #FF8F00;">
+                                                                <i class="bi bi-pause-circle"></i>
+                                                            </button>
+                                                        </form>
+                                                    }
+                                                    else
+                                                    {
+                                                        <!-- Для активации - используем OnPostActivateVacancyAsync -->
+                                                        <form method="post" asp-page-handler="ActivateVacancy" style="display: inline;">
+                                                            <input type="hidden" name="vacancyId" value="@vacancy.Id" />
+                                                            @Html.AntiForgeryToken()
+                                                            <button type="submit"
+                                                                    class="btn btn-outline-primary"
+                                                                    title="Активировать вакансию"
+                                                                    onclick="return confirm('Вы уверены, что хотите активировать эту вакансию?');"
+                                                                    style="border-color: #2E7D32; color: #2E7D32;">
+                                                                <i class="bi bi-play-circle"></i>
+                                                            </button>
+                                                        </form>
+                                                    }
                                                 </div>
                                             </td>
                                         </tr>
