@@ -237,7 +237,7 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
                 }
 
                 await _unitOfWork.CommitTransactionAsync();
-                return RedirectToPage("MyResumes");
+                return RedirectToPage("/EmployeeManagement/EmployeeManagementMenu");
             }
             catch (Exception ex)
             {

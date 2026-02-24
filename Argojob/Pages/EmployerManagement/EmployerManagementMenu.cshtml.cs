@@ -16,11 +16,13 @@ namespace Agrojob.Pages.EmployerManagement
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public EmployerManagementMenuModel(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
+        public EmployerManagementMenuModel(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         [BindProperty(SupportsGet = true)]
@@ -176,6 +178,52 @@ namespace Agrojob.Pages.EmployerManagement
                 ApplicationStatus.Withdrawn => "Отозвано",
                 _ => status.ToString()
             };
+        }
+
+        public async Task<IActionResult> OnPostBecomeEmployeeAsync()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Challenge();
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound("Пользователь не найден");
+            }
+
+            // Проверяем, не является ли пользователь уже работодателем
+            if (await _userManager.IsInRoleAsync(user, "Employee"))
+            {
+                await _signInManager.RefreshSignInAsync(user);
+                TempData["InfoMessage"] = "Вы уже являетесь соискателем";
+                return RedirectToPage("/EmployeeManagement/EmployeeManagementMenu");
+            }
+
+            // Добавляем в роль Employee
+            var addResult = await _userManager.AddToRoleAsync(user, "Employee");
+            if (!addResult.Succeeded)
+            {
+                foreach (var error in addResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return Page();
+            }
+
+            // Удаляем из роли Employer (если был)
+            if (await _userManager.IsInRoleAsync(user, "Employer"))
+            {
+                await _userManager.RemoveFromRoleAsync(user, "Employer");
+            }
+
+            // Обновляем клеймы пользователя в текущей сессии
+            await _signInManager.RefreshSignInAsync(user);
+
+            TempData["SuccessMessage"] = "Поздравляем! Теперь вы соискатель!";
+            return RedirectToPage("/EmployeeManagement/EmployeeManagementMenu");
         }
     }
 

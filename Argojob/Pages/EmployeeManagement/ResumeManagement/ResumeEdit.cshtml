@@ -11,8 +11,7 @@
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a asp-page="/Index" class="text-success">Главная</a></li>
                 <li class="breadcrumb-item"><a asp-page="/EmployeeManagement/EmployeeManagementMenu" class="text-success">Панель соискателя</a></li>
-                <li class="breadcrumb-item"><a asp-page="/EmployeeManagementMenu/ResumeManagement/MyResumes" class="text-success">Мои резюме</a></li>
-                <li class="breadcrumb-item active" aria-current="page">@(Model.IsEditMode ? "Редактирование" : "Создание")</li>
+                <li class="breadcrumb-item active" aria-current="page">@(Model.IsEditMode ? "Редактирование резюме" : "Создание резюме")</li>
             </ol>
         </nav>
     </div>
@@ -162,7 +161,7 @@
 
                                                             <!-- Кнопки -->
                                                             <div class="d-flex justify-content-between">
-                                                                <a asp-page="/ResumeManagement/MyResumes" class="btn btn-outline-secondary">
+                                                                <a asp-page="/EmployeeManagement/EmployeeManagementMenu" class="btn btn-outline-secondary">
                                                                     <i class="bi bi-arrow-left me-1"></i>Отмена
                                                                 </a>
                                                                 <button type="submit" class="btn btn-success px-5">

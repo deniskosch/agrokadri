@@ -1,9 +1,12 @@
+using System.Security.Claims;
+using Agrojob.Data;
+using Agrojob.Models;
+using Agrojob.UoW;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using Agrojob.UoW;
-using Agrojob.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Agrojob.Pages.EmployeeManagement
 {
@@ -11,10 +14,14 @@ namespace Agrojob.Pages.EmployeeManagement
     public class EmployeeManagementMenuModel : PageModel
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public EmployeeManagementMenuModel(IUnitOfWork unitOfWork)
+        public EmployeeManagementMenuModel(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public List<ResumeViewModel> Resumes { get; set; } = new();
@@ -98,6 +105,52 @@ namespace Agrojob.Pages.EmployeeManagement
             }
 
             return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostBecomeEmployerAsync()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Challenge();
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound("Пользователь не найден");
+            }
+
+            // Проверяем, не является ли пользователь уже работодателем
+            if (await _userManager.IsInRoleAsync(user, "Employer"))
+            {
+                await _signInManager.RefreshSignInAsync(user);
+                TempData["InfoMessage"] = "Вы уже являетесь работодателем";
+                return RedirectToPage("/EmployerManagement/EmployerManagementMenu");
+            }
+
+            // Добавляем в роль Employer
+            var addResult = await _userManager.AddToRoleAsync(user, "Employer");
+            if (!addResult.Succeeded)
+            {
+                foreach (var error in addResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return Page();
+            }
+
+            // Удаляем из роли Employee (если был)
+            if (await _userManager.IsInRoleAsync(user, "Employee"))
+            {
+                await _userManager.RemoveFromRoleAsync(user, "Employee");
+            }
+
+            // Обновляем клеймы пользователя в текущей сессии
+            await _signInManager.RefreshSignInAsync(user);
+
+            TempData["SuccessMessage"] = "Поздравляем! Теперь вы работодатель. Создайте свою первую компанию.";
+            return RedirectToPage("/EmployerManagement/EmployerManagementMenu");
         }
     }
 

@@ -35,7 +35,7 @@ builder.Services.AddAuthentication()
         options.CallbackPath = "/signin-yandex";
     });
 
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -51,8 +51,6 @@ builder.Services.AddScoped<IResumeRepository, ResumeRepository>();
 builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
-
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -69,9 +67,6 @@ using (var scope = app.Services.CreateScope())
 
     DbInitializer.Initialize(context);
 }
-
-    
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

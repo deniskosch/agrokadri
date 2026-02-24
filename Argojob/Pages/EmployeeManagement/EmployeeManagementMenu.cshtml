@@ -59,7 +59,7 @@
                             <span class="ms-2 small" style="color: #6B7280;">(@Model.Resumes.Count)</span>
                         }
                     </h5>
-                    <a asp-page="/ResumeManagement/ResumeEdit"
+                    <a asp-page="/EmployeeManagement/ResumeManagement/ResumeEdit"
                            class="btn btn-primary btn-sm rounded-pill px-3"
                            style="background-color: #2E7D32; border-color: #2E7D32;">
                         <i class="bi bi-plus-circle me-1"></i> Создать резюме
@@ -116,19 +116,12 @@
                                         <td style="color: #6B7280;">@resume.UpdatedAt.ToString("dd.MM.yyyy")</td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <a asp-page="/ResumeManagement/ResumeEdit"
+                                                <a asp-page="/EmployeeManagement/ResumeManagement/ResumeEdit"
                                                        asp-route-id="@resume.Id"
                                                        class="btn btn-outline-primary"
                                                        title="Редактировать"
                                                        style="border-color: #2E7D32; color: #2E7D32;">
                                                     <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <a asp-page="/ResumeManagement/ResumeDetail"
-                                                       asp-route-id="@resume.Id"
-                                                       class="btn btn-outline-primary"
-                                                       title="Просмотр"
-                                                       style="border-color: #2E7D32; color: #2E7D32;">
-                                                    <i class="bi bi-eye"></i>
                                                 </a>
                                                 <button type="button"
                                                         class="btn btn-outline-danger"
@@ -153,7 +146,7 @@
                         </div>
                         <h6 class="fw-semibold" style="color: #1C2E1C;">У вас пока нет резюме</h6>
                         <p class="small mb-3" style="color: #6B7280;">Создайте первое резюме, чтобы начать поиск работы</p>
-                        <a asp-page="/ResumeManagement/ResumeEdit"
+                        <a asp-page="/EmployeeManagement/ResumeManagement/ResumeEdit"
                                class="btn btn-primary btn-sm px-4"
                                style="background-color: #2E7D32; border-color: #2E7D32;">
                             <i class="bi bi-plus-circle me-1"></i> Создать резюме
@@ -298,6 +291,11 @@
                     </a>
                 </div>
             </div>
+        </div>
+        <div class="col-12 text-center m-4">
+            <form method="post" asp-page-handler="BecomeEmployer" style="display: inline;">
+                <button type="submit" class="btn btn-outline-secondary">Стать работодателем</button>
+            </form>
         </div>
     </div>
 </section>

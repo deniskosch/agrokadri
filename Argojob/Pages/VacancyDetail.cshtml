@@ -11,9 +11,13 @@
         <div class="container">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a asp-page="/Index" class="text-success">Главная</a></li>
-                    <li class="breadcrumb-item"><a asp-page="/Vacancies" class="text-success">Все вакансии</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">@Model.Vacancy.Title</li>
+                    <li class="breadcrumb-item">
+                        <a asp-page="/Index" style="color: var(--primary);">Главная</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-page="/Vacancies" style="color: var(--primary);">Все вакансии</a>
+                    </li>
+                    <li class="breadcrumb-item active" style="color: var(--gray);">@Model.Vacancy.Title</li>
                 </ol>
             </nav>
         </div>
@@ -25,43 +29,53 @@
             <div class="row">
                 <div class="col-lg-8">
                     <!-- Основная информация -->
-                    <div class="card shadow-sm border-0 mb-4">
+                    <div class="card shadow-sm border-0 rounded-4 mb-4" style="border: 1px solid var(--border-color) !important;">
                         <div class="card-body p-4">
                             <!-- Сезонный бейдж над заголовком -->
                             @if (Model.Vacancy.IsSeasonal)
                             {
-                                <div class="mb-2">
-                                    <span class="seasonal-tag d-inline-block" style="position: unset;">🌾 Сезонная работа</span>
+                                <div class="mb-3">
+                                    <span class="badge" style="background-color: var(--seasonal); color: var(--white); padding: 0.5rem 1rem;">
+                                        <i class="bi bi-calendar-week me-1"></i> Сезонная работа
+                                    </span>
                                 </div>
                             }
                             
                             <!-- Заголовок вакансии -->
-                            <h1 class="display-5 fw-bold mb-3">@Model.Vacancy.Title</h1>
+                            <h1 class="fw-bold mb-3" style="color: var(--dark); font-size: 2.2rem;">@Model.Vacancy.Title</h1>
                             
-                            <!-- Зарплата под заголовком с отступом -->
+                            <!-- Зарплата -->
                             <div class="mb-4">
-                                <div class="display-6 fw-bold text-success">@Model.Vacancy.Salary</div>
-                                <small class="text-muted">на руки</small>
+                                <div class="fw-bold" style="color: var(--primary-dark); font-size: 2rem;">@Model.Vacancy.Salary</div>
+                                <small style="color: var(--gray);">на руки</small>
                             </div>
                             
                             <!-- Компания, локация, дата -->
-                            <div class="d-flex flex-wrap align-items-center gap-3 text-muted mb-4">
-                                <span><i class="bi bi-building me-1"></i>@Model.Vacancy.Company</span>
-                                <span><i class="bi bi-geo-alt me-1"></i>@Model.Vacancy.Location</span>
-                                <span><i class="bi bi-clock me-1"></i>@Model.Vacancy.PostedDate</span>
+                            <div class="d-flex flex-wrap align-items-center gap-4 mb-4">
+                                <span style="color: var(--gray);">
+                                    <i class="bi bi-building me-2" style="color: var(--primary);"></i>@Model.Vacancy.Company
+                                </span>
+                                <span style="color: var(--gray);">
+                                    <i class="bi bi-geo-alt me-2" style="color: var(--primary);"></i>@Model.Vacancy.Location
+                                </span>
+                                <span style="color: var(--gray);">
+                                    <i class="bi bi-clock me-2" style="color: var(--primary);"></i>@Model.Vacancy.PostedDate
+                                </span>
                             </div>
                             
-                            <hr class="my-4">
+                            <hr style="border-color: var(--border-color);">
                             
-                            <!-- Теги -->
+                            <!-- Теги (ключевые навыки) -->
                             @if (Model.Vacancy.Tags.Any())
                             {
                                 <div class="mb-4">
-                                    <h5 class="fw-semibold mb-3">Ключевые навыки</h5>
+                                    <h5 class="fw-semibold mb-3" style="color: var(--dark);">Ключевые навыки</h5>
                                     <div class="d-flex flex-wrap gap-2">
                                         @foreach (var tag in Model.Vacancy.Tags)
                                         {
-                                            <span class="badge bg-light text-dark p-2 px-3">@tag</span>
+                                            <span class="badge" style="background-color: var(--light); color: var(--gray); padding: 0.5rem 1rem;">
+                                                @tag
+                                            </span>
                                         }
                                     </div>
                                 </div>
@@ -69,21 +83,21 @@
                             
                             <!-- Описание -->
                             <div class="mb-4">
-                                <h5 class="fw-semibold mb-3">Описание вакансии</h5>
-                                <p class="text-muted">@Model.Vacancy.Description</p>
+                                <h5 class="fw-semibold mb-3" style="color: var(--dark);">Описание вакансии</h5>
+                                <p style="color: var(--gray); line-height: 1.7;">@Model.Vacancy.Description</p>
                             </div>
                             
                             <!-- Требования -->
                             @if (Model.Vacancy.Requirements.Any())
                             {
                                 <div class="mb-4">
-                                    <h5 class="fw-semibold mb-3">Требования к кандидату</h5>
+                                    <h5 class="fw-semibold mb-3" style="color: var(--dark);">Требования к кандидату</h5>
                                     <ul class="list-unstyled">
                                         @foreach (var req in Model.Vacancy.Requirements)
                                         {
-                                            <li class="mb-2">
-                                                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                                @req
+                                            <li class="mb-3 d-flex">
+                                                <i class="bi bi-check-circle-fill me-3" style="color: var(--primary);"></i>
+                                                <span style="color: var(--gray);">@req</span>
                                             </li>
                                         }
                                     </ul>
@@ -94,13 +108,13 @@
                             @if (Model.Vacancy.Offers.Any())
                             {
                                 <div class="mb-4">
-                                    <h5 class="fw-semibold mb-3">Мы предлагаем</h5>
+                                    <h5 class="fw-semibold mb-3" style="color: var(--dark);">Мы предлагаем</h5>
                                     <ul class="list-unstyled">
                                         @foreach (var offer in Model.Vacancy.Offers)
                                         {
-                                            <li class="mb-2">
-                                                <i class="bi bi-star-fill text-warning me-2"></i>
-                                                @offer
+                                            <li class="mb-3 d-flex">
+                                                <i class="bi bi-star-fill me-3" style="color: var(--secondary);"></i>
+                                                <span style="color: var(--gray);">@offer</span>
                                             </li>
                                         }
                                     </ul>
@@ -111,93 +125,57 @@
                 </div>
                 
                 <div class="col-lg-4">
-                    <!-- Контактная информация (уменьшенная) -->
-                    <div class="card shadow-sm border-0 mb-4 sticky-top" style="top: 100px;">
-                        <div class="card-header bg-success text-white py-2">
-                            <h6 class="mb-0"><i class="bi bi-person-badge me-2"></i>Контактная информация</h6>
-                        </div>
-                        <div class="card-body p-3">
-                            <div class="text-center mb-3">
-                                <div class="bg-light rounded-circle d-inline-flex p-2 mb-2">
-                                    <i class="bi bi-building fs-3 text-success"></i>
+                    <!-- Блок с компанией и кнопками -->
+                    <div class="card shadow-sm border-0 rounded-4 mb-4 sticky-top" style="border: 1px solid var(--border-color) !important; top: 100px;">
+                        <div class="card-body p-4">
+                            <!-- Информация о компании -->
+                            <div class="text-center mb-4">
+                                <div class="rounded-circle d-inline-flex p-3 mb-3" style="background-color: rgba(var(--primary-rgb), 0.1);">
+                                    <i class="bi bi-building fs-2" style="color: var(--primary);"></i>
                                 </div>
-                                <h6 class="mb-0">@Model.Vacancy.Company</h6>
+                                <h5 class="fw-bold mb-1" style="color: var(--dark);">@Model.Vacancy.Company</h5>
+                                <p style="color: var(--gray);">Работодатель</p>
                             </div>
                             
-                            @if (!string.IsNullOrEmpty(Model.Vacancy.ContactPerson))
-                            {
-                                <div class="mb-2">
-                                    <label class="form-label text-muted small mb-0">Контактное лицо</label>
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-person-fill text-success me-2 small"></i>
-                                        <span class="small">@Model.Vacancy.ContactPerson</span>
-                                    </div>
-                                </div>
-                            }
-                            
-                            @if (!string.IsNullOrEmpty(Model.Vacancy.ContactPhone))
-                            {
-                                <div class="mb-2">
-                                    <label class="form-label text-muted small mb-0">Телефон</label>
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-telephone-fill text-success me-2 small"></i>
-                                        <a href="tel:@Model.Vacancy.ContactPhone" class="text-decoration-none text-dark small">
-                                            @Model.Vacancy.ContactPhone
-                                        </a>
-                                    </div>
-                                </div>
-                            }
-                            
-                            @if (!string.IsNullOrEmpty(Model.Vacancy.ContactEmail))
-                            {
-                                <div class="mb-3">
-                                    <label class="form-label text-muted small mb-0">Email</label>
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-envelope-fill text-success me-2 small"></i>
-                                        <a href="mailto:@Model.Vacancy.ContactEmail" class="text-decoration-none text-dark small">
-                                            @Model.Vacancy.ContactEmail
-                                        </a>
-                                    </div>
-                                </div>
-                            }
-                            
-                            <hr class="my-2">
+                            <hr style="border-color: var(--border-color);">
                             
                             <!-- КНОПКА ОТКЛИКНУТЬСЯ -->
                             @if (User.Identity?.IsAuthenticated == true)
                             {
                                 if (Model.HasApplied)
                                 {
-                                    <div class="alert alert-success mb-0 py-2 text-center">
+                                    <div class="alert text-center py-3 mb-3" style="background-color: rgba(var(--primary-rgb), 0.1); color: var(--primary); border: none;">
                                         <i class="bi bi-check-circle-fill me-1"></i> Вы уже откликнулись
                                     </div>
                                 }
                                 else
                                 {
-                                    <button type="button" class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#applyModal">
-                                        <i class="bi bi-send me-1"></i>Откликнуться
+                                    <button type="button" class="btn w-100 py-3 mb-3"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#applyModal"
+                                            style="background-color: var(--primary); color: var(--white); border: none;">
+                                        <i class="bi bi-send me-2"></i>Откликнуться
                                     </button>
                                 }
                             }
                             else
                             {
-                                <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Page("/VacancyDetail", new { id = Model.Id })" class="btn btn-outline-success w-100">
-                                    <i class="bi bi-box-arrow-in-right me-1"></i>Войдите, чтобы откликнуться
+                                <a asp-area="Identity"
+                                       asp-page="/Account/Login"
+                                       asp-route-returnUrl="@Url.Page("/VacancyDetail", new { id = Model.Id })"
+                                       class="btn w-100 py-3 mb-3"
+                                       style="background-color: transparent; border: 2px solid var(--primary); color: var(--primary);">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Войдите, чтобы откликнуться
                                 </a>
                             }
                             
-                            @if (!string.IsNullOrEmpty(Model.Vacancy.ContactPhone))
-                            {
-                                <a href="tel:@Model.Vacancy.ContactPhone" class="btn btn-success btn-sm mt-2 w-100">
-                                    <i class="bi bi-telephone me-1"></i>Позвонить
-                                </a>
-                            }
-                            @if (!string.IsNullOrEmpty(Model.Vacancy.ContactEmail))
-                            {
-                                <a href="mailto:@Model.Vacancy.ContactEmail" class="btn btn-outline-success btn-sm mt-2 w-100">
-                                    <i class="bi bi-envelope me-1"></i>Написать
-                                </a>
-                            }
+                            <!-- Кнопка "Все вакансии компании" (опционально) -->
+                            <a asp-page="/Vacancies"
+                                   asp-route-company="@Model.Vacancy.Company"
+                                   class="btn w-100 py-2"
+                                   style="background-color: var(--light); color: var(--gray); border: none;">
+                                <i class="bi bi-list me-2"></i>Все вакансии компании
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -208,50 +186,51 @@
     <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ОТКЛИКА -->
     <div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
+            <div class="modal-content rounded-4" style="border: none;">
+                <div class="modal-header" style="background-color: var(--primary); color: var(--white); border-bottom: none;">
                     <h5 class="modal-title" id="applyModalLabel">
                         <i class="bi bi-send me-2"></i>Отклик на вакансию
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="post" asp-page-handler="Apply">
+                    @Html.AntiForgeryToken()
                     <input type="hidden" name="vacancyId" value="@Model.Id" />
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Выберите резюме <span class="text-danger">*</span></label>
+                    <div class="modal-body p-4">
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold mb-2" style="color: var(--dark);">Выберите резюме <span style="color: var(--danger);">*</span></label>
                             @if (Model.UserResumes.Any())
                             {
-                                <select name="resumeId" class="form-select" required>
+                                <select name="resumeId" class="form-select" required style="border-color: var(--border-color);">
                                     <option value="">-- Выберите резюме --</option>
                                     @foreach (var resume in Model.UserResumes)
                                     {
-                                        <option value="@resume.Id">@resume.Title (@(resume.IsPublished ? "опубликовано" : "черновик"))</option>
+                                        <option value="@resume.Id">@resume.Title @(resume.IsPublished ? "" : "(черновик)")</option>
                                     }
                                 </select>
-                                <small class="text-muted">
-                                    <a asp-page="/ResumeManagement/ResumeEdit" class="text-success">Создать новое резюме</a>
-                                </small>
+                                <div class="mt-2">
+                                    <a asp-page="/ResumeManagement/ResumeEdit" style="color: var(--primary);">+ Создать новое резюме</a>
+                                </div>
                             }
                             else
                             {
-                                <div class="alert alert-warning py-2">
-                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                <div class="alert p-3 mb-0" style="background-color: rgba(var(--warning), 0.1); color: var(--warning); border: none;">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
                                     У вас нет резюме.
-                                    <a asp-page="/ResumeManagement/ResumeEdit" class="alert-link">Создайте резюме</a> сначала.
+                                    <a asp-page="/ResumeManagement/ResumeEdit" style="color: var(--warning); font-weight: 600;">Создайте резюме</a> сначала.
                                 </div>
                             }
                         </div>
                         
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Сопроводительное письмо</label>
-                            <textarea name="coverLetter" class="form-control" rows="4" placeholder="Расскажите, почему вы подходите на эту позицию..."></textarea>
-                            <small class="text-muted">Необязательно, но поможет выделиться</small>
+                            <label class="form-label fw-semibold mb-2" style="color: var(--dark);">Сопроводительное письмо</label>
+                            <textarea name="coverLetter" class="form-control" rows="4" placeholder="Расскажите, почему вы подходите на эту позицию..." style="border-color: var(--border-color);"></textarea>
+                            <small class="text-muted" style="color: var(--gray);">Необязательно, но поможет выделиться</small>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn btn-success" @(Model.UserResumes.Any() ? "" : "disabled")>
+                    <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
+                        <button type="button" class="btn" data-bs-dismiss="modal" style="background-color: var(--light); color: var(--gray);">Отмена</button>
+                        <button type="submit" class="btn" style="background-color: var(--primary); color: var(--white);" @(Model.UserResumes.Any() ? "" : "disabled")>
                             <i class="bi bi-check-circle me-1"></i>Отправить отклик
                         </button>
                     </div>
@@ -264,11 +243,11 @@ else
 {
     <!-- 404 - вакансия не найдена -->
     <div class="container py-5 my-5 text-center">
-        <i class="bi bi-exclamation-triangle display-1 text-warning"></i>
-        <h1 class="mt-4">Вакансия не найдена</h1>
-        <p class="lead text-muted">Запрошенная вакансия не существует или была удалена</p>
-        <a asp-page="/Vacancies" class="btn btn-success btn-lg mt-3">
-            <i class="bi bi-arrow-left me-2"></i>Вернуться к списку вакансий
+        <i class="bi bi-exclamation-triangle display-1" style="color: var(--warning);"></i>
+        <h1 class="mt-4 fw-bold" style="color: var(--dark);">Вакансия не найдена</h1>
+        <p style="color: var(--gray);">Запрошенная вакансия не существует или была удалена</p>
+        <a asp-page="/Vacancies" class="btn btn-primary btn-lg mt-3 px-5" style="background-color: var(--primary); border-color: var(--primary);">
+            <i class="bi bi-arrow-left me-2"></i>К списку вакансий
         </a>
     </div>
 }
