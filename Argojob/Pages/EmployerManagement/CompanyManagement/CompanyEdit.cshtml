@@ -1,5 +1,5 @@
 ﻿@page "{id?}"
-@model Agrojob.Pages.CompanyManagement.CompanyEditModel
+@model Agrojob.Pages.EmployerManagement.CompanyManagement.CompanyEditModel
 @{
     ViewData["Title"] = Model.IsEditMode ? "Редактирование компании" : "Создание компании";
 }
@@ -10,9 +10,8 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a asp-page="/Index" class="text-success">Главная</a></li>
-                <li class="breadcrumb-item"><a asp-page="/EmployerManagementMenu" class="text-success">Панель работодателя</a></li>
-                <li class="breadcrumb-item"><a asp-page="/CompanyManagement/MyCompanies" class="text-success">Мои компании</a></li>
-                <li class="breadcrumb-item active" aria-current="page">@(Model.IsEditMode ? "Редактирование" : "Создание")</li>
+                <li class="breadcrumb-item"><a asp-page="/EmployerManagement/EmployerManagementMenu" class="text-success">Панель работодателя</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@(Model.IsEditMode ? "Редактирование компании" : "Создание компании")</li>
             </ol>
         </nav>
     </div>
@@ -93,7 +92,7 @@
 
                                             <!-- Кнопки -->
                                             <div class="d-flex justify-content-between">
-                                                <a asp-page="/CompanyManagement/MyCompanies" class="btn btn-outline-secondary">
+                                                <a asp-page="/EmployerManagement/EmployerManagementMenu" class="btn btn-outline-secondary">
                                                     <i class="bi bi-arrow-left me-1"></i>Отмена
                                                 </a>
                                                 <button type="submit" class="btn btn-success px-5">

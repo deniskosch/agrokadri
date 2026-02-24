@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Agrojob.UoW;
 
-namespace Agrojob.Pages.ResumeManagement
+namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
 {
     [Authorize]
     public class MyResumesModel : PageModel

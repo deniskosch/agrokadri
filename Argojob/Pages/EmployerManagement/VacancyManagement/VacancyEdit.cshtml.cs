@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace Agrojob.Pages.VacancyManagement
+namespace Agrojob.Pages.EmployerManagement.VacancyManagement
 {
     [Authorize]
     public class VacancyEditModel : PageModel

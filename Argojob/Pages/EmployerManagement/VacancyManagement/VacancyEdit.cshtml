@@ -1,5 +1,5 @@
 ﻿@page "{id?}"
-@model Agrojob.Pages.VacancyManagement.VacancyEditModel
+@model Agrojob.Pages.EmployerManagement.VacancyManagement.VacancyEditModel
 @{
     ViewData["Title"] = Model.IsEditMode ? "Редактирование вакансии" : "Создание вакансии";
 }
@@ -10,9 +10,8 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a asp-page="/Index" class="text-success">Главная</a></li>
-                <li class="breadcrumb-item"><a asp-page="/EmployerManagementMenu" class="text-success">Панель работодателя</a></li>
-                <li class="breadcrumb-item"><a asp-page="/VacancyManagement/MyVacancies" class="text-success">Мои вакансии</a></li>
-                <li class="breadcrumb-item active" aria-current="page">@(Model.IsEditMode ? "Редактирование" : "Создание")</li>
+                <li class="breadcrumb-item"><a asp-page="/EmployerManagement/EmployerManagementMenu" class="text-success">Панель работодателя</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@(Model.IsEditMode ? "Редактирование вакансии" : "Создание вакансии")</li>
             </ol>
         </nav>
     </div>
@@ -168,7 +167,7 @@
 
                                                 <!-- Кнопки -->
                                                 <div class="d-flex justify-content-between">
-                                                    <a asp-page="/VacancyManagement/MyVacancies" class="btn btn-outline-secondary">
+                                                    <a asp-page="/EmployerManagement/EmployerManagementMenu" class="btn btn-outline-secondary">
                                                         <i class="bi bi-arrow-left me-1"></i>Отмена
                                                     </a>
                                                     <button type="submit" class="btn btn-success px-5">

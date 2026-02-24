@@ -1,7 +1,7 @@
 ﻿@page "/application/{id}"
 @using Agrojob.Models
 @using Agrojob.ViewModels
-@model Agrojob.Pages.ApplicationsManagement.ApplicationDetailModel
+@model Agrojob.Pages.EmployerManagement.ApplicationManagement.ApplicationDetailModel
 @{
     ViewData["Title"] = $"Отклик на вакансию: {Model.Application?.VacancyTitle}";
 }
@@ -14,12 +14,9 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a asp-page="/Index" class="text-success">Главная</a></li>
-                    <li class="breadcrumb-item"><a asp-page="/EmployerManagementMenu" class="text-success">Панель работодателя</a></li>
+                    <li class="breadcrumb-item"><a asp-page="/EmployerManagement/EmployerManagementMenu" class="text-success">Панель работодателя</a></li>
                     <li class="breadcrumb-item">
-                        <a asp-page="/VacancyManagement/MyVacancies" class="text-success">Мои вакансии</a>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <a asp-page="VacancyApplications" asp-route-vacancyId="@Model.Application.VacancyId" class="text-success">
+                        <a asp-page="/EmployerManagement/ApplicationManagement/VacancyApplications" asp-route-vacancyId="@Model.Application.VacancyId" class="text-success">
                             Отклики на вакансию
                         </a>
                     </li>

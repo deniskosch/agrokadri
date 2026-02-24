@@ -6,7 +6,7 @@ using System.Security.Claims;
 using Agrojob.UoW;
 using Agrojob.Data;
 
-namespace Agrojob.Pages.CompanyManagement
+namespace Agrojob.Pages.EmployerManagement.CompanyManagement
 {
     [Authorize]
     public class CompanyUsersModel : PageModel

@@ -16,7 +16,7 @@
 			@if (User.IsInRole("Employer"))
 			{
 				<li>
-					<a class="dropdown-item" asp-page="/EmployerManagementMenu">
+					<a class="dropdown-item" asp-page="/EmployerManagement/EmployerManagementMenu">
 						<i class="bi bi-briefcase me-2"></i>Панель работодателя
 					</a>
 				</li>
@@ -24,7 +24,7 @@
 			else if (User.IsInRole("Employee"))
 			{
 				<li>
-					<a class="dropdown-item" asp-page="/EmployeeManagementMenu">
+					<a class="dropdown-item" asp-page="/EmployeeManagement/EmployeeManagementMenu">
 						<i class="bi bi-person-workspace me-2"></i>Панель соискателя
 					</a>
 				</li>

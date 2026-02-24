@@ -8,7 +8,7 @@ using Agrojob.Data;
 using Agrojob.Models;
 using Agrojob.ViewModels;
 
-namespace Agrojob.Pages.ApplicationsManagement
+namespace Agrojob.Pages.EmployerManagement.ApplicationManagement
 {
     [Authorize]
     public class ApplicationDetailModel : PageModel

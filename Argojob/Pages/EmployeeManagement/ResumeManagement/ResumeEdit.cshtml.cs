@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Agrojob.Pages.ResumeManagement
+namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
 {
     [Authorize]
     public class ResumeEditModel : PageModel

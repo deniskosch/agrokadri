@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Agrojob.Pages.EmployeeAplicationManagement
+namespace Agrojob.Pages.EmployeeManagement.ApplicationManagement
 {
     [Authorize]
     public class MyApplicationsModel : PageModel

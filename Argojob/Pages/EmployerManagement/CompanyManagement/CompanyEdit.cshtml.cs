@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Agrojob.Pages.CompanyManagement
+namespace Agrojob.Pages.EmployerManagement.CompanyManagement
 {
     [Authorize]
     public class CompanyEditModel : PageModel
@@ -172,7 +172,7 @@ namespace Agrojob.Pages.CompanyManagement
                 }
 
                 await _unitOfWork.CommitTransactionAsync();
-                return RedirectToPage("MyCompanies");
+                return RedirectToPage("/EmployerManagement/EmployerManagementMenu");
             }
             catch (Exception ex)
             {
