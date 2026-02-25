@@ -48,7 +48,7 @@ namespace Agrojob.Pages.EmployeeManagement
             {
                 Id = r.Id,
                 Title = r.Title,
-                Specialization = r.Category?.Name ?? "Не указана",
+                Specialization = "Не указана",
                 Experience = r.ExperienceYears ?? 0,
                 DesiredSalary = r.DesiredSalary ?? "Не указана",
                 IsActive = r.IsActive,

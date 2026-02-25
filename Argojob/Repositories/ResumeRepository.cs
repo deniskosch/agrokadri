@@ -15,7 +15,6 @@ namespace Agrojob.Repositories
         {
             return await _context.Resumes
                 .Where(r => r.UserId == userId)
-                .Include(r => r.Category)
                 .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();
         }
@@ -24,7 +23,6 @@ namespace Agrojob.Repositories
         {
             return await _context.Resumes
                 .Include(r => r.User)
-                .Include(r => r.Category)
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
@@ -33,7 +31,6 @@ namespace Agrojob.Repositories
             var query = _context.Resumes
                 .Where(r => r.IsActive && r.IsPublished)
                 .Include(r => r.User)
-                .Include(r => r.Category)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
@@ -44,11 +41,6 @@ namespace Agrojob.Repositories
                     r.FullName.ToLower().Contains(searchTerm) ||
                     (r.Skills != null && r.Skills.ToLower().Contains(searchTerm)) ||
                     (r.About != null && r.About.ToLower().Contains(searchTerm)));
-            }
-
-            if (categoryId.HasValue)
-            {
-                query = query.Where(r => r.CategoryId == categoryId);
             }
 
             return await query

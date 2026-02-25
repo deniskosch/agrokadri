@@ -13,8 +13,6 @@ namespace Agrojob.Data
 
         public DbSet<Vacancy> Vacancies { get; set; }
         public DbSet<Company> Companies { get; set; }
-        public DbSet<Location> Locations { get; set; }
-        public DbSet<Category> Categories { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<VacancyTag> VacancyTags { get; set; }
         public DbSet<Requirement> Requirements { get; set; }
@@ -34,20 +32,6 @@ namespace Agrojob.Data
                 .HasOne(v => v.Company)
                 .WithMany(c => c.Vacancies)
                 .HasForeignKey(v => v.CompanyId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Vacancy - Location
-            builder.Entity<Vacancy>()
-                .HasOne(v => v.Location)
-                .WithMany(l => l.Vacancies)
-                .HasForeignKey(v => v.LocationId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Vacancy - Category
-            builder.Entity<Vacancy>()
-                .HasOne(v => v.Category)
-                .WithMany(c => c.Vacancies)
-                .HasForeignKey(v => v.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Vacancy - CreatedBy (User)
@@ -91,16 +75,6 @@ namespace Agrojob.Data
             builder.Entity<Company>()
                 .HasIndex(c => c.Name);
 
-            // ===== НАСТРОЙКИ ДЛЯ LOCATION =====
-
-            builder.Entity<Location>()
-                .HasIndex(l => l.Name);
-
-            // ===== НАСТРОЙКИ ДЛЯ CATEGORY =====
-
-            builder.Entity<Category>()
-                .HasIndex(c => c.Name)
-                .IsUnique();
 
             // ===== НАСТРОЙКИ ДЛЯ TAG =====
 
@@ -141,19 +115,10 @@ namespace Agrojob.Data
                 .OnDelete(DeleteBehavior.Restrict); // Restrict вместо Cascade
 
             builder.Entity<Resume>()
-                .HasOne(r => r.Category)
-                .WithMany(c => c.Resumes)
-                .HasForeignKey(r => r.CategoryId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            builder.Entity<Resume>()
                 .HasIndex(r => r.UserId);
 
             builder.Entity<Resume>()
                 .HasIndex(r => r.IsActive);
-
-            builder.Entity<Resume>()
-                .HasIndex(r => r.CategoryId);
 
             // ===== НАСТРОЙКИ ДЛЯ APPLICATION =====
 

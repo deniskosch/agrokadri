@@ -64,13 +64,13 @@ namespace Agrojob.Pages
                 Id = vacancy.Id,
                 Title = vacancy.Title,
                 Company = vacancy.Company?.Name ?? "Не указано",
-                Location = vacancy.Location?.Name ?? "Не указано",
+                Location = vacancy.Location ?? "Не указано",
                 Salary = vacancy.Salary ?? "Не указана",
                 Tags = vacancy.VacancyTags?
                     .Select(vt => vt.Tag?.Name ?? "")
                     .Where(t => !string.IsNullOrEmpty(t))
                     .ToList() ?? new(),
-                Category = vacancy.Category?.Name ?? "",
+                Category = vacancy.Category ?? "",
                 PostedDate = FormatPostedDate(vacancy.PostedDate),
                 IsSeasonal = vacancy.IsSeasonal,
                 Description = vacancy.Description,

@@ -11,8 +11,6 @@ namespace Agrojob.UoW
         private readonly ApplicationDbContext _context;
         private IVacancyRepository? _vacancyRepository;
         private ICompanyRepository? _companyRepository;
-        private ICategoryRepository? _categoryRepository;
-        private ILocationRepository? _locationRepository;
         private ITagRepository? _tagRepository;
         private IRequirementRepository? _requirementRepository;
         private IOfferRepository? _offerRepository;
@@ -31,12 +29,6 @@ namespace Agrojob.UoW
 
         public ICompanyRepository Companies =>
             _companyRepository ??= new CompanyRepository(_context);
-
-        public ICategoryRepository Categories =>
-            _categoryRepository ??= new CategoryRepository(_context);
-
-        public ILocationRepository Locations =>
-            _locationRepository ??= new LocationRepository(_context);
 
         public ITagRepository Tags =>
             _tagRepository ??= new TagRepository(_context);

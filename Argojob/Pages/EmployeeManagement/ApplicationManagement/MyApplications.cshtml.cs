@@ -105,7 +105,7 @@ namespace Agrojob.Pages.EmployeeManagement.ApplicationManagement
                     VacancyId = app.VacancyId,
                     VacancyTitle = vacancy?.Title ?? "Вакансия удалена",
                     CompanyName = vacancy?.Company?.Name ?? "Не указано",
-                    Location = vacancy?.Location?.Name ?? "Не указано",
+                    Location = vacancy?.Location ?? "Не указано",
                     Salary = vacancy?.Salary ?? "Не указана",
                     Status = app.Status,
                     StatusDisplay = app.Status.GetDisplayName(),

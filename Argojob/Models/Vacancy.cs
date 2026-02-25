@@ -16,7 +16,7 @@ namespace Agrojob.Models
         [Required]
         public string Description { get; set; } = string.Empty;
 
-        // Зарплата (храним как строку, как в вашей модели)
+        // Зарплата (храним как строку)
         [MaxLength(100)]
         public string Salary { get; set; } = string.Empty;
 
@@ -29,16 +29,19 @@ namespace Agrojob.Models
         public bool IsSeasonal { get; set; }
         public bool IsActive { get; set; } = true;
 
+        // Строковые поля вместо таблиц
+        [MaxLength(100)]
+        public string Category { get; set; } = string.Empty;
+
+        [MaxLength(200)]
+        public string Location { get; set; } = string.Empty;
+
         // Внешние ключи
         public int CompanyId { get; set; }
-        public int LocationId { get; set; }
-        public int CategoryId { get; set; }
         public string? CreatedById { get; set; } // Кто создал (IdentityUser)
 
         // Навигационные свойства
         public virtual Company Company { get; set; }
-        public virtual Location Location { get; set; }
-        public virtual Category Category { get; set; }
         public virtual ApplicationUser CreatedBy { get; set; }
 
         // Коллекции для связанных данных

@@ -17,7 +17,6 @@ namespace Agrojob.Repositories
                 .Where(a => a.UserId == userId)
                 .Include(a => a.Vacancy)
                     .ThenInclude(v => v.Company)
-                .Include(a => a.Vacancy.Location)
                 .Include(a => a.Resume)
                 .OrderByDescending(a => a.AppliedAt)
                 .ToListAsync();
@@ -39,7 +38,6 @@ namespace Agrojob.Repositories
                 .Include(a => a.User)
                 .Include(a => a.Vacancy)
                     .ThenInclude(v => v.Company)
-                .Include(a => a.Vacancy.Location)
                 .Include(a => a.Resume)
                 .FirstOrDefaultAsync(a => a.Id == id);
         }

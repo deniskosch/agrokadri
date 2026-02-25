@@ -16,8 +16,6 @@ namespace Agrojob.Data
             // ClearExistingData(context);
 
             // 1. СОЗДАЕМ СПРАВОЧНИКИ
-            CreateCategories(context);
-            CreateLocations(context);
             CreateTags(context);
 
             context.SaveChanges();
@@ -40,46 +38,9 @@ namespace Agrojob.Data
             context.Vacancies.RemoveRange(context.Vacancies);
             context.Companies.RemoveRange(context.Companies);
             context.Tags.RemoveRange(context.Tags);
-            context.Locations.RemoveRange(context.Locations);
-            context.Categories.RemoveRange(context.Categories);
 
             context.SaveChanges();
-        }
-
-        private static void CreateCategories(ApplicationDbContext context)
-        {
-            if (context.Categories.Any()) return;
-
-            var categories = new Category[]
-            {
-                new Category { Name = "Агроном", Description = "Специалисты в области растениеводства" },
-                new Category { Name = "Ветеринар", Description = "Специалисты по здоровью животных" },
-                new Category { Name = "Механизатор", Description = "Операторы сельхозтехники" },
-                new Category { Name = "Технолог", Description = "Специалисты по переработке" },
-                new Category { Name = "Инженер", Description = "Инженерно-технические специалисты" }
-            };
-
-            context.Categories.AddRange(categories);
-        }
-
-        private static void CreateLocations(ApplicationDbContext context)
-        {
-            if (context.Locations.Any()) return;
-
-            var locations = new Location[]
-            {
-                new Location { Name = "Москва", Region = "Московская обл." },
-                new Location { Name = "Краснодар", Region = "Краснодарский край" },
-                new Location { Name = "Ростов-на-Дону", Region = "Ростовская обл." },
-                new Location { Name = "Воронеж", Region = "Воронежская обл." },
-                new Location { Name = "Белгород", Region = "Белгородская обл." },
-                new Location { Name = "Ставрополь", Region = "Ставропольский край" },
-                new Location { Name = "Казань", Region = "Татарстан" },
-                new Location { Name = "Саратов", Region = "Саратовская обл." }
-            };
-
-            context.Locations.AddRange(locations);
-        }
+        }    
 
         private static void CreateTags(ApplicationDbContext context)
         {
@@ -220,8 +181,6 @@ namespace Agrojob.Data
         {
             if (context.Vacancies.Any()) return;
 
-            var categories = context.Categories.ToList();
-            var locations = context.Locations.ToList();
             var tags = context.Tags.ToList();
 
             var random = new Random();
@@ -238,8 +197,6 @@ namespace Agrojob.Data
                 IsSeasonal = true,
                 IsActive = true,
                 CompanyId = companies[0].Id,
-                LocationId = locations.First(l => l.Name == "Краснодар").Id,
-                CategoryId = categories.First(c => c.Name == "Агроном").Id,
                 Requirements = new List<Requirement>
                 {
                     new Requirement { Text = "Высшее или среднее специальное образование" },
@@ -270,8 +227,6 @@ namespace Agrojob.Data
                 IsSeasonal = false,
                 IsActive = true,
                 CompanyId = companies[1].Id,
-                LocationId = locations.First(l => l.Name == "Воронеж").Id,
-                CategoryId = categories.First(c => c.Name == "Ветеринар").Id,
                 Requirements = new List<Requirement>
                 {
                     new Requirement { Text = "Высшее ветеринарное образование" },
@@ -301,8 +256,6 @@ namespace Agrojob.Data
                 IsSeasonal = true,
                 IsActive = true,
                 CompanyId = companies[2].Id,
-                LocationId = locations.First(l => l.Name == "Саратов").Id,
-                CategoryId = categories.First(c => c.Name == "Агроном").Id,
                 Requirements = new List<Requirement>
                 {
                     new Requirement { Text = "Без опыта работы" },
@@ -331,8 +284,6 @@ namespace Agrojob.Data
                 IsSeasonal = false,
                 IsActive = true,
                 CompanyId = companies[3].Id,
-                LocationId = locations.First(l => l.Name == "Белгород").Id,
-                CategoryId = categories.First(c => c.Name == "Технолог").Id,
                 Requirements = new List<Requirement>
                 {
                     new Requirement { Text = "Высшее профильное образование" },
@@ -361,8 +312,6 @@ namespace Agrojob.Data
                 IsSeasonal = true,
                 IsActive = true,
                 CompanyId = companies[4].Id,
-                LocationId = locations.First(l => l.Name == "Ростов-на-Дону").Id,
-                CategoryId = categories.First(c => c.Name == "Механизатор").Id,
                 Requirements = new List<Requirement>
                 {
                     new Requirement { Text = "Наличие удостоверения тракториста" },
@@ -391,8 +340,6 @@ namespace Agrojob.Data
                 IsSeasonal = false,
                 IsActive = true,
                 CompanyId = companies[5].Id,
-                LocationId = locations.First(l => l.Name == "Казань").Id,
-                CategoryId = categories.First(c => c.Name == "Ветеринар").Id,
                 Requirements = new List<Requirement>
                 {
                     new Requirement { Text = "Среднее или высшее ветеринарное образование" },
@@ -420,8 +367,6 @@ namespace Agrojob.Data
                 IsSeasonal = false,
                 IsActive = true,
                 CompanyId = companies[6].Id,
-                LocationId = locations.First(l => l.Name == "Ставрополь").Id,
-                CategoryId = categories.First(c => c.Name == "Агроном").Id,
                 Requirements = new List<Requirement>
                 {
                     new Requirement { Text = "Высшее образование" },
@@ -449,8 +394,6 @@ namespace Agrojob.Data
                 IsSeasonal = true,
                 IsActive = true,
                 CompanyId = companies[7].Id,
-                LocationId = locations.First(l => l.Name == "Москва").Id,
-                CategoryId = categories.First(c => c.Name == "Агроном").Id,
                 Requirements = new List<Requirement>
                 {
                     new Requirement { Text = "Без опыта" },
@@ -479,8 +422,6 @@ namespace Agrojob.Data
                 IsSeasonal = false,
                 IsActive = true,
                 CompanyId = companies[8].Id,
-                LocationId = locations.First(l => l.Name == "Краснодар").Id,
-                CategoryId = categories.First(c => c.Name == "Инженер").Id,
                 Requirements = new List<Requirement>
                 {
                     new Requirement { Text = "Профильное образование" },
@@ -508,8 +449,6 @@ namespace Agrojob.Data
                 IsSeasonal = false,
                 IsActive = true,
                 CompanyId = companies[9].Id,
-                LocationId = locations.First(l => l.Name == "Воронеж").Id,
-                CategoryId = categories.First(c => c.Name == "Ветеринар").Id,
                 Requirements = new List<Requirement>
                 {
                     new Requirement { Text = "Высшее образование" },

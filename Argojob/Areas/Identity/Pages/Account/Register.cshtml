@@ -182,9 +182,14 @@
     .role-radio {
         display: none;
     }
-
-
-</style> 
+    
+        /* стили для активной плитки */
+        .role-radio:checked + .role-btn {
+            background-color: var(--primary) !important;
+            border-color: var(--primary) !important;
+            color: white !important;
+        }
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

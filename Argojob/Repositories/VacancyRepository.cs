@@ -18,8 +18,6 @@ namespace Agrojob.Repositories
         {
             return await _context.Vacancies
                 .Include(v => v.Company)
-                .Include(v => v.Location)
-                .Include(v => v.Category)
                 .Include(v => v.CreatedBy)
                 .Include(v => v.VacancyTags)
                     .ThenInclude(vt => vt.Tag)
@@ -33,8 +31,6 @@ namespace Agrojob.Repositories
             return await _context.Vacancies
                 .Where(v => v.IsActive)
                 .Include(v => v.Company)
-                .Include(v => v.Location)
-                .Include(v => v.Category)
                 .OrderByDescending(v => v.PostedDate)
                 .ToListAsync();
         }
@@ -44,8 +40,6 @@ namespace Agrojob.Repositories
             return await _context.Vacancies
                 .Where(v => v.IsSeasonal && v.IsActive)
                 .Include(v => v.Company)
-                .Include(v => v.Location)
-                .Include(v => v.Category)
                 .OrderByDescending(v => v.PostedDate)
                 .ToListAsync();
         }
@@ -53,9 +47,7 @@ namespace Agrojob.Repositories
         public async Task<IEnumerable<Vacancy>> GetVacanciesByCategoryAsync(int categoryId)
         {
             return await _context.Vacancies
-                .Where(v => v.CategoryId == categoryId && v.IsActive)
-                .Include(v => v.Company)
-                .Include(v => v.Location)
+                .Where(v => v.IsActive)
                 .OrderByDescending(v => v.PostedDate)
                 .ToListAsync();
         }
@@ -64,8 +56,6 @@ namespace Agrojob.Repositories
         {
             return await _context.Vacancies
                 .Where(v => v.CompanyId == companyId && v.IsActive)
-                .Include(v => v.Location)
-                .Include(v => v.Category)
                 .OrderByDescending(v => v.PostedDate)
                 .ToListAsync();
         }
@@ -73,9 +63,8 @@ namespace Agrojob.Repositories
         public async Task<IEnumerable<Vacancy>> GetVacanciesByLocationAsync(int locationId)
         {
             return await _context.Vacancies
-                .Where(v => v.LocationId == locationId && v.IsActive)
+                .Where(v => v.IsActive)
                 .Include(v => v.Company)
-                .Include(v => v.Category)
                 .OrderByDescending(v => v.PostedDate)
                 .ToListAsync();
         }
@@ -92,11 +81,9 @@ namespace Agrojob.Repositories
                     v.Title.ToLower().Contains(searchTerm) ||
                     v.Description.ToLower().Contains(searchTerm) ||
                     v.Company.Name.ToLower().Contains(searchTerm) ||
-                    v.Category.Name.ToLower().Contains(searchTerm)
+                    v.Category.ToLower().Contains(searchTerm)
                 ))
                 .Include(v => v.Company)
-                .Include(v => v.Location)
-                .Include(v => v.Category)
                 .OrderByDescending(v => v.PostedDate)
                 .ToListAsync();
         }
@@ -106,8 +93,6 @@ namespace Agrojob.Repositories
             return await _context.Vacancies
                 .Where(v => v.IsActive)
                 .Include(v => v.Company)
-                .Include(v => v.Location)
-                .Include(v => v.Category)
                 .OrderByDescending(v => v.PostedDate)
                 .Take(count)
                 .ToListAsync();
@@ -174,15 +159,7 @@ namespace Agrojob.Repositories
             var query = _context.Vacancies
                 .Where(v => v.IsActive)
                 .Include(v => v.Company)
-                .Include(v => v.Location)
-                .Include(v => v.Category)
                 .AsQueryable();
-
-            if (categoryId.HasValue)
-                query = query.Where(v => v.CategoryId == categoryId);
-
-            if (locationId.HasValue)
-                query = query.Where(v => v.LocationId == locationId);
 
             if (companyId.HasValue)
                 query = query.Where(v => v.CompanyId == companyId);

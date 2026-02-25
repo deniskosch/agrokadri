@@ -9,8 +9,6 @@ namespace Agrojob.UoW
     {
         IVacancyRepository Vacancies { get; }
         ICompanyRepository Companies { get; }
-        ICategoryRepository Categories { get; }
-        ILocationRepository Locations { get; }
         ITagRepository Tags { get; }
         IRequirementRepository Requirements { get; }
         IOfferRepository Offers { get; }

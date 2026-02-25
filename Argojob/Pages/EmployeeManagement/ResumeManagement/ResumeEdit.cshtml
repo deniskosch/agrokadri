@@ -74,109 +74,108 @@
                                                         </div>
 
                                                         <div class="col-md-6">
-                                                            <label asp-for="Input.CategoryId" class="form-label fw-semibold">Желаемая категория</label>
-                                                            <select asp-for="Input.CategoryId" class="form-select" asp-items="Model.Categories">
-                                                                <option value="">-- Выберите категорию --</option>
-                                                            </select>
+                                                            <label asp-for="Input.Category" class="form-label fw-semibold">Желаемая категория</label>
+                                                            <input asp-for="Input.Category" class="form-control" placeholder="Например: Агроном, Ветеринар">
+                                                                <small class="text-muted">Укажите желаемую сферу деятельности</small>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <!-- Опыт и навыки -->
-                                                    <h5 class="fw-semibold mb-3">Опыт и навыки</h5>
-                                                    <div class="row g-3 mb-4">
-                                                        <div class="col-md-4">
-                                                            <label asp-for="Input.ExperienceYears" class="form-label fw-semibold">Общий стаж (лет)</label>
-                                                            <input asp-for="Input.ExperienceYears" type="number" min="0" max="60" class="form-control">
-                                                            </div>
-
-                                                            <div class="col-md-8">
-                                                                <label asp-for="Input.DesiredSalary" class="form-label fw-semibold">Желаемая зарплата</label>
-                                                                <input asp-for="Input.DesiredSalary" class="form-control" placeholder="Например: 100 000 ₽ или Договорная">
+                                                        <!-- Опыт и навыки -->
+                                                        <h5 class="fw-semibold mb-3">Опыт и навыки</h5>
+                                                        <div class="row g-3 mb-4">
+                                                            <div class="col-md-4">
+                                                                <label asp-for="Input.ExperienceYears" class="form-label fw-semibold">Общий стаж (лет)</label>
+                                                                <input asp-for="Input.ExperienceYears" type="number" min="0" max="60" class="form-control">
                                                                 </div>
 
-                                                                <div class="col-md-12">
-                                                                    <label asp-for="Input.Education" class="form-label fw-semibold">Образование</label>
-                                                                    <textarea asp-for="Input.Education" class="form-control" rows="3" placeholder="Опишите ваше образование: ВУЗ, факультет, год окончания..."></textarea>
-                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <label asp-for="Input.DesiredSalary" class="form-label fw-semibold">Желаемая зарплата</label>
+                                                                    <input asp-for="Input.DesiredSalary" class="form-control" placeholder="Например: 100 000 ₽ или Договорная">
+                                                                    </div>
 
-                                                                <div class="col-md-12">
-                                                                    <label asp-for="Input.Experience" class="form-label fw-semibold">Опыт работы</label>
-                                                                    <textarea asp-for="Input.Experience" class="form-control" rows="4" placeholder="Опишите ваш опыт работы: места работы, должности, обязанности..."></textarea>
-                                                                </div>
+                                                                    <div class="col-md-12">
+                                                                        <label asp-for="Input.Education" class="form-label fw-semibold">Образование</label>
+                                                                        <textarea asp-for="Input.Education" class="form-control" rows="3" placeholder="Опишите ваше образование: ВУЗ, факультет, год окончания..."></textarea>
+                                                                    </div>
 
-                                                                <div class="col-md-12">
-                                                                    <label asp-for="Input.Skills" class="form-label fw-semibold">Навыки</label>
-                                                                    <textarea asp-for="Input.Skills" class="form-control" rows="3" placeholder="Перечислите ваши профессиональные навыки..."></textarea>
-                                                                </div>
+                                                                    <div class="col-md-12">
+                                                                        <label asp-for="Input.Experience" class="form-label fw-semibold">Опыт работы</label>
+                                                                        <textarea asp-for="Input.Experience" class="form-control" rows="4" placeholder="Опишите ваш опыт работы: места работы, должности, обязанности..."></textarea>
+                                                                    </div>
 
-                                                                <div class="col-md-12">
-                                                                    <label asp-for="Input.About" class="form-label fw-semibold">О себе</label>
-                                                                    <textarea asp-for="Input.About" class="form-control" rows="3" placeholder="Расскажите о себе, личных качествах, достижениях..."></textarea>
-                                                                </div>
-                                                            </div>
+                                                                    <div class="col-md-12">
+                                                                        <label asp-for="Input.Skills" class="form-label fw-semibold">Навыки</label>
+                                                                        <textarea asp-for="Input.Skills" class="form-control" rows="3" placeholder="Перечислите ваши профессиональные навыки..."></textarea>
+                                                                    </div>
 
-                                                            <!-- Дополнительные настройки -->
-                                                            <h5 class="fw-semibold mb-3">Дополнительные настройки</h5>
-                                                            <div class="row g-3 mb-4">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-check">
-                                                                        <input asp-for="Input.ReadyToRelocate" class="form-check-input" />
-                                                                        <label asp-for="Input.ReadyToRelocate" class="form-check-label">
-                                                                            Готов к переезду
-                                                                        </label>
+                                                                    <div class="col-md-12">
+                                                                        <label asp-for="Input.About" class="form-label fw-semibold">О себе</label>
+                                                                        <textarea asp-for="Input.About" class="form-control" rows="3" placeholder="Расскажите о себе, личных качествах, достижениях..."></textarea>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="form-check">
-                                                                        <input asp-for="Input.ReadyForBusinessTrips" class="form-check-input" />
-                                                                        <label asp-for="Input.ReadyForBusinessTrips" class="form-check-label">
-                                                                            Готов к командировкам
-                                                                        </label>
+
+                                                                <!-- Дополнительные настройки -->
+                                                                <h5 class="fw-semibold mb-3">Дополнительные настройки</h5>
+                                                                <div class="row g-3 mb-4">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-check">
+                                                                            <input asp-for="Input.ReadyToRelocate" class="form-check-input" />
+                                                                            <label asp-for="Input.ReadyToRelocate" class="form-check-label">
+                                                                                Готов к переезду
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-check">
+                                                                            <input asp-for="Input.ReadyForBusinessTrips" class="form-check-input" />
+                                                                            <label asp-for="Input.ReadyForBusinessTrips" class="form-check-label">
+                                                                                Готов к командировкам
+                                                                            </label>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
 
-                                                            <!-- Публикация -->
-                                                            <h5 class="fw-semibold mb-3">Публикация</h5>
-                                                            <div class="row g-3 mb-4">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-check">
-                                                                        <input asp-for="Input.IsPublished" class="form-check-input" />
-                                                                        <label asp-for="Input.IsPublished" class="form-check-label">
-                                                                            Опубликовать резюме (будет видно работодателям)
-                                                                        </label>
+                                                                <!-- Публикация -->
+                                                                <h5 class="fw-semibold mb-3">Публикация</h5>
+                                                                <div class="row g-3 mb-4">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-check">
+                                                                            <input asp-for="Input.IsPublished" class="form-check-input" />
+                                                                            <label asp-for="Input.IsPublished" class="form-check-label">
+                                                                                Опубликовать резюме (будет видно работодателям)
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-check">
+                                                                            <input asp-for="Input.IsActive" class="form-check-input" />
+                                                                            <label asp-for="Input.IsActive" class="form-check-label">
+                                                                                Активно (можно получать отклики)
+                                                                            </label>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="form-check">
-                                                                        <input asp-for="Input.IsActive" class="form-check-input" />
-                                                                        <label asp-for="Input.IsActive" class="form-check-label">
-                                                                            Активно (можно получать отклики)
-                                                                        </label>
-                                                                    </div>
+
+                                                                <hr class="my-4">
+
+                                                                <!-- Кнопки -->
+                                                                <div class="d-flex justify-content-between">
+                                                                    <a asp-page="/EmployeeManagement/EmployeeManagementMenu" class="btn btn-outline-secondary">
+                                                                        <i class="bi bi-arrow-left me-1"></i>Отмена
+                                                                    </a>
+                                                                    <button type="submit" class="btn btn-success px-5">
+                                                                        <i class="bi bi-check-circle me-1"></i>
+                                                                        @(Model.IsEditMode ? "Сохранить изменения" : "Создать резюме")
+                                                                    </button>
                                                                 </div>
-                                                            </div>
-
-                                                            <hr class="my-4">
-
-                                                            <!-- Кнопки -->
-                                                            <div class="d-flex justify-content-between">
-                                                                <a asp-page="/EmployeeManagement/EmployeeManagementMenu" class="btn btn-outline-secondary">
-                                                                    <i class="bi bi-arrow-left me-1"></i>Отмена
-                                                                </a>
-                                                                <button type="submit" class="btn btn-success px-5">
-                                                                    <i class="bi bi-check-circle me-1"></i>
-                                                                    @(Model.IsEditMode ? "Сохранить изменения" : "Создать резюме")
-                                                                </button>
-                                                            </div>
-                                                        </form>
+                                                            </form>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </section>
+                                    </section>
 
-                                @section Scripts {
-                                    <partial name="_ValidationScriptsPartial" />
-                                }
+                                    @section Scripts {
+                                        <partial name="_ValidationScriptsPartial" />
+                                    }

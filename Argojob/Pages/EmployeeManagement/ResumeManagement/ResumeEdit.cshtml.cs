@@ -27,8 +27,6 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
         [BindProperty]
         public InputModel Input { get; set; } = new();
 
-        public List<SelectListItem> Categories { get; set; } = new();
-
         public class InputModel
         {
             public int? Id { get; set; }
@@ -55,6 +53,9 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
 
             [Display(Name = "Город")]
             public string? Location { get; set; }
+
+            [Display(Name = "Желаемая категория")]
+            public string? Category { get; set; }
 
             [Display(Name = "Опыт работы (лет)")]
             [Range(0, 60, ErrorMessage = "Введите корректное значение")]
@@ -86,9 +87,6 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
 
             [Display(Name = "Опубликовано")]
             public bool IsPublished { get; set; } = true;
-
-            [Display(Name = "Категория")]
-            public int? CategoryId { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -98,8 +96,6 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
             {
                 return Challenge();
             }
-
-            await LoadDropdownsAsync();
 
             if (id.HasValue)
             {
@@ -125,6 +121,7 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
                 Input.Phone = resume.Phone;
                 Input.Email = resume.Email;
                 Input.Location = resume.Location;
+                Input.Category = resume.Category;
                 Input.ExperienceYears = resume.ExperienceYears;
                 Input.Education = resume.Education;
                 Input.Experience = resume.Experience;
@@ -135,30 +132,15 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
                 Input.ReadyForBusinessTrips = resume.ReadyForBusinessTrips;
                 Input.IsActive = resume.IsActive;
                 Input.IsPublished = resume.IsPublished;
-                Input.CategoryId = resume.CategoryId;
             }
 
             return Page();
-        }
-
-        private async Task LoadDropdownsAsync()
-        {
-            var categories = await _unitOfWork.Categories.GetAllAsync();
-            Categories = categories.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Name
-            }).ToList();
-
-            // Добавляем пустой элемент в начало
-            Categories.Insert(0, new SelectListItem { Value = "", Text = "-- Выберите категорию --" });
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
-                await LoadDropdownsAsync();
                 return Page();
             }
 
@@ -189,6 +171,7 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
                     resume.Phone = Input.Phone;
                     resume.Email = Input.Email;
                     resume.Location = Input.Location;
+                    resume.Category = Input.Category;
                     resume.ExperienceYears = Input.ExperienceYears;
                     resume.Education = Input.Education;
                     resume.Experience = Input.Experience;
@@ -199,7 +182,6 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
                     resume.ReadyForBusinessTrips = Input.ReadyForBusinessTrips;
                     resume.IsActive = Input.IsActive;
                     resume.IsPublished = Input.IsPublished;
-                    resume.CategoryId = Input.CategoryId;
                     resume.UpdatedAt = DateTime.UtcNow;
 
                     await _unitOfWork.Resumes.UpdateAsync(resume);
@@ -216,6 +198,7 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
                         Phone = Input.Phone,
                         Email = Input.Email,
                         Location = Input.Location,
+                        Category = Input.Category,
                         ExperienceYears = Input.ExperienceYears,
                         Education = Input.Education,
                         Experience = Input.Experience,
@@ -226,7 +209,6 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
                         ReadyForBusinessTrips = Input.ReadyForBusinessTrips,
                         IsActive = Input.IsActive,
                         IsPublished = Input.IsPublished,
-                        CategoryId = Input.CategoryId,
                         UserId = userId,
                         CreatedAt = DateTime.UtcNow
                     };
@@ -243,7 +225,6 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
             {
                 await _unitOfWork.RollbackTransactionAsync();
                 ModelState.AddModelError(string.Empty, $"Ошибка: {ex.Message}");
-                await LoadDropdownsAsync();
                 return Page();
             }
         }

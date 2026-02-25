@@ -49,12 +49,13 @@ namespace Agrojob.Pages
                 }
                 else
                 {
-                    query = query.Where(v => v.Category != null &&
-                        v.Category.Name.ToLower() == CurrentFilter.ToLower());
+                    // Фильтр по строковой категории
+                    query = query.Where(v => !string.IsNullOrEmpty(v.Category) &&
+                        v.Category.ToLower() == CurrentFilter.ToLower());
                 }
             }
 
-            // Применяем поиск (оставляем для совместимости, но поиск теперь через страницу вакансий)
+            // Применяем поиск
             if (!string.IsNullOrEmpty(SearchTerm))
             {
                 var searchLower = SearchTerm.ToLower();
@@ -62,6 +63,8 @@ namespace Agrojob.Pages
                     v.Title.ToLower().Contains(searchLower) ||
                     (v.Company != null && v.Company.Name.ToLower().Contains(searchLower)) ||
                     v.Description.ToLower().Contains(searchLower) ||
+                    (!string.IsNullOrEmpty(v.Category) && v.Category.ToLower().Contains(searchLower)) ||
+                    (!string.IsNullOrEmpty(v.Location) && v.Location.ToLower().Contains(searchLower)) ||
                     v.VacancyTags.Any(vt => vt.Tag != null &&
                         vt.Tag.Name.ToLower().Contains(searchLower)));
             }
@@ -80,13 +83,13 @@ namespace Agrojob.Pages
                 Id = v.Id,
                 Title = v.Title,
                 Company = v.Company?.Name ?? "Не указано",
-                Location = v.Location?.Name ?? "Не указано",
+                Location = v.Location ?? "Не указано", // Теперь строка
                 Salary = v.Salary ?? "Не указана",
                 Tags = v.VacancyTags?
                     .Where(vt => vt.Tag != null)
                     .Select(vt => vt.Tag!.Name)
                     .ToList() ?? new(),
-                Category = v.Category?.Name ?? "",
+                Category = v.Category ?? "", // Теперь строка
                 PostedDate = FormatPostedDate(v.PostedDate),
                 IsSeasonal = v.IsSeasonal
             }).ToList();
@@ -105,12 +108,6 @@ namespace Agrojob.Pages
             else
                 return postedDate.ToString("dd.MM.yyyy");
         }
-
-        // Удаляем OnPostSearchAsync так как теперь используем GET на страницу вакансий
-        // public async Task<IActionResult> OnPostSearchAsync(string searchTerm)
-        // {
-        //     return RedirectToPage(new { filter = CurrentFilter, search = searchTerm });
-        // }
 
         public async Task<IActionResult> OnPostLoadMoreAsync(string currentFilter, int currentVisibleCount)
         {

@@ -101,8 +101,6 @@ namespace Agrojob.Pages.EmployerManagement
             foreach (var vacancy in vacancies.OrderByDescending(v => v.PostedDate))
             {
                 var company = await _unitOfWork.Companies.GetByIdAsync(vacancy.CompanyId);
-                var location = await _unitOfWork.Locations.GetByIdAsync(vacancy.LocationId);
-                var category = await _unitOfWork.Categories.GetByIdAsync(vacancy.CategoryId);
                 var applications = await _unitOfWork.Applications.GetApplicationsByVacancyAsync(vacancy.Id);
 
                 Vacancies.Add(new VacancyViewModel
@@ -110,9 +108,9 @@ namespace Agrojob.Pages.EmployerManagement
                     Id = vacancy.Id,
                     Title = vacancy.Title,
                     Company = company?.Name ?? "Не указано",
-                    Location = location?.Name ?? "Не указано",
+                    Location = vacancy.Location ?? "Не указано",
                     Salary = vacancy.Salary,
-                    Category = category?.Name ?? "Не указано",
+                    Category = vacancy.Category ?? "Не указано",
                     PostedDate = vacancy.PostedDate.ToString("dd.MM.yyyy"),
                     IsSeasonal = vacancy.IsSeasonal,
                     IsActive = vacancy.IsActive,

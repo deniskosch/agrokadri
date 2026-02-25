@@ -3,14 +3,86 @@
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
-<ul class="nav nav-pills flex-column">
-    <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a></li>
+
+<ul class="nav flex-column gap-1">
+    <li class="nav-item">
+        <a class="nav-link rounded-3 @ManageNavPages.IndexNavClass(ViewContext)"
+               id="profile"
+               asp-page="./Index">
+            <i class="bi bi-person me-2"></i>Профиль
+        </a>
+    </li>
+    
+    <li class="nav-item">
+        <a class="nav-link rounded-3 @ManageNavPages.EmailNavClass(ViewContext)"
+               id="email"
+               asp-page="./Email">
+            <i class="bi bi-envelope me-2"></i>Электронная почта
+        </a>
+    </li>
+    
+    <li class="nav-item">
+        <a class="nav-link rounded-3 @ManageNavPages.ChangePasswordNavClass(ViewContext)"
+               id="change-password"
+               asp-page="./ChangePassword">
+            <i class="bi bi-key me-2"></i>Пароль
+        </a>
+    </li>
+    
     @if (hasExternalLogins)
     {
-        <li id="external-logins" class="nav-item"><a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">External logins</a></li>
+        <li class="nav-item">
+            <a class="nav-link rounded-3 @ManageNavPages.ExternalLoginsNavClass(ViewContext)"
+                   id="external-logins"
+                   asp-page="./ExternalLogins">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Внешние логины
+            </a>
+        </li>
     }
-    <li class="nav-item"><a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
+    
+    <li class="nav-item">
+        <a class="nav-link rounded-3 @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)"
+               id="two-factor"
+               asp-page="./TwoFactorAuthentication">
+            <i class="bi bi-shield-lock me-2"></i>Двухфакторная аутентификация
+        </a>
+    </li>
+    
+    <li class="nav-item">
+        <a class="nav-link rounded-3 @ManageNavPages.PersonalDataNavClass(ViewContext)"
+               id="personal-data"
+               asp-page="./PersonalData">
+            <i class="bi bi-file-earmark-person me-2"></i>Личные данные
+        </a>
+    </li>
 </ul>
+
+<style>
+    /* Базовый стиль для всех пунктов */
+    .nav-link {
+        color: #6c757d !important;
+        padding: 0.75rem 1rem !important;
+        transition: all 0.2s ease !important;
+        font-weight: 500;
+    }
+
+        /* Ховер эффект */
+        .nav-link:hover {
+            background-color: #f8f9fa !important;
+            color: var(--primary) !important;
+        }
+
+        /* Активный пункт - с primary цветом */
+        .nav-link.active {
+            background-color: rgba(var(--primary-rgb), 0.1) !important;
+            color: var(--primary) !important;
+            border: 1px solid rgba(var(--primary-rgb), 0.2) !important;
+            box-shadow: 0 2px 4px rgba(var(--primary-rgb), 0.1) !important;
+        }
+
+        /* Иконки */
+        .nav-link i {
+            font-size: 1.1rem;
+            vertical-align: middle;
+        }
+</style>

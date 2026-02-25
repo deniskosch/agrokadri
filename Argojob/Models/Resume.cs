@@ -20,6 +20,8 @@ namespace Agrojob.Models
 
         [MaxLength(20)]
         public string? Phone { get; set; }
+        [MaxLength(100)]
+        public string? Category { get; set; }
 
         [MaxLength(100)]
         public string? Email { get; set; }
@@ -60,11 +62,9 @@ namespace Agrojob.Models
 
         // Внешние ключи
         public string UserId { get; set; } = string.Empty;
-        public int? CategoryId { get; set; } // Желаемая категория
 
         // Навигационные свойства
         public virtual ApplicationUser User { get; set; } = null!;
-        public virtual Category? Category { get; set; }
 
         // Связь с откликами
         public virtual ICollection<Application> Applications { get; set; } = new List<Application>();

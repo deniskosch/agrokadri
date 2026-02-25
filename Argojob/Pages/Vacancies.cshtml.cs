@@ -66,91 +66,90 @@ namespace Agrojob.Pages
 
             // Сезонные
             SeasonalCount = await _unitOfWork.Vacancies.CountAsync(v => v.IsActive && v.IsSeasonal);
-
-            // По категориям
-            AgronomCount = await _unitOfWork.Vacancies.CountAsync(v =>
-                v.IsActive && v.Category != null && v.Category.Name == "Агроном");
-
-            VeterinarCount = await _unitOfWork.Vacancies.CountAsync(v =>
-                v.IsActive && v.Category != null && v.Category.Name == "Ветеринар");
-
-            MechanizatorCount = await _unitOfWork.Vacancies.CountAsync(v =>
-                v.IsActive && v.Category != null && v.Category.Name == "Механизатор");
-
-            TechnologCount = await _unitOfWork.Vacancies.CountAsync(v =>
-                v.IsActive && v.Category != null && v.Category.Name == "Технолог");
-
-            EngineerCount = await _unitOfWork.Vacancies.CountAsync(v =>
-                v.IsActive && v.Category != null && v.Category.Name == "Инженер");
         }
 
         private async Task LoadVacanciesAsync()
         {
-            // Определяем ID категории если выбрана не "all"
-            int? categoryId = null;
-            if (Category != "all" && Category != "сезонные")
+            // Получаем все активные вакансии
+            var allVacancies = await _unitOfWork.Vacancies.GetActiveVacanciesAsync();
+
+            // Применяем фильтры в памяти (или можно через LINQ to Entities, если есть IQueryable)
+            var query = allVacancies.AsEnumerable();
+
+            // Фильтр по категории
+            if (!string.IsNullOrEmpty(Category) && Category != "all")
             {
-                var category = await _unitOfWork.Categories
-                    .FirstOrDefaultAsync(c => c.Name.ToLower() == Category.ToLower());
-                categoryId = category?.Id;
+                if (Category == "сезонные")
+                {
+                    query = query.Where(v => v.IsSeasonal);
+                }
+                else
+                {
+                    // Поиск по строковой категории (регистронезависимый)
+                    var categoryLower = Category.ToLower();
+                    query = query.Where(v => !string.IsNullOrEmpty(v.Category) &&
+                        v.Category.ToLower().Contains(categoryLower));
+                }
             }
 
-            // Определяем фильтр по сезонности
-            bool? isSeasonal = Type switch
+            // Фильтр по типу занятости
+            if (!string.IsNullOrEmpty(Type) && Type != "all")
             {
-                "seasonal" => true,
-                "permanent" => false,
-                _ => null
-            };
+                if (Type == "seasonal")
+                {
+                    query = query.Where(v => v.IsSeasonal);
+                }
+                else if (Type == "permanent")
+                {
+                    query = query.Where(v => !v.IsSeasonal);
+                }
+            }
 
-            // Получаем все ID вакансий по фильтру для подсчета общего количества
-            var allVacancyIds = await _unitOfWork.Vacancies
-                .FindAsync(v => v.IsActive &&
-                    (categoryId == null || v.CategoryId == categoryId) &&
-                    (Category != "сезонные" || v.IsSeasonal) &&
-                    (isSeasonal == null || v.IsSeasonal == isSeasonal) &&
-                    (string.IsNullOrEmpty(Search) ||
-                     v.Title.Contains(Search) ||
-                     v.Description.Contains(Search) ||
-                     (v.Company != null && v.Company.Name.Contains(Search))))
-                .ContinueWith(t => t.Result.Select(v => v.Id).ToList());
+            // Поиск по тексту
+            if (!string.IsNullOrEmpty(Search))
+            {
+                var searchLower = Search.ToLower();
+                query = query.Where(v =>
+                    v.Title.ToLower().Contains(searchLower) ||
+                    v.Description.ToLower().Contains(searchLower) ||
+                    (v.Company != null && v.Company.Name.ToLower().Contains(searchLower)) ||
+                    (!string.IsNullOrEmpty(v.Category) && v.Category.ToLower().Contains(searchLower)) ||
+                    (!string.IsNullOrEmpty(v.Location) && v.Location.ToLower().Contains(searchLower)) ||
+                    v.VacancyTags.Any(vt => vt.Tag != null && vt.Tag.Name.ToLower().Contains(searchLower)));
+            }
 
-            var totalCount = allVacancyIds.Count;
+            var filteredList = query.ToList();
+            var totalCount = filteredList.Count;
+
+            // Пагинация
             TotalPages = (int)System.Math.Ceiling(totalCount / (double)PageSize);
 
             if (Page < 1) Page = 1;
             if (Page > TotalPages && TotalPages > 0) Page = TotalPages;
 
-            // Получаем ID для текущей страницы
-            var pageIds = allVacancyIds
+            // Берем вакансии для текущей страницы
+            var pagedVacancies = filteredList
                 .Skip((Page - 1) * PageSize)
                 .Take(PageSize)
                 .ToList();
 
-            // Загружаем вакансии с деталями
-            var vacancies = new List<VacancyViewModel>();
-            foreach (var id in pageIds)
+            // Маппим в ViewModel
+            FilteredVacancies = pagedVacancies.Select(v => new VacancyViewModel
             {
-                var vacancy = await _unitOfWork.Vacancies.GetVacancyWithDetailsAsync(id);
-                if (vacancy != null)
-                {
-                    vacancies.Add(new VacancyViewModel
-                    {
-                        Id = vacancy.Id,
-                        Title = vacancy.Title,
-                        Company = vacancy.Company?.Name ?? "Не указано",
-                        Location = vacancy.Location?.Name ?? "Не указано",
-                        Salary = vacancy.Salary,
-                        Tags = vacancy.VacancyTags?.Select(vt => vt.Tag?.Name ?? "").Where(t => !string.IsNullOrEmpty(t)).ToList() ?? new(),
-                        Category = vacancy.Category?.Name ?? "",
-                        PostedDate = FormatPostedDate(vacancy.PostedDate),
-                        IsSeasonal = vacancy.IsSeasonal,
-                        Description = vacancy.Description
-                    });
-                }
-            }
-
-            FilteredVacancies = vacancies;
+                Id = v.Id,
+                Title = v.Title,
+                Company = v.Company?.Name ?? "Не указано",
+                Location = v.Location ?? "Не указано", // Теперь просто строка
+                Salary = v.Salary ?? "Не указана",
+                Tags = v.VacancyTags?
+                    .Where(vt => vt.Tag != null)
+                    .Select(vt => vt.Tag!.Name)
+                    .ToList() ?? new(),
+                Category = v.Category ?? "", // Теперь просто строка
+                PostedDate = FormatPostedDate(v.PostedDate),
+                IsSeasonal = v.IsSeasonal,
+                Description = v.Description
+            }).ToList();
         }
 
         private string FormatPostedDate(DateTime postedDate)

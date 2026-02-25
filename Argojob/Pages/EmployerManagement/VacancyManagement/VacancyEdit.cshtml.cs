@@ -29,8 +29,6 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
         public InputModel Input { get; set; } = new();
 
         public List<SelectListItem> Companies { get; set; } = new();
-        public List<SelectListItem> Locations { get; set; } = new();
-        public List<SelectListItem> Categories { get; set; } = new();
         public List<Tag> AllTags { get; set; } = new();
 
         public class InputModel
@@ -55,13 +53,13 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
             [Display(Name = "Компания")]
             public int CompanyId { get; set; }
 
-            [Required(ErrorMessage = "Выберите локацию")]
-            [Display(Name = "Локация")]
-            public int LocationId { get; set; }
-
-            [Required(ErrorMessage = "Выберите категорию")]
+            [Required(ErrorMessage = "Укажите категорию")]
             [Display(Name = "Категория")]
-            public int CategoryId { get; set; }
+            public string Category { get; set; } = string.Empty;
+
+            [Required(ErrorMessage = "Укажите локацию")]
+            [Display(Name = "Локация")]
+            public string Location { get; set; } = string.Empty;
 
             public List<string> Requirements { get; set; } = new();
             public List<string> Offers { get; set; } = new();
@@ -110,8 +108,8 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
                 Input.Salary = vacancy.Salary;
                 Input.IsSeasonal = vacancy.IsSeasonal;
                 Input.CompanyId = vacancy.CompanyId;
-                Input.LocationId = vacancy.LocationId;
-                Input.CategoryId = vacancy.CategoryId;
+                Input.Category = vacancy.Category;
+                Input.Location = vacancy.Location;
 
                 Input.Requirements = vacancy.Requirements?
                     .Select(r => r.Text)
@@ -143,20 +141,6 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
             var userCompanies = await _unitOfWork.Companies.GetCompaniesByUserAsync(userId);
 
             Companies = userCompanies.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Name
-            }).ToList();
-
-            var locations = await _unitOfWork.Locations.GetAllAsync();
-            Locations = locations.Select(l => new SelectListItem
-            {
-                Value = l.Id.ToString(),
-                Text = l.Region != null ? $"{l.Name}, {l.Region}" : l.Name
-            }).ToList();
-
-            var categories = await _unitOfWork.Categories.GetAllAsync();
-            Categories = categories.Select(c => new SelectListItem
             {
                 Value = c.Id.ToString(),
                 Text = c.Name
@@ -209,8 +193,8 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
                     vacancy.Salary = Input.Salary ?? "Не указана";
                     vacancy.IsSeasonal = Input.IsSeasonal;
                     vacancy.CompanyId = Input.CompanyId;
-                    vacancy.LocationId = Input.LocationId;
-                    vacancy.CategoryId = Input.CategoryId;
+                    vacancy.Category = Input.Category;
+                    vacancy.Location = Input.Location;
 
                     await _unitOfWork.Vacancies.UpdateAsync(vacancy);
 
@@ -236,7 +220,7 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
                         await _unitOfWork.Offers.AddRangeToVacancyAsync(vacancy.Id, validOffers);
                     }
 
-                    // Обновляем теги - используем метод из репозитория
+                    // Обновляем теги
                     if (Input.SelectedTagIds != null && Input.SelectedTagIds.Any())
                     {
                         var allTags = await _unitOfWork.Tags.GetAllAsync();
@@ -295,8 +279,8 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
                         IsActive = true,
                         ViewsCount = 0,
                         CompanyId = Input.CompanyId,
-                        LocationId = Input.LocationId,
-                        CategoryId = Input.CategoryId,
+                        Category = Input.Category,
+                        Location = Input.Location,
                         CreatedById = userId2
                     };
 
