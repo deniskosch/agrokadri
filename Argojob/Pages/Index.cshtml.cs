@@ -77,21 +77,33 @@ namespace Agrojob.Pages
             // Берем только нужное количество
             var displayedVacancies = filteredList.Take(VisibleCount).ToList();
 
-            // Маппим в ViewModel
+            // Маппим в ViewModel с новой структурой зарплаты
             DisplayedVacancies = displayedVacancies.Select(v => new VacancyViewModel
             {
                 Id = v.Id,
                 Title = v.Title,
                 Company = v.Company?.Name ?? "Не указано",
-                Location = v.Location ?? "Не указано", // Теперь строка
-                Salary = v.Salary ?? "Не указана",
+                Location = v.Location ?? "Не указано",
+
+                // Новые поля зарплаты
+                SalaryType = v.SalaryType,
+                FixedSalary = v.FixedSalary,
+                SalaryFrom = v.SalaryFrom,
+                SalaryTo = v.SalaryTo,
+
                 Tags = v.VacancyTags?
                     .Where(vt => vt.Tag != null)
                     .Select(vt => vt.Tag!.Name)
                     .ToList() ?? new(),
-                Category = v.Category ?? "", // Теперь строка
+                Category = v.Category ?? "",
                 PostedDate = FormatPostedDate(v.PostedDate),
-                IsSeasonal = v.IsSeasonal
+                IsSeasonal = v.IsSeasonal,
+
+                // Дополнительные поля
+                CompanyId = v.CompanyId,
+                IsActive = v.IsActive,
+                CreatedAt = v.PostedDate,
+                CreatedById = v.CreatedById
             }).ToList();
         }
 

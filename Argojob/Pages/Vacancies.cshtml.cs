@@ -133,22 +133,34 @@ namespace Agrojob.Pages
                 .Take(PageSize)
                 .ToList();
 
-            // Маппим в ViewModel
+            // Маппим в ViewModel с новой структурой зарплаты
             FilteredVacancies = pagedVacancies.Select(v => new VacancyViewModel
             {
                 Id = v.Id,
                 Title = v.Title,
                 Company = v.Company?.Name ?? "Не указано",
-                Location = v.Location ?? "Не указано", // Теперь просто строка
-                Salary = v.Salary ?? "Не указана",
+                Location = v.Location ?? "Не указано",
+
+                // Новые поля зарплаты
+                SalaryType = v.SalaryType,
+                FixedSalary = v.FixedSalary,
+                SalaryFrom = v.SalaryFrom,
+                SalaryTo = v.SalaryTo,
+
                 Tags = v.VacancyTags?
                     .Where(vt => vt.Tag != null)
                     .Select(vt => vt.Tag!.Name)
                     .ToList() ?? new(),
-                Category = v.Category ?? "", // Теперь просто строка
+                Category = v.Category ?? "",
                 PostedDate = FormatPostedDate(v.PostedDate),
                 IsSeasonal = v.IsSeasonal,
-                Description = v.Description
+                Description = v.Description,
+
+                // Дополнительные поля
+                CompanyId = v.CompanyId,
+                IsActive = v.IsActive,
+                CreatedAt = v.PostedDate,
+                CreatedById = v.CreatedById
             }).ToList();
         }
 
@@ -181,5 +193,4 @@ namespace Agrojob.Pages
             };
         }
     }
-
 }

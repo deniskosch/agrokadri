@@ -106,7 +106,13 @@ namespace Agrojob.Pages.EmployeeManagement.ApplicationManagement
                     VacancyTitle = vacancy?.Title ?? "Вакансия удалена",
                     CompanyName = vacancy?.Company?.Name ?? "Не указано",
                     Location = vacancy?.Location ?? "Не указано",
-                    Salary = vacancy?.Salary ?? "Не указана",
+
+                    // Новые поля зарплаты
+                    SalaryType = vacancy?.SalaryType ?? SalaryType.Negotiable,
+                    FixedSalary = vacancy?.FixedSalary,
+                    SalaryFrom = vacancy?.SalaryFrom,
+                    SalaryTo = vacancy?.SalaryTo,
+
                     Status = app.Status,
                     StatusDisplay = app.Status.GetDisplayName(),
                     StatusColor = app.Status.GetColorClass(),
@@ -181,7 +187,28 @@ namespace Agrojob.Pages.EmployeeManagement.ApplicationManagement
         public string VacancyTitle { get; set; } = string.Empty;
         public string CompanyName { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
-        public string Salary { get; set; } = string.Empty;
+
+        // Новые поля зарплаты
+        public SalaryType SalaryType { get; set; }
+        public long? FixedSalary { get; set; }
+        public long? SalaryFrom { get; set; }
+        public long? SalaryTo { get; set; }
+
+        // Вычисляемое поле для отображения зарплаты
+        public string SalaryDisplay
+        {
+            get
+            {
+                return SalaryType switch
+                {
+                    SalaryType.Negotiable => "Договорная",
+                    SalaryType.Fixed => FixedSalary?.ToString("N0") + " ₽",
+                    SalaryType.Range => $"от {SalaryFrom?.ToString("N0")} до {SalaryTo?.ToString("N0")} ₽",
+                    _ => "Договорная"
+                };
+            }
+        }
+
         public ApplicationStatus Status { get; set; }
         public string StatusDisplay { get; set; } = string.Empty;
         public string StatusColor { get; set; } = string.Empty;

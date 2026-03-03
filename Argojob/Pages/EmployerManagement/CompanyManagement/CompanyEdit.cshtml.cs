@@ -81,9 +81,6 @@ namespace Agrojob.Pages.EmployerManagement.CompanyManagement
                 Input.Id = company.Id;
                 Input.Name = company.Name;
                 Input.Description = company.Description;
-                Input.ContactPerson = company.ContactPerson;
-                Input.ContactPhone = company.ContactPhone;
-                Input.ContactEmail = company.ContactEmail;
                 Input.IsVerified = company.IsVerified;
             }
 
@@ -127,9 +124,6 @@ namespace Agrojob.Pages.EmployerManagement.CompanyManagement
                     // Обновляем поля
                     company.Name = Input.Name;
                     company.Description = Input.Description;
-                    company.ContactPerson = Input.ContactPerson;
-                    company.ContactPhone = Input.ContactPhone;
-                    company.ContactEmail = Input.ContactEmail;
 
                     // Только админ может менять статус верификации
                     if (User.IsInRole("Admin"))
@@ -156,9 +150,6 @@ namespace Agrojob.Pages.EmployerManagement.CompanyManagement
                     {
                         Name = Input.Name,
                         Description = Input.Description,
-                        ContactPerson = Input.ContactPerson,
-                        ContactPhone = Input.ContactPhone,
-                        ContactEmail = Input.ContactEmail,
                         IsVerified = User.IsInRole("Admin") ? Input.IsVerified : false
                     };
 

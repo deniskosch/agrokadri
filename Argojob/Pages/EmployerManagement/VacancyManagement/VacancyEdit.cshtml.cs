@@ -43,8 +43,18 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
             [Display(Name = "Описание")]
             public string Description { get; set; } = string.Empty;
 
-            [Display(Name = "Зарплата")]
-            public string? Salary { get; set; }
+            // Новая структура зарплаты
+            [Display(Name = "Тип зарплаты")]
+            public SalaryType SalaryType { get; set; } = SalaryType.Negotiable;
+
+            [Display(Name = "Фиксированная зарплата")]
+            public long? FixedSalary { get; set; }
+
+            [Display(Name = "Зарплата от")]
+            public long? SalaryFrom { get; set; }
+
+            [Display(Name = "Зарплата до")]
+            public long? SalaryTo { get; set; }
 
             [Display(Name = "Сезонная работа")]
             public bool IsSeasonal { get; set; }
@@ -65,14 +75,64 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
             public List<string> Offers { get; set; } = new();
             public List<int> SelectedTagIds { get; set; } = new();
 
-            // Контактные данные
-            public string? ContactPerson { get; set; }
+            // Валидация для зарплаты
+            public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+            {
+                if (SalaryType == SalaryType.Fixed && !FixedSalary.HasValue)
+                {
+                    yield return new ValidationResult(
+                        "Укажите фиксированную зарплату",
+                        new[] { nameof(FixedSalary) });
+                }
 
-            [Phone(ErrorMessage = "Неверный формат телефона")]
-            public string? ContactPhone { get; set; }
+                if (SalaryType == SalaryType.Range)
+                {
+                    if (!SalaryFrom.HasValue)
+                    {
+                        yield return new ValidationResult(
+                            "Укажите зарплату от",
+                            new[] { nameof(SalaryFrom) });
+                    }
 
-            [EmailAddress(ErrorMessage = "Неверный формат email")]
-            public string? ContactEmail { get; set; }
+                    if (!SalaryTo.HasValue)
+                    {
+                        yield return new ValidationResult(
+                            "Укажите зарплату до",
+                            new[] { nameof(SalaryTo) });
+                    }
+
+                    if (SalaryFrom.HasValue && SalaryTo.HasValue && SalaryFrom > SalaryTo)
+                    {
+                        yield return new ValidationResult(
+                            "Значение 'От' не может быть больше 'До'",
+                            new[] { nameof(SalaryFrom), nameof(SalaryTo) });
+                    }
+                }
+
+                if (SalaryType == SalaryType.Fixed && FixedSalary.HasValue && FixedSalary <= 0)
+                {
+                    yield return new ValidationResult(
+                        "Зарплата должна быть положительным числом",
+                        new[] { nameof(FixedSalary) });
+                }
+
+                if (SalaryType == SalaryType.Range)
+                {
+                    if (SalaryFrom.HasValue && SalaryFrom <= 0)
+                    {
+                        yield return new ValidationResult(
+                            "Зарплата должна быть положительным числом",
+                            new[] { nameof(SalaryFrom) });
+                    }
+
+                    if (SalaryTo.HasValue && SalaryTo <= 0)
+                    {
+                        yield return new ValidationResult(
+                            "Зарплата должна быть положительным числом",
+                            new[] { nameof(SalaryTo) });
+                    }
+                }
+            }
         }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -105,7 +165,10 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
                 Input.Id = vacancy.Id;
                 Input.Title = vacancy.Title;
                 Input.Description = vacancy.Description;
-                Input.Salary = vacancy.Salary;
+                Input.SalaryType = vacancy.SalaryType;
+                Input.FixedSalary = vacancy.FixedSalary;
+                Input.SalaryFrom = vacancy.SalaryFrom;
+                Input.SalaryTo = vacancy.SalaryTo;
                 Input.IsSeasonal = vacancy.IsSeasonal;
                 Input.CompanyId = vacancy.CompanyId;
                 Input.Category = vacancy.Category;
@@ -122,14 +185,6 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
                 Input.SelectedTagIds = vacancy.VacancyTags?
                     .Select(vt => vt.TagId)
                     .ToList() ?? new();
-
-                // Контактные данные из компании
-                if (vacancy.Company != null)
-                {
-                    Input.ContactPerson = vacancy.Company.ContactPerson;
-                    Input.ContactPhone = vacancy.Company.ContactPhone;
-                    Input.ContactEmail = vacancy.Company.ContactEmail;
-                }
             }
 
             return Page();
@@ -151,6 +206,16 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
 
         public async Task<IActionResult> OnPostAsync()
         {
+            // Добавляем валидацию модели
+            var validationResults = Input.Validate(new ValidationContext(Input));
+            foreach (var validationResult in validationResults)
+            {
+                foreach (var memberName in validationResult.MemberNames)
+                {
+                    ModelState.AddModelError($"Input.{memberName}", validationResult.ErrorMessage ?? "");
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -190,7 +255,13 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
                     // Обновляем основные поля
                     vacancy.Title = Input.Title;
                     vacancy.Description = Input.Description;
-                    vacancy.Salary = Input.Salary ?? "Не указана";
+
+                    // Обновляем поля зарплаты
+                    vacancy.SalaryType = Input.SalaryType;
+                    vacancy.FixedSalary = Input.FixedSalary;
+                    vacancy.SalaryFrom = Input.SalaryFrom;
+                    vacancy.SalaryTo = Input.SalaryTo;
+
                     vacancy.IsSeasonal = Input.IsSeasonal;
                     vacancy.CompanyId = Input.CompanyId;
                     vacancy.Category = Input.Category;
@@ -221,6 +292,16 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
                     }
 
                     // Обновляем теги
+                    if (vacancy.VacancyTags != null && vacancy.VacancyTags.Any())
+                    {
+                        // Удаляем все существующие связи с тегами
+                        foreach (var tag in vacancy.VacancyTags.ToList())
+                        {
+                            await _unitOfWork.Tags.DeleteVacancyTag(tag.VacancyId, tag.TagId);
+                        }
+                    }
+
+                    // Добавляем новые теги
                     if (Input.SelectedTagIds != null && Input.SelectedTagIds.Any())
                     {
                         var allTags = await _unitOfWork.Tags.GetAllAsync();
@@ -245,35 +326,19 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
                         return Page();
                     }
 
-                    // Обновляем контактные данные компании
-                    bool companyUpdated = false;
-                    if (!string.IsNullOrWhiteSpace(Input.ContactPerson) && Input.ContactPerson != company.ContactPerson)
-                    {
-                        company.ContactPerson = Input.ContactPerson;
-                        companyUpdated = true;
-                    }
-                    if (!string.IsNullOrWhiteSpace(Input.ContactPhone) && Input.ContactPhone != company.ContactPhone)
-                    {
-                        company.ContactPhone = Input.ContactPhone;
-                        companyUpdated = true;
-                    }
-                    if (!string.IsNullOrWhiteSpace(Input.ContactEmail) && Input.ContactEmail != company.ContactEmail)
-                    {
-                        company.ContactEmail = Input.ContactEmail;
-                        companyUpdated = true;
-                    }
-
-                    if (companyUpdated)
-                    {
-                        await _unitOfWork.Companies.UpdateAsync(company);
-                    }
-
+                    
                     // Создаем вакансию
                     var vacancy = new Vacancy
                     {
                         Title = Input.Title,
                         Description = Input.Description,
-                        Salary = Input.Salary ?? "Не указана",
+
+                        // Новые поля зарплаты
+                        SalaryType = Input.SalaryType,
+                        FixedSalary = Input.FixedSalary,
+                        SalaryFrom = Input.SalaryFrom,
+                        SalaryTo = Input.SalaryTo,
+
                         PostedDate = DateTime.UtcNow,
                         IsSeasonal = Input.IsSeasonal,
                         IsActive = true,

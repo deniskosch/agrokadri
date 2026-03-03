@@ -78,5 +78,15 @@ namespace Agrojob.Repositories
             await _context.SaveChangesAsync();
             return tagIds;
         }
+
+        public async Task<bool> DeleteVacancyTag(int vacancyId, int tagId)
+        {
+            var res = await _context.VacancyTags.Where(vt => vt.VacancyId == vacancyId && vt.TagId == tagId).ExecuteDeleteAsync();
+
+            if (res > 0)
+                return true;
+
+            return false;
+        }
     }
 }

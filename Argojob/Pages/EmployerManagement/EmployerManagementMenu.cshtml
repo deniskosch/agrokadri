@@ -72,7 +72,7 @@
         @if (Model.HasCompanies)
         {
             <!-- Блок выбора компании -->
-            <div class="card shadow-sm border-0 rounded-4 mb-4" style="border: 1px solid #E0E8E0 !important;">
+            @* <div class="card shadow-sm border-0 rounded-4 mb-4" style="border: 1px solid #E0E8E0 !important;">
                 <div class="card-body p-4">
                     <div class="row align-items-center">
                         <div class="col-md-6">
@@ -100,7 +100,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> *@
 
             <!-- Карточки со счетчиками -->
             <div class="row g-4 mb-4">
@@ -157,6 +157,72 @@
                 </div>
             </div>
 
+            <!-- Блок последних откликов -->
+            @if (Model.RecentApplications.Any())
+            {
+                <div class="card shadow-sm border-0 rounded-4 mb-4" style="border: 1px solid #E0E8E0 !important;">
+                    <div class="card-header bg-transparent border-0 pt-4 px-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="fw-bold mb-0" style="color: #1C2E1C;">
+                                <i class="bi bi-clock-history me-2" style="color: #FF8F00;"></i>
+                                Последние отклики - @(Model.SelectedCompany?.Name)
+                            </h5>
+                            @* <a asp-page="/EmployerManagement/ApplicationManagement/AllCompanyApplications"
+                                   asp-route-companyId="@Model.SelectedCompanyId"
+                                   class="btn btn-outline-primary btn-sm rounded-pill px-3"
+                                   style="border-color: #2E7D32; color: #2E7D32;">
+                                Все отклики
+                            </a> *@
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="list-group list-group-flush">
+                            @foreach (var app in Model.RecentApplications)
+                            {
+                                var colors = statusColors.GetValueOrDefault(app.StatusCode.ToLower(),
+                                    (bg: "rgba(107, 114, 128, 0.1)", text: "#6B7280"));
+                                
+                                <a asp-page="/EmployerManagement/ApplicationManagement/ApplicationDetail"
+                                       asp-route-id="@app.Id"
+                                       class="list-group-item list-group-item-action border-0 px-0"
+                                       style="border-bottom: 1px solid #E0E8E0 !important;">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-4">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-person-circle fs-5 me-2" style="color: #2E7D32;"></i>
+                                                <div>
+                                                    <span class="fw-semibold" style="color: #1C2E1C;">@app.ApplicantName</span>
+                                                    <br>
+                                                    <small style="color: #6B7280;">@app.AppliedAt.ToString("dd.MM.yyyy HH:mm")</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <span style="color: #1C2E1C;">@app.VacancyTitle</span>
+                                            <br>
+                                            <small style="color: #6B7280;">@app.CompanyName</small>
+                                            <br>
+                                            <small class="d-flex align-items-center" style="color: #2E7D32;">
+                                                <i class="bi bi-cash-stack me-1" style="font-size: 0.8rem;"></i>
+                                                @app.SalaryDisplay
+                                            </small>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <span class="badge" style="background-color: @colors.bg; color: @colors.text;">
+                                                @app.Status
+                                            </span>
+                                        </div>
+                                        <div class="col-md-1 text-end">
+                                            <i class="bi bi-chevron-right" style="color: #2E7D32;"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
             <!-- Блок вакансий -->
             <div class="card shadow-sm border-0 rounded-4 mb-4" style="border: 1px solid #E0E8E0 !important;">
                 <div class="card-header bg-transparent border-0 pt-4 px-4">
@@ -192,9 +258,16 @@
                                     @foreach (var vacancy in Model.Vacancies)
                                     {
                                         <tr>
-                                            <td class="fw-semibold" style="color: #1C2E1C;">@vacancy.Title</td>
+                                            <td class="fw-semibold" style="color: #1C2E1C;">
+                                                <a asp-page="/VacancyDetail" asp-route-id="@vacancy.Id">@vacancy.Title</a>
+                                            </td>
                                             <td style="color: #6B7280;">@vacancy.Location</td>
-                                            <td style="color: #2E7D32;">@vacancy.Salary</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="bi bi-cash-stack me-1" style="color: #2E7D32;"></i>
+                                                    <span style="color: #2E7D32; font-weight: 500;">@vacancy.SalaryDisplay</span>
+                                                </div>
+                                            </td>
                                             <td>
                                                 @if (vacancy.IsActive)
                                                 {
@@ -219,30 +292,32 @@
                                                 </a>
                                             </td>
                                             <td>
-                                                <div class="btn-group btn-group-sm">
+                                                <div class="btn-group btn-group-sm gap-2">
                                                     <a asp-page="/EmployerManagement/VacancyManagement/VacancyEdit"
                                                            asp-route-id="@vacancy.Id"
                                                            class="btn btn-outline-primary"
                                                            title="Редактировать"
                                                            style="border-color: #2E7D32; color: #2E7D32;">
-                                                        <i class="bi bi-pencil"></i>
+                                                         <i class="bi bi-pencil"></i>
+                                                        Редактировать
                                                     </a>
-                                                    <a asp-page="/VacancyDetail"
+                                                    @* <a asp-page="/VacancyDetail"
                                                            asp-route-id="@vacancy.Id"
                                                            class="btn btn-outline-primary"
                                                            title="Просмотр"
                                                            style="border-color: #2E7D32; color: #2E7D32;">
                                                         <i class="bi bi-eye"></i>
-                                                    </a>
+                                                    </a> *@
                                                     <a asp-page="/EmployerManagement/ApplicationManagement/VacancyApplications"
                                                            asp-route-vacancyId="@vacancy.Id"
                                                            class="btn btn-outline-primary"
                                                            title="Отклики"
                                                            style="border-color: #2E7D32; color: #2E7D32;">
                                                         <i class="bi bi-envelope-paper"></i>
+                                                        Отклики
                                                     </a>
                                                     <!-- Отдельная форма для деактивации/активации -->
-                                                    @if (vacancy.IsActive)
+                                                    @* @if (vacancy.IsActive)
                                                     {
                                                         <!-- Для деактивации - используем OnPostDeactivateVacancyAsync -->
                                                         <form method="post" asp-page-handler="DeactivateVacancy" style="display: inline;">
@@ -271,7 +346,7 @@
                                                                 <i class="bi bi-play-circle"></i>
                                                             </button>
                                                         </form>
-                                                    }
+                                                    } *@
                                                 </div>
                                             </td>
                                         </tr>
@@ -295,66 +370,6 @@
                 </div>
             </div>
 
-            <!-- Блок последних откликов -->
-            @if (Model.RecentApplications.Any())
-            {
-                <div class="card shadow-sm border-0 rounded-4 mb-4" style="border: 1px solid #E0E8E0 !important;">
-                    <div class="card-header bg-transparent border-0 pt-4 px-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="fw-bold mb-0" style="color: #1C2E1C;">
-                                <i class="bi bi-clock-history me-2" style="color: #FF8F00;"></i>
-                                Последние отклики - @(Model.SelectedCompany?.Name)
-                            </h5>
-                            <a asp-page="/EmployerManagement/ApplicationManagement/AllCompanyApplications"
-                                   asp-route-companyId="@Model.SelectedCompanyId"
-                                   class="btn btn-outline-primary btn-sm rounded-pill px-3"
-                                   style="border-color: #2E7D32; color: #2E7D32;">
-                                Все отклики
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="list-group list-group-flush">
-                            @foreach (var app in Model.RecentApplications)
-                            {
-                                var colors = statusColors.GetValueOrDefault(app.StatusCode.ToLower(),
-                                    (bg: "rgba(107, 114, 128, 0.1)", text: "#6B7280"));
-                                
-                                <a asp-page="/EmployerManagement/ApplicationManagement/ApplicationDetail"
-                                       asp-route-id="@app.Id"
-                                       class="list-group-item list-group-item-action border-0 px-0"
-                                       style="border-bottom: 1px solid #E0E8E0 !important;">
-                                    <div class="row align-items-center">
-                                        <div class="col-md-4">
-                                            <div class="d-flex align-items-center">
-                                                <i class="bi bi-person-circle fs-5 me-2" style="color: #2E7D32;"></i>
-                                                <div>
-                                                    <span class="fw-semibold" style="color: #1C2E1C;">@app.ApplicantName</span>
-                                                    <br>
-                                                    <small style="color: #6B7280;">@app.AppliedAt.ToString("dd.MM.yyyy HH:mm")</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <span style="color: #1C2E1C;">@app.VacancyTitle</span>
-                                            <br>
-                                            <small style="color: #6B7280;">@app.CompanyName</small>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <span class="badge" style="background-color: @colors.bg; color: @colors.text;">
-                                                @app.Status
-                                            </span>
-                                        </div>
-                                        <div class="col-md-1 text-end">
-                                            <i class="bi bi-chevron-right" style="color: #2E7D32;"></i>
-                                        </div>
-                                    </div>
-                                </a>
-                            }
-                        </div>
-                    </div>
-                </div>
-            }
         }
 
         <!-- Блок обучения (всегда показываем) -->

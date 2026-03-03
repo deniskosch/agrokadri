@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
 {
-    [Authorize]
+    [Authorize(Roles = "Employee")]
     public class ResumeEditModel : PageModel
     {
         private readonly IUnitOfWork _unitOfWork;

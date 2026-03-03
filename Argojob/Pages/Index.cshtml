@@ -33,85 +33,109 @@
                 
                 <div class="col-lg-6 d-none d-lg-block animate-fade-right">
                     <img src="~/static-images/main-farmer.png" alt="Агро иллюстрация" class="img-fluid rounded-4">
-                    </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Список вакансий -->
-        <section class="vacancies-section py-5">
-            <div class="container">
-                <h2 class="section-title">Актуальные вакансии</h2>
-                <p class="section-subtitle">Найдите работу своей мечты в агропромышленном комплексе</p>
+    <!-- Список вакансий -->
+    <section class="vacancies-section py-5">
+        <div class="container">
+            <h2 class="section-title">Актуальные вакансии</h2>
+            <p class="section-subtitle">Найдите работу своей мечты в агропромышленном комплексе</p>
 
-                @if (Model.DisplayedVacancies.Any())
-                {
-                    <!-- Сетка вакансий -->
-                    <div class="row g-4">
-                        @foreach (var vacancy in Model.DisplayedVacancies)
-                        {
-                            <div class="col-lg-6">
-                                <div class="vacancy-card @(vacancy.IsSeasonal ? "seasonal" : "") h-100 position-relative">
-                                    @if (vacancy.IsSeasonal)
-                                    {
-                                        <span class="seasonal-tag position-absolute top-0 end-0 m-3">🌾 Сезонная</span>
-                                    }
-                                    <span class="company-badge d-inline-block mb-3">@vacancy.Location</span>
-                                    <h3 class="vacancy-title h4 fw-bold">@vacancy.Title</h3>
-                                    <div class="company-name d-flex align-items-center mb-3">
-                                        <i class="bi bi-building me-2"></i>
-                                        @vacancy.Company
-                                    </div>
-                                    <div class="salary mb-3">
-                                        @vacancy.Salary ₽
-                                    </div>
-                                    <div class="tags d-flex flex-wrap gap-2 mb-3">
-                                        @foreach (var tag in vacancy.Tags.Take(3))
-                                        {
-                                            <span class="tag">@tag</span>
-                                        }
-                                        @if (vacancy.Tags.Count > 3)
-                                        {
-                                            <span class="tag">+@(vacancy.Tags.Count - 3)</span>
-                                        }
-                                    </div>
-                                    <div class="posted-date d-flex align-items-center mb-4">
-                                        <i class="bi bi-clock me-2"></i> Опубликовано: @vacancy.PostedDate
-                                    </div>
-                                    <a asp-page="VacancyDetail" asp-route-id="@vacancy.Id" class="btn-outline-primary d-block text-center">
-                                        Подробнее <i class="bi bi-arrow-right ms-2"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        }
-                    </div>
-
-                    <!-- Кнопка загрузить еще -->
-                    @if (Model.HasMoreVacancies)
+            @if (Model.DisplayedVacancies.Any())
+            {
+                <!-- Сетка вакансий -->
+                <div class="row g-4">
+                    @foreach (var vacancy in Model.DisplayedVacancies)
                     {
-                        <div class="text-center mt-5">
-                            <form method="post" asp-page-handler="LoadMore">
-                                <input type="hidden" name="currentFilter" value="@Model.CurrentFilter" />
-                                <input type="hidden" name="currentVisibleCount" value="@Model.VisibleCount" />
-                                <button type="submit" class="btn btn-outline-primary btn-lg px-5">
-                                    Загрузить еще вакансии
-                                </button>
-                            </form>
+                        <div class="col-lg-6">
+                            <div class="vacancy-card @(vacancy.IsSeasonal ? "seasonal" : "") h-100 position-relative">
+                                @if (vacancy.IsSeasonal)
+                                {
+                                    <span class="seasonal-tag position-absolute top-0 end-0 m-3">🌾 Сезонная</span>
+                                }
+                                <span class="company-badge d-inline-block mb-3">
+                                    <i class="bi bi-geo-alt me-1"></i>@vacancy.Location
+                                </span>
+                                <h3 class="vacancy-title h4 fw-bold">@vacancy.Title</h3>
+                                <div class="company-name d-flex align-items-center mb-3">
+                                    <i class="bi bi-building me-2"></i>
+                                    @vacancy.Company
+                                </div>
+                                
+                                <!-- Отображение зарплаты с новой структурой -->
+                                <div class="salary mb-3 d-flex align-items-center">
+                                    <i class="bi bi-cash-stack me-2" style="color: #2E7D32;"></i>
+                                    <span style="color: #2E7D32; font-weight: 500;">@vacancy.SalaryDisplay</span>
+                                </div>
+                                
+                                <div class="tags d-flex flex-wrap gap-2 mb-3">
+                                    @foreach (var tag in vacancy.Tags.Take(3))
+                                    {
+                                        <span class="tag">@tag</span>
+                                    }
+                                    @if (vacancy.Tags.Count > 3)
+                                    {
+                                        <span class="tag">+@(vacancy.Tags.Count - 3)</span>
+                                    }
+                                </div>
+                                <div class="posted-date d-flex align-items-center mb-4">
+                                    <i class="bi bi-clock me-2"></i> Опубликовано: @vacancy.PostedDate
+                                </div>
+                                <a asp-page="VacancyDetail" asp-route-id="@vacancy.Id" class="btn-outline-primary d-block text-center">
+                                    Подробнее <i class="bi bi-arrow-right ms-2"></i>
+                                </a>
+                            </div>
                         </div>
                     }
-                }
-                else
+                </div>
+
+                <!-- Кнопка загрузить еще -->
+                @if (Model.HasMoreVacancies)
                 {
-                    <!-- Заглушка если нет вакансий -->
-                    <div class="text-center py-5">
-                        <i class="bi bi-inbox display-1 text-muted"></i>
-                        <h4 class="mt-3">Нет актуальных вакансий</h4>
-                        <p class="text-muted">На данный момент нет активных вакансий. Попробуйте зайти позже.</p>
-                        <a asp-page="/Vacancies" class="btn btn-primary mt-2">
-                            <i class="bi bi-search me-2"></i>Смотреть все вакансии
-                        </a>
+                    <div class="text-center mt-5">
+                        <form method="post" asp-page-handler="LoadMore">
+                            <input type="hidden" name="currentFilter" value="@Model.CurrentFilter" />
+                            <input type="hidden" name="currentVisibleCount" value="@Model.VisibleCount" />
+                            <button type="submit" class="btn btn-outline-primary btn-lg px-5">
+                                Загрузить еще вакансии
+                            </button>
+                        </form>
                     </div>
                 }
-            </div>
-        </section>
-    </main>
+            }
+            else
+            {
+                <!-- Заглушка если нет вакансий -->
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox display-1 text-muted"></i>
+                    <h4 class="mt-3">Нет актуальных вакансий</h4>
+                    <p class="text-muted">На данный момент нет активных вакансий. Попробуйте зайти позже.</p>
+                    <a asp-page="/Vacancies" class="btn btn-primary mt-2">
+                        <i class="bi bi-search me-2"></i>Смотреть все вакансии
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
+</main>
+
+<!-- Добавляем стили для отображения зарплаты -->
+<style>
+    .salary {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #2E7D32;
+    }
+    .salary i {
+        font-size: 1.1rem;
+        color: #2E7D32;
+    }
+    
+    /* Стили для разных типов зарплаты (опционально) */
+    .vacancy-card.seasonal .salary i {
+        color: #FF8F00;
+    }
+</style>

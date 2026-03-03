@@ -15,15 +15,6 @@ namespace Agrojob.Models
         [MaxLength(500)]
         public string? Description { get; set; }
 
-        [MaxLength(100)]
-        public string? ContactPerson { get; set; }
-
-        [MaxLength(20)]
-        public string? ContactPhone { get; set; }
-
-        [MaxLength(100)]
-        public string? ContactEmail { get; set; }
-
         public bool IsVerified { get; set; }
 
         // Связь с вакансиями

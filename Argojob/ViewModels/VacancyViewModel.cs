@@ -1,13 +1,43 @@
-﻿namespace Agrojob.ViewModels
+﻿using Agrojob.Models;
+
+namespace Agrojob.ViewModels
 {
     public class VacancyViewModel
     {
-        // Существующие свойства
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Company { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
-        public string Salary { get; set; } = string.Empty;
+
+        // Новые поля зарплаты
+        public SalaryType SalaryType { get; set; }
+        public long? FixedSalary { get; set; }
+        public long? SalaryFrom { get; set; }
+        public long? SalaryTo { get; set; }
+
+        // Вычисляемое поле для отображения зарплаты
+        public string SalaryDisplay
+        {
+            get
+            {
+                return SalaryType switch
+                {
+                    SalaryType.Negotiable => "Договорная",
+                    SalaryType.Fixed => FixedSalary?.ToString("N0") + " ₽",
+                    SalaryType.Range => $"от {SalaryFrom?.ToString("N0")} до {SalaryTo?.ToString("N0")} ₽",
+                    _ => "Договорная"
+                };
+            }
+        }
+
+        // Для обратной совместимости (можно удалить позже)
+        [Obsolete("Используйте SalaryDisplay вместо этого поля")]
+        public string Salary
+        {
+            get => SalaryDisplay;
+            set { } // Пустой setter для совместимости
+        }
+
         public List<string> Tags { get; set; } = new();
         public string Category { get; set; } = string.Empty;
         public string PostedDate { get; set; } = string.Empty;
@@ -28,12 +58,40 @@
 
     public class VacancyDetailViewModel
     {
-        // Существующие свойства
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Company { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
-        public string Salary { get; set; } = string.Empty;
+
+        // Новые поля зарплаты
+        public SalaryType SalaryType { get; set; }
+        public long? FixedSalary { get; set; }
+        public long? SalaryFrom { get; set; }
+        public long? SalaryTo { get; set; }
+
+        // Вычисляемое поле для отображения зарплаты
+        public string SalaryDisplay
+        {
+            get
+            {
+                return SalaryType switch
+                {
+                    SalaryType.Negotiable => "Договорная",
+                    SalaryType.Fixed => FixedSalary?.ToString("N0") + " ₽",
+                    SalaryType.Range => $"от {SalaryFrom?.ToString("N0")} до {SalaryTo?.ToString("N0")} ₽",
+                    _ => "Договорная"
+                };
+            }
+        }
+
+        // Для обратной совместимости (можно удалить позже)
+        [Obsolete("Используйте SalaryDisplay вместо этого поля")]
+        public string Salary
+        {
+            get => SalaryDisplay;
+            set { } // Пустой setter для совместимости
+        }
+
         public List<string> Tags { get; set; } = new();
         public string Category { get; set; } = string.Empty;
         public string PostedDate { get; set; } = string.Empty;
@@ -57,7 +115,7 @@
         public bool CompanyIsVerified { get; set; }
     }
 
-    // Новые ViewModel для панели работодателя
+    // Остальные ViewModel без изменений
     public class CompanyViewModel
     {
         public int Id { get; set; }
@@ -88,5 +146,26 @@
         public bool HasResume { get; set; }
         public int? ResumeId { get; set; }
         public string? CoverLetter { get; set; }
+
+        // Новые поля зарплаты для вакансии
+        public SalaryType SalaryType { get; set; }
+        public long? FixedSalary { get; set; }
+        public long? SalaryFrom { get; set; }
+        public long? SalaryTo { get; set; }
+
+        // Вычисляемое поле для отображения зарплаты
+        public string SalaryDisplay
+        {
+            get
+            {
+                return SalaryType switch
+                {
+                    SalaryType.Negotiable => "Договорная",
+                    SalaryType.Fixed => FixedSalary?.ToString("N0") + " ₽",
+                    SalaryType.Range => $"от {SalaryFrom?.ToString("N0")} до {SalaryTo?.ToString("N0")} ₽",
+                    _ => "Договорная"
+                };
+            }
+        }
     }
 }

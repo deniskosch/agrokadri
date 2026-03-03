@@ -114,11 +114,14 @@
                                     </div>
                                     
                                     <div class="col-md-2">
-                                        <span style="color: #2E7D32;">@app.Salary</span>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-cash-stack me-1" style="color: #2E7D32;"></i>
+                                            <span style="color: #2E7D32; font-weight: 500;">@app.SalaryDisplay</span>
+                                        </div>
                                     </div>
                                     
                                     <div class="col-md-2">
-                                        <span class="badge py-2 px-3" style="background-color: @colors.bg; color: @colors.text;">
+                                        <span class="badge py-2 px-3 rounded-pill" style="background-color: @colors.bg; color: @colors.text;">
                                             @app.StatusDisplay
                                         </span>
                                     </div>

@@ -44,9 +44,10 @@
                             <!-- Заголовок вакансии -->
                             <h1 class="fw-bold mb-3" style="color: var(--dark); font-size: 2.2rem;">@Model.Vacancy.Title</h1>
                             
-                            <!-- Зарплата -->
-                            <div class="mb-4">
-                                <div class="fw-bold" style="color: var(--primary-dark); font-size: 2rem;">@Model.Vacancy.Salary ₽</div>
+                            <!-- Зарплата с новой структурой -->
+                            <div class="mb-4 d-flex align-items-center">
+                                <i class="bi bi-cash-stack me-2" style="color: var(--primary-dark); font-size: 1.8rem;"></i>
+                                <div class="fw-bold" style="color: var(--primary-dark); font-size: 2rem;">@Model.Vacancy.SalaryDisplay</div>
                             </div>
                             
                             <!-- Компания, локация, дата -->
@@ -68,7 +69,7 @@
                             @if (Model.Vacancy.Tags.Any())
                             {
                                 <div class="mb-4">
-                                    <h5 class="fw-semibold mb-3" style="color: var(--dark);">Ключевые навыки</h5>
+                                    @* <h5 class="fw-semibold mb-3" style="color: var(--dark);">Ключевые навыки</h5> *@
                                     <div class="d-flex flex-wrap gap-2">
                                         @foreach (var tag in Model.Vacancy.Tags)
                                         {
@@ -83,7 +84,7 @@
                             <!-- Описание -->
                             <div class="mb-4">
                                 <h5 class="fw-semibold mb-3" style="color: var(--dark);">Описание вакансии</h5>
-                                <p style="color: var(--gray); line-height: 1.7;">@Model.Vacancy.Description</p>
+                                <p style="color: var(--gray); line-height: 1.7;">@Html.Raw(Model.Vacancy.Description)</p>
                             </div>
                             
                             <!-- Требования -->
@@ -134,6 +135,13 @@
                                 </div>
                                 <h5 class="fw-bold mb-1" style="color: var(--dark);">@Model.Vacancy.Company</h5>
                                 <p style="color: var(--gray);">Работодатель</p>
+                                
+                                @if (Model.Vacancy.CompanyIsVerified)
+                                {
+                                    <span class="badge mt-2" style="background-color: rgba(var(--primary-rgb), 0.1); color: var(--primary);">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Подтвержденная компания
+                                    </span>
+                                }
                             </div>
                             
                             <hr style="border-color: var(--border-color);">
@@ -144,7 +152,7 @@
                                 if (Model.HasApplied)
                                 {
                                     <div class="alert text-center py-3 mb-3" style="background-color: rgba(var(--primary-rgb), 0.1); color: var(--primary); border: none;">
-                                        <i class="bi bi-check-circle-fill me-1"></i> Вы уже откликнулись
+                                        <i class="bi bi-check-circle-fill me-1"></i> Вы уже откликнулись (@Html.DisplayFor(m => m.AppStatus))
                                     </div>
                                 }
                                 else
@@ -170,7 +178,7 @@
                             
                             <!-- Кнопка "Все вакансии компании" (опционально) -->
                             <a asp-page="/Vacancies"
-                                   asp-route-company="@Model.Vacancy.Company"
+                                   asp-route-search="@Model.Vacancy.Company"
                                    class="btn w-100 py-2"
                                    style="background-color: var(--light); color: var(--gray); border: none;">
                                 <i class="bi bi-list me-2"></i>Все вакансии компании
@@ -208,15 +216,15 @@
                                     }
                                 </select>
                                 <div class="mt-2">
-                                    <a asp-page="/ResumeManagement/ResumeEdit" style="color: var(--primary);">+ Создать новое резюме</a>
+                                    <a asp-page="/EmployeeManagement/ResumeManagement/ResumeEdit" style="color: var(--primary);">+ Создать новое резюме</a>
                                 </div>
                             }
                             else
                             {
-                                <div class="alert p-3 mb-0" style="background-color: rgba(var(--warning), 0.1); color: var(--warning); border: none;">
+                                <div class="alert p-3 mb-0" style="background-color: rgba(255, 193, 7, 0.1); color: #856404; border: none;">
                                     <i class="bi bi-exclamation-triangle me-2"></i>
                                     У вас нет резюме.
-                                    <a asp-page="/ResumeManagement/ResumeEdit" style="color: var(--warning); font-weight: 600;">Создайте резюме</a> сначала.
+                                    <a asp-page="/EmployeeManagement/ResumeManagement/ResumeEdit" style="color: #856404; font-weight: 600;">Создайте резюме</a> сначала.
                                 </div>
                             }
                         </div>
@@ -242,7 +250,7 @@ else
 {
     <!-- 404 - вакансия не найдена -->
     <div class="container py-5 my-5 text-center">
-        <i class="bi bi-exclamation-triangle display-1" style="color: var(--warning);"></i>
+        <i class="bi bi-exclamation-triangle display-1" style="color: #ffc107;"></i>
         <h1 class="mt-4 fw-bold" style="color: var(--dark);">Вакансия не найдена</h1>
         <p style="color: var(--gray);">Запрошенная вакансия не существует или была удалена</p>
         <a asp-page="/Vacancies" class="btn btn-primary btn-lg mt-3 px-5" style="background-color: var(--primary); border-color: var(--primary);">

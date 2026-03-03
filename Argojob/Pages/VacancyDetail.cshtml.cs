@@ -29,6 +29,7 @@ namespace Agrojob.Pages
         // Для модалки отклика
         public List<Resume> UserResumes { get; set; } = new();
         public bool HasApplied { get; set; }
+        public ApplicationStatus AppStatus { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -51,6 +52,13 @@ namespace Agrojob.Pages
                     UserResumes = resumes.Where(r => r.IsActive).ToList();
 
                     HasApplied = await _unitOfWork.Applications.HasUserAppliedToVacancyAsync(userId, id);
+
+                    var apps  = await _unitOfWork.Applications.GetApplicationsByUserAsync(userId);
+
+                    if(apps != null && apps?.Count() > 0)
+                    {
+                        AppStatus = apps.FirstOrDefault()!.Status;
+                    }
                 }
             }
 
@@ -65,7 +73,13 @@ namespace Agrojob.Pages
                 Title = vacancy.Title,
                 Company = vacancy.Company?.Name ?? "Не указано",
                 Location = vacancy.Location ?? "Не указано",
-                Salary = vacancy.Salary ?? "Не указана",
+
+                // Новые поля зарплаты
+                SalaryType = vacancy.SalaryType,
+                FixedSalary = vacancy.FixedSalary,
+                SalaryFrom = vacancy.SalaryFrom,
+                SalaryTo = vacancy.SalaryTo,
+
                 Tags = vacancy.VacancyTags?
                     .Select(vt => vt.Tag?.Name ?? "")
                     .Where(t => !string.IsNullOrEmpty(t))
@@ -80,9 +94,15 @@ namespace Agrojob.Pages
                 Offers = vacancy.Offers?
                     .Select(o => o.Text)
                     .ToList() ?? new(),
-                ContactPerson = vacancy.Company?.ContactPerson,
-                ContactPhone = vacancy.Company?.ContactPhone,
-                ContactEmail = vacancy.Company?.ContactEmail
+
+                // Дополнительные поля
+                CompanyId = vacancy.CompanyId,
+                IsActive = vacancy.IsActive,
+                CreatedAt = vacancy.PostedDate,
+                CreatedById = vacancy.CreatedById,
+                ViewsCount = vacancy.ViewsCount,
+                CompanyDescription = vacancy.Company?.Description,
+                CompanyIsVerified = vacancy.Company?.IsVerified ?? false
             };
         }
 

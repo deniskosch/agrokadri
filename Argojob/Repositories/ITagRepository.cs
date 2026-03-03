@@ -10,5 +10,6 @@ namespace Agrojob.Repositories
         Task<IEnumerable<Tag>> GetTagsByVacancyAsync(int vacancyId);
         Task<Dictionary<string, int>> GetTagsWithCountsAsync();
         Task<List<int>> AddTagsToVacancyAsync(int vacancyId, List<string> tagNames);
+        Task<bool> DeleteVacancyTag(int vacancyId, int tagId);
     }
 }

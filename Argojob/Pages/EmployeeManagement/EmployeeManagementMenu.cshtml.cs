@@ -50,7 +50,12 @@ namespace Agrojob.Pages.EmployeeManagement
                 Title = r.Title,
                 Specialization = "Не указана",
                 Experience = r.ExperienceYears ?? 0,
-                DesiredSalary = r.DesiredSalary ?? "Не указана",
+
+                // Для резюме пока оставляем строковое поле, но форматируем его для отображения
+                DesiredSalary = string.IsNullOrEmpty(r.DesiredSalary)
+                    ? "Не указана"
+                    : r.DesiredSalary,
+
                 IsActive = r.IsActive,
                 IsPublished = r.IsPublished,
                 UpdatedAt = r.UpdatedAt ?? r.CreatedAt
@@ -74,7 +79,13 @@ namespace Agrojob.Pages.EmployeeManagement
                     AppliedDate = a.AppliedAt,
                     Status = GetStatusDisplay(a.Status),
                     StatusCode = a.Status.ToString().ToLower(),
-                    Salary = a.Vacancy.Salary ?? "Не указана",
+
+                    // Новые поля зарплаты
+                    SalaryType = a.Vacancy.SalaryType,
+                    FixedSalary = a.Vacancy.FixedSalary,
+                    SalaryFrom = a.Vacancy.SalaryFrom,
+                    SalaryTo = a.Vacancy.SalaryTo,
+
                     VacancyId = a.VacancyId
                 }).ToList();
         }
@@ -174,7 +185,28 @@ namespace Agrojob.Pages.EmployeeManagement
         public DateTime AppliedDate { get; set; }
         public string Status { get; set; } = string.Empty;
         public string StatusCode { get; set; } = string.Empty;
-        public string Salary { get; set; } = string.Empty;
+
+        // Новые поля зарплаты
+        public SalaryType SalaryType { get; set; }
+        public long? FixedSalary { get; set; }
+        public long? SalaryFrom { get; set; }
+        public long? SalaryTo { get; set; }
+
+        // Вычисляемое поле для отображения зарплаты
+        public string SalaryDisplay
+        {
+            get
+            {
+                return SalaryType switch
+                {
+                    SalaryType.Negotiable => "Договорная",
+                    SalaryType.Fixed => FixedSalary?.ToString("N0") + " ₽",
+                    SalaryType.Range => $"от {SalaryFrom?.ToString("N0")} до {SalaryTo?.ToString("N0")} ₽",
+                    _ => "Договорная"
+                };
+            }
+        }
+
         public int VacancyId { get; set; }
     }
 }

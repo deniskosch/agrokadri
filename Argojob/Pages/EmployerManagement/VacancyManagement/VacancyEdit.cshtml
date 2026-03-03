@@ -1,8 +1,43 @@
 ﻿@page "{id?}"
+@using Agrojob.Models
 @model Agrojob.Pages.EmployerManagement.VacancyManagement.VacancyEditModel
 @{
     ViewData["Title"] = Model.IsEditMode ? "Редактирование вакансии" : "Создание вакансии";
 }
+
+<!-- Подключаем Quill редактор -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<style>
+    .quill-editor {
+        height: 300px;
+        margin-bottom: 20px;
+    }
+    .dynamic-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .dynamic-item input {
+        flex: 1;
+    }
+    .dynamic-item .remove-btn {
+        margin-left: 10px;
+        color: #dc3545;
+        cursor: pointer;
+    }
+    .dynamic-item .remove-btn:hover {
+        color: #bd2130;
+    }
+    .add-btn {
+        margin-top: 10px;
+    }
+    .char-counter {
+        font-size: 0.8rem;
+        color: #6c757d;
+        text-align: right;
+        margin-top: 5px;
+    }
+</style>
 
 <!-- Хлебные крошки -->
 <div class="bg-light py-3">
@@ -30,7 +65,7 @@
                         </h4>
                     </div>
                     <div class="card-body p-4">
-                        <form method="post">
+                        <form method="post" id="vacancyForm">
                             <input type="hidden" asp-for="IsEditMode" />
                             @if (Model.IsEditMode)
                             {
@@ -42,143 +77,337 @@
                             <div class="row g-3 mb-4">
                                 <div class="col-md-12">
                                     <label asp-for="Input.Title" class="form-label fw-semibold">Название вакансии <span class="text-danger">*</span></label>
-                                    <input asp-for="Input.Title" class="form-control" placeholder="Например: Агроном-полевод">
-                                        <span asp-validation-for="Input.Title" class="text-danger small"></span>
-                                    </div>
+                                    <input asp-for="Input.Title" class="form-control" placeholder="Например: Агроном-полевод" maxlength="200">
+                                    <span asp-validation-for="Input.Title" class="text-danger small"></span>
+                                </div>
 
-                                    <div class="col-md-6">
-                                        <label asp-for="Input.CompanyId" class="form-label fw-semibold">Компания <span class="text-danger">*</span></label>
-                                        <select asp-for="Input.CompanyId" class="form-select" asp-items="Model.Companies">
-                                            <option value="">-- Выберите компанию --</option>
-                                        </select>
-                                        <span asp-validation-for="Input.CompanyId" class="text-danger small"></span>
-                                    </div>
+                                <div class="col-md-6">
+                                    <label asp-for="Input.CompanyId" class="form-label fw-semibold">Компания <span class="text-danger">*</span></label>
+                                    <select asp-for="Input.CompanyId" class="form-select" asp-items="Model.Companies">
+                                        <option value="">-- Выберите компанию --</option>
+                                    </select>
+                                    <span asp-validation-for="Input.CompanyId" class="text-danger small"></span>
+                                </div>
 
-                                    <div class="col-md-6">
-                                        <label asp-for="Input.Category" class="form-label fw-semibold">Категория <span class="text-danger">*</span></label>
-                                        <input asp-for="Input.Category" class="form-control" placeholder="Например: Растениеводство, Животноводство">
-                                            <span asp-validation-for="Input.Category" class="text-danger small"></span>
-                                        </div>
+                                <div class="col-md-6">
+                                    <label asp-for="Input.Category" class="form-label fw-semibold">Категория <span class="text-danger">*</span></label>
+                                    <input asp-for="Input.Category" class="form-control" placeholder="Например: Растениеводство, Животноводство" maxlength="100">
+                                    <span asp-validation-for="Input.Category" class="text-danger small"></span>
+                                </div>
 
-                                        <div class="col-md-6">
-                                            <label asp-for="Input.Location" class="form-label fw-semibold">Локация <span class="text-danger">*</span></label>
-                                            <input asp-for="Input.Location" class="form-control" placeholder="Например: Краснодарский край, Московская область">
-                                                <span asp-validation-for="Input.Location" class="text-danger small"></span>
-                                            </div>
+                                <div class="col-md-6">
+                                    <label asp-for="Input.Location" class="form-label fw-semibold">Локация <span class="text-danger">*</span></label>
+                                    <input asp-for="Input.Location" class="form-control" placeholder="Например: Краснодарский край, Московская область" maxlength="200">
+                                    <span asp-validation-for="Input.Location" class="text-danger small"></span>
+                                </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-check mt-4">
-                                                    <input asp-for="Input.IsSeasonal" class="form-check-input" />
-                                                    <label asp-for="Input.IsSeasonal" class="form-check-label fw-semibold">
-                                                        Сезонная работа
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Зарплата -->
-                                        <h5 class="fw-semibold mb-3">Зарплата</h5>
-                                        <div class="row g-3 mb-4">
-                                            <div class="col-md-12">
-                                                <label asp-for="Input.Salary" class="form-label fw-semibold">Условия оплаты</label>
-                                                <input asp-for="Input.Salary" class="form-control" placeholder="Например: 100 000 - 150 000 ₽ или Договорная">
-                                                    <small class="text-muted">Укажите вилку зарплаты или "Договорная"</small>
-                                                </div>
-                                            </div>
-
-                                            <!-- Описание -->
-                                            <h5 class="fw-semibold mb-3">Описание вакансии <span class="text-danger">*</span></h5>
-                                            <div class="row g-3 mb-4">
-                                                <div class="col-md-12">
-                                                    <textarea asp-for="Input.Description" class="form-control" rows="5" placeholder="Подробно опишите вакансию, обязанности, условия работы..."></textarea>
-                                                    <span asp-validation-for="Input.Description" class="text-danger small"></span>
-                                                </div>
-                                            </div>
-
-                                            <!-- Требования -->
-                                            <h5 class="fw-semibold mb-3">Требования к кандидату</h5>
-                                            <div class="mb-4">
-                                                @for (int i = 0; i < 5; i++)
-                                                {
-                                                    <div class="mb-2">
-                                                        <input type="text" class="form-control" name="Input.Requirements[@i]"
-                                                               value="@(Model.Input.Requirements.Count > i ? Model.Input.Requirements[i] : "")"
-                                                               placeholder="Требование @(i + 1) (необязательно)">
-                                                    </div>
-                                                }
-                                                <small class="text-muted">Вы можете заполнить от 1 до 5 требований</small>
-                                            </div>
-
-                                            <!-- Условия работы -->
-                                            <h5 class="fw-semibold mb-3">Мы предлагаем</h5>
-                                            <div class="mb-4">
-                                                @for (int i = 0; i < 5; i++)
-                                                {
-                                                    <div class="mb-2">
-                                                        <input type="text" class="form-control" name="Input.Offers[@i]"
-                                                               value="@(Model.Input.Offers.Count > i ? Model.Input.Offers[i] : "")"
-                                                               placeholder="Условие @(i + 1) (необязательно)">
-                                                    </div>
-                                                }
-                                                <small class="text-muted">Вы можете заполнить от 1 до 5 условий</small>
-                                            </div>
-
-                                            <!-- Теги -->
-                                            <h5 class="fw-semibold mb-3">Ключевые навыки (теги)</h5>
-                                            <div class="mb-4">
-                                                <div class="row g-2">
-                                                    @for (int i = 0; i < Model.AllTags.Count; i++)
-                                                    {
-                                                        var tag = Model.AllTags[i];
-                                                        <div class="col-md-3 col-sm-4 col-6">
-                                                            <div class="form-check">
-                                                                <input type="checkbox" class="form-check-input" name="Input.SelectedTagIds" value="@tag.Id" id="tag_@tag.Id"
-                                                                @(Model.Input.SelectedTagIds?.Contains(tag.Id) == true ? "checked" : "")>
-                                                                <label class="form-check-label" for="tag_@tag.Id">@tag.Name</label>
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                </div>
-                                                <small class="text-muted">Выберите подходящие теги для вакансии</small>
-                                            </div>
-
-                                            <!-- Контактная информация -->
-                                            <h5 class="fw-semibold mb-3">Контактная информация</h5>
-                                            <div class="row g-3 mb-4">
-                                                <div class="col-md-4">
-                                                    <label asp-for="Input.ContactPerson" class="form-label fw-semibold">Контактное лицо</label>
-                                                    <input asp-for="Input.ContactPerson" class="form-control" placeholder="Иванов Иван">
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <label asp-for="Input.ContactPhone" class="form-label fw-semibold">Телефон</label>
-                                                        <input asp-for="Input.ContactPhone" class="form-control" placeholder="+7 (999) 123-45-67">
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label asp-for="Input.ContactEmail" class="form-label fw-semibold">Email</label>
-                                                            <input asp-for="Input.ContactEmail" class="form-control" placeholder="hr@company.ru">
-                                                            </div>
-                                                        </div>
-
-                                                        <hr class="my-4">
-
-                                                        <!-- Кнопки -->
-                                                        <div class="d-flex justify-content-between">
-                                                            <a asp-page="/EmployerManagement/EmployerManagementMenu" class="btn btn-outline-secondary">
-                                                                <i class="bi bi-arrow-left me-1"></i>Отмена
-                                                            </a>
-                                                            <button type="submit" class="btn btn-success px-5">
-                                                                <i class="bi bi-check-circle me-1"></i>
-                                                                @(Model.IsEditMode ? "Сохранить изменения" : "Опубликовать вакансию")
-                                                            </button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <div class="col-md-6">
+                                    <div class="form-check mt-4">
+                                        <input asp-for="Input.IsSeasonal" class="form-check-input" />
+                                        <label asp-for="Input.IsSeasonal" class="form-check-label fw-semibold">
+                                            Сезонная работа
+                                        </label>
                                     </div>
                                 </div>
-                            </section>
+                            </div>
 
-                            @section Scripts {
-                                <partial name="_ValidationScriptsPartial" />
-                            }
+                            <!-- Зарплата -->
+                            <h5 class="fw-semibold mb-3">Зарплата</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">Тип зарплаты</label>
+                                    <div class="btn-group w-100" role="group">
+                                        @foreach (var type in Enum.GetValues(typeof(SalaryType)).Cast<SalaryType>())
+                                        {
+                                            <input type="radio" class="btn-check" name="Input.SalaryType"
+                                                   id="salaryType_@((int)type)" value="@((int)type)"
+                                                   autocomplete="off"
+                                            @(Model.Input.SalaryType == type ? "checked" : "")>
+                                            <label class="btn btn-outline-success" for="salaryType_@((int)type)">
+                                                @(type == SalaryType.Negotiable ? "Договорная" :
+                                                  type == SalaryType.Fixed ? "Фиксированная" : "Диапазон")
+                                            </label>
+                                        }
+                                    </div>
+                                </div>
+
+                                <!-- Поле для фиксированной зарплаты -->
+                                <div class="col-md-12" id="fixedSalaryField" style="display: none;">
+                                    <label asp-for="Input.FixedSalary" class="form-label fw-semibold">Сумма (₽)</label>
+                                    <input asp-for="Input.FixedSalary" class="form-control" type="number" min="1" step="1000"
+                                           placeholder="Например: 100000">
+                                    <span asp-validation-for="Input.FixedSalary" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Поля для диапазона -->
+                                <div class="row" id="rangeSalaryField" style="display: none;">
+                                    <div class="col-md-6">
+                                        <label asp-for="Input.SalaryFrom" class="form-label fw-semibold">От (₽)</label>
+                                        <input asp-for="Input.SalaryFrom" class="form-control" type="number" min="1" step="1000"
+                                               placeholder="Например: 80000">
+                                        <span asp-validation-for="Input.SalaryFrom" class="text-danger small"></span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label asp-for="Input.SalaryTo" class="form-label fw-semibold">До (₽)</label>
+                                        <input asp-for="Input.SalaryTo" class="form-control" type="number" min="1" step="1000"
+                                               placeholder="Например: 150000">
+                                        <span asp-validation-for="Input.SalaryTo" class="text-danger small"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Подсказка для договорной -->
+                                <div class="col-md-12" id="negotiableHint" style="display: none;">
+                                    <div class="alert alert-info mb-0">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        При выборе договорной зарплаты сумма не указывается.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Описание с Quill редактором -->
+                            <h5 class="fw-semibold mb-3">Описание вакансии <span class="text-danger">*</span></h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-12">
+                                    <!-- Скрытое поле для хранения HTML -->
+                                    <input type="hidden" asp-for="Input.Description" id="Description" />
+                                    
+                                    <!-- Quill редактор -->
+                                    <div id="quill-editor" class="quill-editor">
+                                        @Html.Raw(Model.Input.Description)
+                                    </div>
+                                    
+                                    <div class="char-counter" id="description-counter">0 символов</div>
+                                    <span asp-validation-for="Input.Description" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- Требования (до 15) -->
+                            <h5 class="fw-semibold mb-3">Требования к кандидату</h5>
+                            <div class="mb-4" id="requirements-container">
+                                <div id="requirements-list">
+                                    @for (int i = 0; i < Model.Input.Requirements.Count; i++)
+                                    {
+                                        <div class="dynamic-item" data-index="@i">
+                                            <input type="text" class="form-control" name="Input.Requirements[@i]"
+                                                   value="@Model.Input.Requirements[i]" 
+                                                   placeholder="Требование @(i + 1)" maxlength="500">
+                                            <i class="bi bi-x-circle remove-btn" onclick="removeItem(this, 'requirements')"></i>
+                                        </div>
+                                    }
+                                </div>
+                                <button type="button" class="btn btn-outline-success btn-sm add-btn" onclick="addRequirement()">
+                                    <i class="bi bi-plus-circle me-1"></i>Добавить требование
+                                </button>
+                                <small class="text-muted d-block mt-2">Максимум 15 требований. Нажмите на крестик, чтобы удалить.</small>
+                            </div>
+
+                            <!-- Условия работы (до 15) -->
+                            <h5 class="fw-semibold mb-3">Мы предлагаем</h5>
+                            <div class="mb-4" id="offers-container">
+                                <div id="offers-list">
+                                    @for (int i = 0; i < Model.Input.Offers.Count; i++)
+                                    {
+                                        <div class="dynamic-item" data-index="@i">
+                                            <input type="text" class="form-control" name="Input.Offers[@i]"
+                                                   value="@Model.Input.Offers[i]" 
+                                                   placeholder="Условие @(i + 1)" maxlength="500">
+                                            <i class="bi bi-x-circle remove-btn" onclick="removeItem(this, 'offers')"></i>
+                                        </div>
+                                    }
+                                </div>
+                                <button type="button" class="btn btn-outline-success btn-sm add-btn" onclick="addOffer()">
+                                    <i class="bi bi-plus-circle me-1"></i>Добавить условие
+                                </button>
+                                <small class="text-muted d-block mt-2">Максимум 15 условий. Нажмите на крестик, чтобы удалить.</small>
+                            </div>
+
+                            <!-- Теги -->
+                            <h5 class="fw-semibold mb-3">Ключевые навыки (теги)</h5>
+                            <div class="mb-4">
+                                <div class="row g-2">
+                                    @for (int i = 0; i < Model.AllTags.Count; i++)
+                                    {
+                                        var tag = Model.AllTags[i];
+                                        <div class="col-md-3 col-sm-4 col-6">
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" name="Input.SelectedTagIds" value="@tag.Id" id="tag_@tag.Id"
+                                                @(Model.Input.SelectedTagIds?.Contains(tag.Id) == true ? "checked" : "")>
+                                                <label class="form-check-label" for="tag_@tag.Id">@tag.Name</label>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <small class="text-muted mt-2">Выберите подходящие теги для вакансии, соискателю будет проще вас найти</small>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <!-- Кнопки -->
+                            <div class="d-flex justify-content-between">
+                                <a asp-page="/EmployerManagement/EmployerManagementMenu" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-1"></i>Отмена
+                                </a>
+                                <button type="submit" class="btn btn-success px-5">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    @(Model.IsEditMode ? "Сохранить изменения" : "Опубликовать вакансию")
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <!-- Quill JS -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    
+    <script>
+        // Инициализация Quill редактора
+        var quill = new Quill('#quill-editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    ['link', 'clean']
+                ]
+            },
+            placeholder: 'Подробно опишите вакансию, обязанности, условия работы...'
+        });
+
+        // Счетчик символов для Quill
+        function updateDescriptionCounter() {
+            var text = quill.getText().trim();
+            var length = text.length;
+            $('#description-counter').text(length + ' символов');
+        }
+
+        quill.on('text-change', function() {
+            var html = quill.root.innerHTML;
+            $('#Description').val(html);
+            updateDescriptionCounter();
+        });
+
+        // Устанавливаем начальное значение из скрытого поля
+        if ($('#Description').val()) {
+            quill.root.innerHTML = $('#Description').val();
+            updateDescriptionCounter();
+        }
+
+        // Функции для управления требованиями
+        function addRequirement() {
+            var container = $('#requirements-list');
+            var count = container.children().length;
+            
+            if (count >= 15) {
+                alert('Максимальное количество требований - 15');
+                return;
+            }
+            
+            var newItem = $('<div class="dynamic-item" data-index="' + count + '">' +
+                '<input type="text" class="form-control" name="Input.Requirements[' + count + ']" ' +
+                'placeholder="Требование ' + (count + 1) + '" maxlength="500">' +
+                '<i class="bi bi-x-circle remove-btn" onclick="removeItem(this, \'requirements\')"></i>' +
+                '</div>');
+            
+            container.append(newItem);
+        }
+
+        function addOffer() {
+            var container = $('#offers-list');
+            var count = container.children().length;
+            
+            if (count >= 15) {
+                alert('Максимальное количество условий - 15');
+                return;
+            }
+            
+            var newItem = $('<div class="dynamic-item" data-index="' + count + '">' +
+                '<input type="text" class="form-control" name="Input.Offers[' + count + ']" ' +
+                'placeholder="Условие ' + (count + 1) + '" maxlength="500">' +
+                '<i class="bi bi-x-circle remove-btn" onclick="removeItem(this, \'offers\')"></i>' +
+                '</div>');
+            
+            container.append(newItem);
+        }
+
+        function removeItem(element, type) {
+            var item = $(element).closest('.dynamic-item');
+            var container = item.parent();
+            item.remove();
+            
+            // Перенумеровываем оставшиеся элементы
+            container.children().each(function(index) {
+                $(this).attr('data-index', index);
+                $(this).find('input').attr('name', 'Input.' + (type === 'requirements' ? 'Requirements' : 'Offers') + '[' + index + ']');
+                $(this).find('input').attr('placeholder', (type === 'requirements' ? 'Требование' : 'Условие') + ' ' + (index + 1));
+            });
+        }
+
+        // Функции для управления зарплатой
+        function updateSalaryFields() {
+            var selectedValue = $('input[name="Input.SalaryType"]:checked').val();
+            
+            // Скрываем все поля
+            $('#fixedSalaryField').hide();
+            $('#rangeSalaryField').hide();
+            $('#negotiableHint').hide();
+            
+            // Отключаем валидацию для скрытых полей
+            $('#Input_FixedSalary').removeAttr('required');
+            $('#Input_SalaryFrom').removeAttr('required');
+            $('#Input_SalaryTo').removeAttr('required');
+            
+            if (selectedValue === '1') { // Fixed
+                $('#fixedSalaryField').show();
+            } else if (selectedValue === '2') { // Range
+                $('#rangeSalaryField').show();
+            } else { // Negotiable
+                $('#negotiableHint').show();
+            }
+        }
+
+        $(document).ready(function() {
+            // Обновляем поля при загрузке страницы
+            updateSalaryFields();
+            
+            // Обновляем поля при изменении выбора
+            $('input[name="Input.SalaryType"]').change(updateSalaryFields);
+            
+            // Дополнительная валидация для диапазона
+            $('#vacancyForm').submit(function(e) {
+                var selectedValue = $('input[name="Input.SalaryType"]:checked').val();
+                
+                if (selectedValue === '2') { // Range
+                    var from = $('#Input_SalaryFrom').val();
+                    var to = $('#Input_SalaryTo').val();
+                    
+                    if (from && to && parseInt(from) > parseInt(to)) {
+                        e.preventDefault();
+                        alert('Значение "От" не может быть больше значения "До"');
+                        return false;
+                    }
+                }
+                
+                if (selectedValue === '1') { // Fixed
+                    var fixed = $('#Input_FixedSalary').val();
+                    if (fixed && parseInt(fixed) <= 0) {
+                        e.preventDefault();
+                        alert('Зарплата должна быть положительным числом');
+                        return false;
+                    }
+                }
+
+                // Перед отправкой обновляем скрытое поле с описанием
+                $('#Description').val(quill.root.innerHTML);
+            });
+        });
+    </script>
+}

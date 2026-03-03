@@ -64,34 +64,6 @@
                             </div>
                         </div>
 
-                        <!-- Тип занятости -->
-                        @* <div class="mb-3">
-                            <label class="form-label small text-muted mb-1">Тип занятости</label>
-                            <div class="list-group list-group-flush">
-                                <a asp-page="Vacancies"
-                                       asp-route-type="all"
-                                       asp-route-category="@Model.CurrentCategory"
-                                       asp-route-search="@Model.Search"
-                                       class="list-group-item list-group-item-action border-0 p-1 small @(Model.EmploymentType == "all" ? "text-decoration-underline text-primary fw-semibold" : "text-secondary")">
-                                    Все типы
-                                </a>
-                                <a asp-page="Vacancies"
-                                       asp-route-type="seasonal"
-                                       asp-route-category="@Model.CurrentCategory"
-                                       asp-route-search="@Model.Search"
-                                       class="list-group-item list-group-item-action border-0 p-1 small @(Model.EmploymentType == "seasonal" ? "text-decoration-underline text-primary fw-semibold" : "text-secondary")">
-                                    Только сезонные
-                                </a>
-                                <a asp-page="Vacancies"
-                                       asp-route-type="permanent"
-                                       asp-route-category="@Model.CurrentCategory"
-                                       asp-route-search="@Model.Search"
-                                       class="list-group-item list-group-item-action border-0 p-1 small @(Model.EmploymentType == "permanent" ? "text-decoration-underline text-primary fw-semibold" : "text-secondary")">
-                                    Только постоянные
-                                </a>
-                            </div>
-                        </div> *@
-
                         <hr class="my-3">
 
                         <!-- Сбросить фильтры -->
@@ -132,9 +104,13 @@
                                         <i class="bi bi-building"></i>
                                         @vacancy.Company
                                     </div>
-                                    <div class="salary">
-                                        @vacancy.Salary ₽
+                                    
+                                    <!-- Отображение зарплаты с новой структурой -->
+                                    <div class="salary d-flex align-items-center">
+                                        <i class="bi bi-cash-stack me-2" style="color: #2E7D32;"></i>
+                                        <span style="color: #2E7D32; font-weight: 500;">@vacancy.SalaryDisplay</span>
                                     </div>
+                                    
                                     <div class="tags">
                                         @foreach (var tag in vacancy.Tags.Take(3))
                                         {
@@ -229,3 +205,28 @@
         </div>
     </div>
 </section>
+
+<!-- Добавляем стили для отображения зарплаты -->
+<style>
+    .salary {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #2E7D32;
+        margin-bottom: 1rem;
+    }
+    .salary i {
+        font-size: 1.1rem;
+        color: #2E7D32;
+    }
+    
+    /* Стили для разных типов зарплаты (опционально) */
+    .vacancy-card.seasonal .salary i {
+        color: #FF8F00;
+    }
+    
+    .vacancy-card .salary {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+</style>

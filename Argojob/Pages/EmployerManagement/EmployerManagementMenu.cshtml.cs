@@ -84,9 +84,6 @@ namespace Agrojob.Pages.EmployerManagement
                 {
                     Id = company.Id,
                     Name = company.Name,
-                    ContactPerson = company.ContactPerson,
-                    ContactPhone = company.ContactPhone,
-                    ContactEmail = company.ContactEmail,
                     Description = company.Description,
                     IsVerified = company.IsVerified,
                     VacanciesCount = vacanciesCount
@@ -109,7 +106,13 @@ namespace Agrojob.Pages.EmployerManagement
                     Title = vacancy.Title,
                     Company = company?.Name ?? "Не указано",
                     Location = vacancy.Location ?? "Не указано",
-                    Salary = vacancy.Salary,
+
+                    // Новые поля зарплаты
+                    SalaryType = vacancy.SalaryType,
+                    FixedSalary = vacancy.FixedSalary,
+                    SalaryFrom = vacancy.SalaryFrom,
+                    SalaryTo = vacancy.SalaryTo,
+
                     Category = vacancy.Category ?? "Не указано",
                     PostedDate = vacancy.PostedDate.ToString("dd.MM.yyyy"),
                     IsSeasonal = vacancy.IsSeasonal,
@@ -159,7 +162,13 @@ namespace Agrojob.Pages.EmployerManagement
                     AppliedAt = app.AppliedAt,
                     Status = GetStatusDisplay(app.Status),
                     StatusCode = app.Status.ToString().ToLower(),
-                    HasResume = app.ResumeId.HasValue
+                    HasResume = app.ResumeId.HasValue,
+
+                    // Добавляем информацию о зарплате вакансии
+                    SalaryType = vacancy?.SalaryType ?? SalaryType.Negotiable,
+                    FixedSalary = vacancy?.FixedSalary,
+                    SalaryFrom = vacancy?.SalaryFrom,
+                    SalaryTo = vacancy?.SalaryTo
                 });
             }
         }
@@ -252,6 +261,50 @@ namespace Agrojob.Pages.EmployerManagement
         public int VacanciesCount { get; set; }
     }
 
+    public class VacancyViewModel
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Company { get; set; } = string.Empty;
+        public string Location { get; set; } = string.Empty;
+
+        // Новые поля зарплаты
+        public SalaryType SalaryType { get; set; }
+        public long? FixedSalary { get; set; }
+        public long? SalaryFrom { get; set; }
+        public long? SalaryTo { get; set; }
+
+        // Вычисляемое поле для отображения зарплаты
+        public string SalaryDisplay
+        {
+            get
+            {
+                return SalaryType switch
+                {
+                    SalaryType.Negotiable => "Договорная",
+                    SalaryType.Fixed => FixedSalary?.ToString("N0") + " ₽",
+                    SalaryType.Range => $"от {SalaryFrom?.ToString("N0")} до {SalaryTo?.ToString("N0")} ₽",
+                    _ => "Договорная"
+                };
+            }
+        }
+
+        // Для обратной совместимости (можно удалить позже)
+        [Obsolete("Используйте SalaryDisplay вместо этого поля")]
+        public string Salary
+        {
+            get => SalaryDisplay;
+            set { } // Пустой setter для совместимости
+        }
+
+        public string Category { get; set; } = string.Empty;
+        public string PostedDate { get; set; } = string.Empty;
+        public bool IsSeasonal { get; set; }
+        public bool IsActive { get; set; }
+        public int ApplicationsCount { get; set; }
+        public int CompanyId { get; set; }
+    }
+
     public class RecentApplicationViewModel
     {
         public int Id { get; set; }
@@ -264,5 +317,26 @@ namespace Agrojob.Pages.EmployerManagement
         public string Status { get; set; } = string.Empty;
         public string StatusCode { get; set; } = string.Empty;
         public bool HasResume { get; set; }
+
+        // Информация о зарплате вакансии
+        public SalaryType SalaryType { get; set; }
+        public long? FixedSalary { get; set; }
+        public long? SalaryFrom { get; set; }
+        public long? SalaryTo { get; set; }
+
+        // Вычисляемое поле для отображения зарплаты
+        public string SalaryDisplay
+        {
+            get
+            {
+                return SalaryType switch
+                {
+                    SalaryType.Negotiable => "Договорная",
+                    SalaryType.Fixed => FixedSalary?.ToString("N0") + " ₽",
+                    SalaryType.Range => $"от {SalaryFrom?.ToString("N0")} до {SalaryTo?.ToString("N0")} ₽",
+                    _ => "Договорная"
+                };
+            }
+        }
     }
 }

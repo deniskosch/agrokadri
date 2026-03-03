@@ -43,10 +43,10 @@ namespace Agrojob.Models
     /// </summary>
     public enum ApplicationStatus
     {
-        [Display(Name = "На рассмотрении")]
+        [Display(Name = "На рассмотрении у работодателя")]
         Pending = 0,
 
-        [Display(Name = "Просмотрено")]
+        [Display(Name = "Просмотрено работодателем")]
         Viewed = 1,
 
         [Display(Name = "Приглашение на собеседование")]
