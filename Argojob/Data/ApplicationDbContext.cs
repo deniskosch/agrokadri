@@ -20,6 +20,7 @@ namespace Agrojob.Data
         public DbSet<CompanyUser> CompanyUsers { get; set; }
         public DbSet<Resume> Resumes { get; set; }
         public DbSet<Application> Applications { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

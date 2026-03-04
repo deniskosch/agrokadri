@@ -31,6 +31,9 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
         public List<SelectListItem> Companies { get; set; } = new();
         public List<Tag> AllTags { get; set; } = new();
 
+        // Новое свойство для списка всех категорий
+        public List<string> AllCategories { get; set; } = new();
+
         public class InputModel
         {
             public int? Id { get; set; }
@@ -144,6 +147,7 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
             }
 
             await LoadDropdownsAsync(userId);
+            await LoadCategoriesAsync(); // Загружаем все категории
 
             if (id.HasValue)
             {
@@ -204,6 +208,13 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
             AllTags = (await _unitOfWork.Tags.GetAllAsync()).ToList();
         }
 
+        // Новый метод для загрузки всех категорий
+        private async Task LoadCategoriesAsync()
+        {
+            var categories = await _unitOfWork.Categories.GetAllAsync();
+            AllCategories = categories.Select(c => c.Name).OrderBy(n => n).ToList();
+        }
+
         public async Task<IActionResult> OnPostAsync()
         {
             // Добавляем валидацию модели
@@ -220,6 +231,7 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
                 await LoadDropdownsAsync(userId);
+                await LoadCategoriesAsync();
                 return Page();
             }
 
@@ -237,6 +249,7 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
                 {
                     ModelState.AddModelError(string.Empty, "У вас нет доступа к этой компании");
                     await LoadDropdownsAsync(userId2);
+                    await LoadCategoriesAsync();
                     return Page();
                 }
 
@@ -323,10 +336,11 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
                     {
                         ModelState.AddModelError(string.Empty, "Компания не найдена");
                         await LoadDropdownsAsync(userId2);
+                        await LoadCategoriesAsync();
                         return Page();
                     }
 
-                    
+
                     // Создаем вакансию
                     var vacancy = new Vacancy
                     {
@@ -397,6 +411,7 @@ namespace Agrojob.Pages.EmployerManagement.VacancyManagement
 
                 var userId3 = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
                 await LoadDropdownsAsync(userId3);
+                await LoadCategoriesAsync();
                 return Page();
             }
         }

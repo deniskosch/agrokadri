@@ -18,6 +18,8 @@ namespace Agrojob.Data
             // 1. СОЗДАЕМ СПРАВОЧНИКИ
             CreateTags(context);
 
+            CreateCategories(context);
+
             context.SaveChanges();
 
             //// 2. СОЗДАЕМ ТЕСТОВЫЕ КОМПАНИИ
@@ -28,7 +30,7 @@ namespace Agrojob.Data
             //CreateVacancies(context, companies);
             //context.SaveChanges();
         }
-        
+
         //private static void ClearExistingData(ApplicationDbContext context)
         //{
         //    // Очищаем в правильном порядке (с учетом внешних ключей)
@@ -69,6 +71,99 @@ namespace Agrojob.Data
             };
 
             context.Tags.AddRange(tags);
+        }
+
+        private static void CreateCategories(ApplicationDbContext context)
+        {
+            if (context.Categories.Any()) return;
+
+            var categories = new Category[]
+            {
+                // Растениеводство
+                new Category { Name = "Агроном" },
+                new Category { Name = "Агроном-полевод" },
+                new Category { Name = "Агроном-овощевод" },
+                new Category { Name = "Агроном-плодоовощевод" },
+                new Category { Name = "Агроном по защите растений" },
+                new Category { Name = "Агроном-семеновод" },
+                new Category { Name = "Агроном-почвовед" },
+                new Category { Name = "Агроном-агрохимик" },
+                
+                // Механизация
+                new Category { Name = "Механизатор" },
+                new Category { Name = "Тракторист" },
+                new Category { Name = "Комбайнер" },
+                new Category { Name = "Машинист сельхозтехники" },
+                new Category { Name = "Оператор машинного доения" },
+                new Category { Name = "Водитель категории C" },
+                new Category { Name = "Водитель категории E" },
+                new Category { Name = "Механик сельхозтехники" },
+                
+                // Животноводство
+                new Category { Name = "Ветеринар" },
+                new Category { Name = "Ветеринарный фельдшер" },
+                new Category { Name = "Зоотехник" },
+                new Category { Name = "Скотник" },
+                new Category { Name = "Доярка" },
+                new Category { Name = "Оператор животноводческих комплексов" },
+                new Category { Name = "Птицевод" },
+                new Category { Name = "Свиновод" },
+                
+                // Инженерно-технические специальности
+                new Category { Name = "Инженер-механик" },
+                new Category { Name = "Инженер-электрик" },
+                new Category { Name = "Инженер-технолог" },
+                new Category { Name = "Инженер по автоматизации" },
+                new Category { Name = "Инженер по мелиорации" },
+                new Category { Name = "Технолог пищевого производства" },
+                
+                // Управленческие позиции
+                new Category { Name = "Руководитель хозяйства" },
+                new Category { Name = "Начальник участка" },
+                new Category { Name = "Бригадир" },
+                new Category { Name = "Управляющий фермой" },
+                new Category { Name = "Начальник производства" },
+                
+                // Переработка и хранение
+                new Category { Name = "Технолог переработки" },
+                new Category { Name = "Оператор зерносушилки" },
+                new Category { Name = "Кладовщик" },
+                new Category { Name = "Заведующий складом" },
+                new Category { Name = "Работник элеватора" },
+                
+                // Прочие сельскохозяйственные профессии
+                new Category { Name = "Садовод" },
+                new Category { Name = "Овощевод" },
+                new Category { Name = "Полевод" },
+                new Category { Name = "Тепличный рабочий" },
+                new Category { Name = "Рабочий в теплицу" },
+                new Category { Name = "Разнорабочий в сельском хозяйстве" },
+                new Category { Name = "Подсобный рабочий" },
+                
+                // Агрономия и наука
+                new Category { Name = "Агроном-исследователь" },
+                new Category { Name = "Лаборант" },
+                new Category { Name = "Микробиолог" },
+                
+                // Строительство и ремонт
+                new Category { Name = "Строитель" },
+                new Category { Name = "Ремонтник" },
+                new Category { Name = "Сварщик" },
+                
+                // Административный персонал
+                new Category { Name = "Экономист" },
+                new Category { Name = "Бухгалтер" },
+                new Category { Name = "Менеджер по продажам" },
+                new Category { Name = "Менеджер по закупкам" },
+                
+                // Сезонные работники
+                new Category { Name = "Сезонный рабочий" },
+                new Category { Name = "Сборщик урожая" },
+                new Category { Name = "Сборщик фруктов" },
+                new Category { Name = "Сборщик ягод" }
+            };
+
+            context.Categories.AddRange(categories);
         }
 
         //private static List<Company> CreateCompanies(ApplicationDbContext context)

@@ -7,6 +7,8 @@
 
 <!-- Подключаем Quill редактор -->
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<!-- Подключаем Select2 -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
     .quill-editor {
         height: 300px;
@@ -37,6 +39,42 @@
         text-align: right;
         margin-top: 5px;
     }
+
+    /* Стили для автодополнения категорий */
+.autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 250px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.autocomplete-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-item:hover {
+    background-color: #2E7D32 !important;
+    color: white !important;
+}
+
+.autocomplete-item.selected {
+    background-color: #e8f5e9;
+    font-weight: 500;
+}
 </style>
 
 <!-- Хлебные крошки -->
@@ -84,14 +122,24 @@
                                 <div class="col-md-6">
                                     <label asp-for="Input.CompanyId" class="form-label fw-semibold">Компания <span class="text-danger">*</span></label>
                                     <select asp-for="Input.CompanyId" class="form-select" asp-items="Model.Companies">
-                                        <option value="">-- Выберите компанию --</option>
+                                        <option value="">Выберите компанию</option>
                                     </select>
                                     <span asp-validation-for="Input.CompanyId" class="text-danger small"></span>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label asp-for="Input.Category" class="form-label fw-semibold">Категория <span class="text-danger">*</span></label>
-                                    <input asp-for="Input.Category" class="form-control" placeholder="Например: Растениеводство, Животноводство" maxlength="100">
+                                    <div style="position: relative;">
+                                        <input type="text" 
+                                               id="category-input" 
+                                               class="form-control" 
+                                               placeholder="Введите или выберите категорию" 
+                                               value="@Model.Input.Category"
+                                               autocomplete="off" />
+                                        <input type="hidden" asp-for="Input.Category" id="Input_Category" />
+                                        <div id="category-dropdown" class="autocomplete-dropdown" style="display: none;"></div>
+                                    </div>
+                                    <small class="text-muted d-block mt-1">Начните вводить или выберите из списка</small>
                                     <span asp-validation-for="Input.Category" class="text-danger small"></span>
                                 </div>
 
@@ -265,149 +313,257 @@
     
     <!-- Quill JS -->
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     
     <script>
         // Инициализация Quill редактора
-        var quill = new Quill('#quill-editor', {
-            theme: 'snow',
-            modules: {
-                toolbar: [
-                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    [{ 'color': [] }, { 'background': [] }],
-                    ['link', 'clean']
-                ]
-            },
-            placeholder: 'Подробно опишите вакансию, обязанности, условия работы...'
-        });
+var quill = new Quill('#quill-editor', {
+    theme: 'snow',
+    modules: {
+        toolbar: [
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'color': [] }, { 'background': [] }],
+            ['link', 'clean']
+        ]
+    },
+    placeholder: 'Подробно опишите вакансию, обязанности, условия работы...'
+});
 
-        // Счетчик символов для Quill
-        function updateDescriptionCounter() {
-            var text = quill.getText().trim();
-            var length = text.length;
-            $('#description-counter').text(length + ' символов');
+// Счетчик символов для Quill
+function updateDescriptionCounter() {
+    var text = quill.getText().trim();
+    var length = text.length;
+    $('#description-counter').text(length + ' символов');
+}
+
+quill.on('text-change', function() {
+    var html = quill.root.innerHTML;
+    $('#Description').val(html);
+    updateDescriptionCounter();
+});
+
+// Устанавливаем начальное значение из скрытого поля
+if ($('#Description').val()) {
+    quill.root.innerHTML = $('#Description').val();
+    updateDescriptionCounter();
+}
+
+// Функции для управления требованиями
+function addRequirement() {
+    var container = $('#requirements-list');
+    var count = container.children().length;
+    
+    if (count >= 15) {
+        alert('Максимальное количество требований - 15');
+        return;
+    }
+    
+    var newItem = $('<div class="dynamic-item" data-index="' + count + '">' +
+        '<input type="text" class="form-control" name="Input.Requirements[' + count + ']" ' +
+        'placeholder="Требование ' + (count + 1) + '" maxlength="500">' +
+        '<i class="bi bi-x-circle remove-btn" onclick="removeItem(this, \'requirements\')"></i>' +
+        '</div>');
+    
+    container.append(newItem);
+}
+
+function addOffer() {
+    var container = $('#offers-list');
+    var count = container.children().length;
+    
+    if (count >= 15) {
+        alert('Максимальное количество условий - 15');
+        return;
+    }
+    
+    var newItem = $('<div class="dynamic-item" data-index="' + count + '">' +
+        '<input type="text" class="form-control" name="Input.Offers[' + count + ']" ' +
+        'placeholder="Условие ' + (count + 1) + '" maxlength="500">' +
+        '<i class="bi bi-x-circle remove-btn" onclick="removeItem(this, \'offers\')"></i>' +
+        '</div>');
+    
+    container.append(newItem);
+}
+
+function removeItem(element, type) {
+    var item = $(element).closest('.dynamic-item');
+    var container = item.parent();
+    item.remove();
+    
+    // Перенумеровываем оставшиеся элементы
+    container.children().each(function(index) {
+        $(this).attr('data-index', index);
+        $(this).find('input').attr('name', 'Input.' + (type === 'requirements' ? 'Requirements' : 'Offers') + '[' + index + ']');
+        $(this).find('input').attr('placeholder', (type === 'requirements' ? 'Требование' : 'Условие') + ' ' + (index + 1));
+    });
+}
+
+// Функции для управления зарплатой
+function updateSalaryFields() {
+    var selectedValue = $('input[name="Input.SalaryType"]:checked').val();
+    
+    // Скрываем все поля
+    $('#fixedSalaryField').hide();
+    $('#rangeSalaryField').hide();
+    $('#negotiableHint').hide();
+    
+    // Отключаем валидацию для скрытых полей
+    $('#Input_FixedSalary').removeAttr('required');
+    $('#Input_SalaryFrom').removeAttr('required');
+    $('#Input_SalaryTo').removeAttr('required');
+    
+    if (selectedValue === '1') { // Fixed
+        $('#fixedSalaryField').show();
+    } else if (selectedValue === '2') { // Range
+        $('#rangeSalaryField').show();
+    } else { // Negotiable
+        $('#negotiableHint').show();
+    }
+}
+
+// Инициализация автодополнения для категорий
+function initCategoryAutocomplete() {
+    // Получаем данные категорий из модели
+    var categoriesData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AllCategories));
+    var categoryInput = $('#category-input');
+    var hiddenInput = $('#Input_Category');
+    var dropdown = $('#category-dropdown');
+    
+    // Устанавливаем начальное значение
+var initialValue = @Html.Raw(Json.Serialize(Model.Input.Category));
+if (initialValue) {
+        categoryInput.val(initialValue);
+        hiddenInput.val(initialValue);
+    }
+    
+    // Функция для отображения подсказок
+    function showSuggestions() {
+        var value = categoryInput.val().toLowerCase();
+        
+        if (value.length < 1) {
+            dropdown.hide();
+            return;
         }
-
-        quill.on('text-change', function() {
-            var html = quill.root.innerHTML;
-            $('#Description').val(html);
-            updateDescriptionCounter();
-        });
-
-        // Устанавливаем начальное значение из скрытого поля
-        if ($('#Description').val()) {
-            quill.root.innerHTML = $('#Description').val();
-            updateDescriptionCounter();
-        }
-
-        // Функции для управления требованиями
-        function addRequirement() {
-            var container = $('#requirements-list');
-            var count = container.children().length;
-            
-            if (count >= 15) {
-                alert('Максимальное количество требований - 15');
-                return;
-            }
-            
-            var newItem = $('<div class="dynamic-item" data-index="' + count + '">' +
-                '<input type="text" class="form-control" name="Input.Requirements[' + count + ']" ' +
-                'placeholder="Требование ' + (count + 1) + '" maxlength="500">' +
-                '<i class="bi bi-x-circle remove-btn" onclick="removeItem(this, \'requirements\')"></i>' +
-                '</div>');
-            
-            container.append(newItem);
-        }
-
-        function addOffer() {
-            var container = $('#offers-list');
-            var count = container.children().length;
-            
-            if (count >= 15) {
-                alert('Максимальное количество условий - 15');
-                return;
-            }
-            
-            var newItem = $('<div class="dynamic-item" data-index="' + count + '">' +
-                '<input type="text" class="form-control" name="Input.Offers[' + count + ']" ' +
-                'placeholder="Условие ' + (count + 1) + '" maxlength="500">' +
-                '<i class="bi bi-x-circle remove-btn" onclick="removeItem(this, \'offers\')"></i>' +
-                '</div>');
-            
-            container.append(newItem);
-        }
-
-        function removeItem(element, type) {
-            var item = $(element).closest('.dynamic-item');
-            var container = item.parent();
-            item.remove();
-            
-            // Перенумеровываем оставшиеся элементы
-            container.children().each(function(index) {
-                $(this).attr('data-index', index);
-                $(this).find('input').attr('name', 'Input.' + (type === 'requirements' ? 'Requirements' : 'Offers') + '[' + index + ']');
-                $(this).find('input').attr('placeholder', (type === 'requirements' ? 'Требование' : 'Условие') + ' ' + (index + 1));
-            });
-        }
-
-        // Функции для управления зарплатой
-        function updateSalaryFields() {
-            var selectedValue = $('input[name="Input.SalaryType"]:checked').val();
-            
-            // Скрываем все поля
-            $('#fixedSalaryField').hide();
-            $('#rangeSalaryField').hide();
-            $('#negotiableHint').hide();
-            
-            // Отключаем валидацию для скрытых полей
-            $('#Input_FixedSalary').removeAttr('required');
-            $('#Input_SalaryFrom').removeAttr('required');
-            $('#Input_SalaryTo').removeAttr('required');
-            
-            if (selectedValue === '1') { // Fixed
-                $('#fixedSalaryField').show();
-            } else if (selectedValue === '2') { // Range
-                $('#rangeSalaryField').show();
-            } else { // Negotiable
-                $('#negotiableHint').show();
-            }
-        }
-
-        $(document).ready(function() {
-            // Обновляем поля при загрузке страницы
-            updateSalaryFields();
-            
-            // Обновляем поля при изменении выбора
-            $('input[name="Input.SalaryType"]').change(updateSalaryFields);
-            
-            // Дополнительная валидация для диапазона
-            $('#vacancyForm').submit(function(e) {
-                var selectedValue = $('input[name="Input.SalaryType"]:checked').val();
+        
+        // Фильтруем категории
+        var matches = categoriesData.filter(function(cat) {
+            return cat.toLowerCase().includes(value);
+        }).slice(0, 10); // Ограничиваем до 10 результатов
+        
+        if (matches.length > 0) {
+            dropdown.empty();
+            matches.forEach(function(cat) {
+                var item = $('<div class="autocomplete-item"></div>').text(cat);
                 
-                if (selectedValue === '2') { // Range
-                    var from = $('#Input_SalaryFrom').val();
-                    var to = $('#Input_SalaryTo').val();
-                    
-                    if (from && to && parseInt(from) > parseInt(to)) {
-                        e.preventDefault();
-                        alert('Значение "От" не может быть больше значения "До"');
-                        return false;
-                    }
+                // Подсвечиваем совпадения
+                if (cat.toLowerCase() === value) {
+                    item.addClass('selected');
                 }
                 
-                if (selectedValue === '1') { // Fixed
-                    var fixed = $('#Input_FixedSalary').val();
-                    if (fixed && parseInt(fixed) <= 0) {
-                        e.preventDefault();
-                        alert('Зарплата должна быть положительным числом');
-                        return false;
-                    }
-                }
-
-                // Перед отправкой обновляем скрытое поле с описанием
-                $('#Description').val(quill.root.innerHTML);
+                item.on('click', function() {
+                    categoryInput.val(cat);
+                    hiddenInput.val(cat);
+                    dropdown.hide();
+                });
+                
+                item.on('mouseenter', function() {
+                    $(this).css('background-color', '#2E7D32').css('color', 'white');
+                });
+                
+                item.on('mouseleave', function() {
+                    $(this).css('background-color', '').css('color', '');
+                });
+                
+                dropdown.append(item);
             });
-        });
+            dropdown.show();
+        } else {
+            dropdown.hide();
+        }
+    }
+    
+    // Обработчики событий
+    categoryInput.on('input', function() {
+        var value = $(this).val();
+        hiddenInput.val(value);
+        showSuggestions();
+    });
+    
+    categoryInput.on('focus', function() {
+        if ($(this).val().length >= 1) {
+            showSuggestions();
+        }
+    });
+    
+    categoryInput.on('blur', function() {
+        setTimeout(function() {
+            dropdown.hide();
+        }, 200);
+    });
+    
+    // Закрытие dropdown при клике вне
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('#category-input').length && !$(e.target).closest('#category-dropdown').length) {
+            dropdown.hide();
+        }
+    });
+    
+    // Поддержка клавиш
+    categoryInput.on('keydown', function(e) {
+        if (e.key === 'Escape') {
+            dropdown.hide();
+        }
+    });
+}
+
+$(document).ready(function() {
+    // Обновляем поля при загрузке страницы
+    updateSalaryFields();
+    
+    // Обновляем поля при изменении выбора
+    $('input[name="Input.SalaryType"]').change(updateSalaryFields);
+    
+    // Инициализируем автодополнение для категорий
+    initCategoryAutocomplete();
+    
+    // Дополнительная валидация для диапазона
+    $('#vacancyForm').submit(function(e) {
+        var selectedValue = $('input[name="Input.SalaryType"]:checked').val();
+        
+        if (selectedValue === '2') { // Range
+            var from = $('#Input_SalaryFrom').val();
+            var to = $('#Input_SalaryTo').val();
+            
+            if (from && to && parseInt(from) > parseInt(to)) {
+                e.preventDefault();
+                alert('Значение "От" не может быть больше значения "До"');
+                return false;
+            }
+        }
+        
+        if (selectedValue === '1') { // Fixed
+            var fixed = $('#Input_FixedSalary').val();
+            if (fixed && parseInt(fixed) <= 0) {
+                e.preventDefault();
+                alert('Зарплата должна быть положительным числом');
+                return false;
+            }
+        }
+
+        // Проверяем, что категория не пустая
+        var category = $('#Input_Category').val();
+        if (!category || category.trim() === '') {
+            e.preventDefault();
+            alert('Пожалуйста, укажите категорию');
+            return false;
+        }
+
+        // Перед отправкой обновляем скрытое поле с описанием
+        $('#Description').val(quill.root.innerHTML);
+    });
+});
     </script>
 }

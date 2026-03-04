@@ -14,6 +14,7 @@ namespace Agrojob.UoW
         IOfferRepository Offers { get; }
         IResumeRepository Resumes { get; }
         IApplicationRepository Applications { get; }
+        ICategoryRepository Categories { get; }
 
         Task<int> CompleteAsync();
         Task BeginTransactionAsync();

@@ -27,6 +27,9 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
         [BindProperty]
         public InputModel Input { get; set; } = new();
 
+        // Новое свойство для списка всех категорий
+        public List<string> AllCategories { get; set; } = new();
+
         public class InputModel
         {
             public int? Id { get; set; }
@@ -97,6 +100,9 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
                 return Challenge();
             }
 
+            // Загружаем все категории
+            await LoadCategoriesAsync();
+
             if (id.HasValue)
             {
                 // Режим редактирования - загружаем данные резюме
@@ -137,10 +143,17 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
             return Page();
         }
 
+        private async Task LoadCategoriesAsync()
+        {
+            var categories = await _unitOfWork.Categories.GetAllAsync();
+            AllCategories = categories.Select(c => c.Name).OrderBy(n => n).ToList();
+        }
+
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
+                await LoadCategoriesAsync();
                 return Page();
             }
 
@@ -225,6 +238,7 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
             {
                 await _unitOfWork.RollbackTransactionAsync();
                 ModelState.AddModelError(string.Empty, $"Ошибка: {ex.Message}");
+                await LoadCategoriesAsync();
                 return Page();
             }
         }

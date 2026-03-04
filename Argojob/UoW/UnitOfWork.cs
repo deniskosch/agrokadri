@@ -16,6 +16,7 @@ namespace Agrojob.UoW
         private IOfferRepository? _offerRepository;
         private IResumeRepository? _resumeRepository;
         private IApplicationRepository? _applicationRepository;
+        private ICategoryRepository? _categoryRepository;
 
         private Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction? _transaction;
 
@@ -43,6 +44,9 @@ namespace Agrojob.UoW
 
         public IApplicationRepository Applications =>
             _applicationRepository ??= new ApplicationRepository(_context);
+
+        public ICategoryRepository Categories =>
+            _categoryRepository ??= new CategoryRepository(_context);
 
         public async Task<int> CompleteAsync()
         {
