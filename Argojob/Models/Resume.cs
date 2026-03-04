@@ -14,7 +14,10 @@ namespace Agrojob.Models
         public string Title { get; set; } = string.Empty; // Например: "Опытный агроном"
 
         [Required]
-        public string FullName { get; set; } = string.Empty;
+        public string FirstName { get; set; } = string.Empty;
+        [Required]
+        public string LastName { get; set; } = string.Empty;
+        public string Patronymic { get; set; } = string.Empty;
 
         public DateTime? BirthDate { get; set; }
 
@@ -26,22 +29,22 @@ namespace Agrojob.Models
         [MaxLength(100)]
         public string? Email { get; set; }
 
-        [MaxLength(200)]
+        [MaxLength(300)]
         public string? Location { get; set; } // Город проживания
 
         // Опыт работы
         public int? ExperienceYears { get; set; } // Общий стаж в годах
 
-        [MaxLength(1000)]
+        [MaxLength(100000)]
         public string? Education { get; set; } // Образование
 
-        [MaxLength(1000)]
+        [MaxLength(100000)]
         public string? Experience { get; set; } // Опыт работы (текст)
 
-        [MaxLength(1000)]
+        [MaxLength(100000)]
         public string? Skills { get; set; } // Навыки
 
-        [MaxLength(1000)]
+        [MaxLength(100000)]
         public string? About { get; set; } // О себе
 
         // Желаемая зарплата
@@ -54,7 +57,6 @@ namespace Agrojob.Models
 
         // Статус резюме
         public bool IsActive { get; set; } = true;
-        public bool IsPublished { get; set; } = true; // Опубликовано или черновик
 
         // Дата создания и обновления
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

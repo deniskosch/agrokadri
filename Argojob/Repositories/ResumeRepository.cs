@@ -29,7 +29,7 @@ namespace Agrojob.Repositories
         public async Task<IEnumerable<Resume>> SearchResumesAsync(string searchTerm, int? categoryId = null)
         {
             var query = _context.Resumes
-                .Where(r => r.IsActive && r.IsPublished)
+                .Where(r => r.IsActive)
                 .Include(r => r.User)
                 .AsQueryable();
 
@@ -38,7 +38,9 @@ namespace Agrojob.Repositories
                 searchTerm = searchTerm.ToLower();
                 query = query.Where(r =>
                     r.Title.ToLower().Contains(searchTerm) ||
-                    r.FullName.ToLower().Contains(searchTerm) ||
+                    r.FirstName.ToLower().Contains(searchTerm) ||
+                    r.LastName.ToLower().Contains(searchTerm) ||
+                    r.Patronymic.ToLower().Contains(searchTerm) ||
                     (r.Skills != null && r.Skills.ToLower().Contains(searchTerm)) ||
                     (r.About != null && r.About.ToLower().Contains(searchTerm)));
             }

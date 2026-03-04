@@ -1,0 +1,649 @@
+﻿@page "{id}"
+@model Agrojob.Pages.EmployeeManagement.ResumeManagement.ResumePreviewModel
+@{
+    ViewData["Title"] = "Просмотр резюме";
+}
+
+<style>
+    /* Базовые стили - минимализм и профессионализм */
+    .resume-preview {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f0f0f0;
+    }
+
+    /* Шапка - белая, элегантная */
+    .resume-header {
+        padding: 35px 35px 20px 35px;
+        background: white;
+        border-bottom: 1px solid #f0f0f0;
+        position: relative;
+    }
+
+    .resume-header-content {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+        flex-wrap: wrap;
+    }
+
+    .resume-avatar {
+        width: 90px;
+        height: 90px;
+        background: #f8f9fa;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #e9ecef;
+    }
+
+        .resume-avatar i {
+            font-size: 42px;
+            color: #adb5bd;
+        }
+
+    .resume-title-section {
+        flex: 1;
+    }
+
+        .resume-title-section h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0 0 6px 0;
+            color: #212529;
+            letter-spacing: -0.3px;
+        }
+
+        .resume-title-section h2 {
+            font-size: 18px;
+            font-weight: 400;
+            margin: 0;
+            color: #6c757d;
+        }
+
+    .resume-badge {
+        display: inline-block;
+        background: #f8f9fa;
+        padding: 6px 16px;
+        border-radius: 30px;
+        font-size: 13px;
+        margin-top: 12px;
+        color: #495057;
+        border: 1px solid #e9ecef;
+    }
+
+    /* Логотип */
+    .resume-logo {
+        position: absolute;
+        top: 25px;
+        right: 35px;
+    }
+
+        .resume-logo img {
+            height: 35px;
+            width: auto;
+            opacity: 0.8;
+        }
+
+    /* Контактная информация */
+    .resume-contact {
+        padding: 20px 35px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 25px;
+        background: white;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #495057;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+        .contact-item i {
+            color: #2b8c5e;
+            font-size: 16px;
+            width: 18px;
+        }
+
+    /* Основное содержание */
+    .resume-body {
+        padding: 35px;
+    }
+
+    .resume-section {
+        margin-bottom: 30px;
+    }
+
+        .resume-section:last-child {
+            margin-bottom: 0;
+        }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #212529;
+        margin: 0 0 16px 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .section-title i {
+            font-size: 18px;
+            color: #2b8c5e;
+        }
+
+    /* Информационные сетки */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .info-item {
+        background: #f8f9fa;
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+    }
+
+    .info-label {
+        font-size: 12px;
+        color: #6c757d;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .info-value {
+        font-size: 16px;
+        font-weight: 500;
+        color: #212529;
+    }
+
+    .info-value-large {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #495057;
+        white-space: pre-line;
+    }
+
+    /* Статусы */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .status-active {
+        background: #f1f9f1;
+        color: #2b8c5e;
+        border: 1px solid #c3e6cb;
+    }
+
+    .status-inactive {
+        background: #fef2f2;
+        color: #dc3545;
+        border: 1px solid #fccfcf;
+    }
+
+    .ready-badge {
+        background: #f0f7ff;
+        color: #0d6efd;
+        padding: 4px 12px;
+        border-radius: 30px;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        border: 1px solid #cfe3ff;
+    }
+
+    /* Кнопки - оставляем как было */
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin: 30px 0 20px;
+    }
+
+    .btn-pdf, .btn-edit, .btn-back {
+        padding: 10px 24px;
+        border-radius: 40px;
+        font-size: 14px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        border: none;
+    }
+
+    /* Адаптивность */
+    @@media (max-width: 768px) {
+        .resume-header-content {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .resume-contact {
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .resume-logo {
+            position: static;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .resume-header {
+            padding: 25px;
+        }
+        
+        .resume-contact {
+            padding: 15px 25px;
+        }
+        
+        .resume-body {
+            padding: 25px;
+        }
+    }
+
+    /* Печать и PDF */
+    @@media print {
+        .no-print {
+            display: none !important;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: white;
+        }
+        
+        .container {
+            max-width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .resume-preview {
+            box-shadow: none;
+            border: none;
+            border-radius: 0;
+            max-width: 100%;
+            margin: 0;
+        }
+        
+        .resume-header,
+        .resume-contact,
+        .resume-body {
+            background: white !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        /* Настройки страницы для правильных переносов */
+        @@page {
+            size: A4;
+            margin: 2cm;
+        }
+        /* Предотвращаем разрывы внутри секций */
+        .resume-section {
+            page-break-inside: avoid;
+        }
+        /* Разрешаем разрывы только между основными блоками */
+        .resume-body {
+            page-break-before: auto;
+            page-break-after: auto;
+        }
+        /* Убираем фоны и обводки у текста для лучшей копируемости */
+        .info-value-large,
+        .skills-text,
+        .info-item {
+            background: none !important;
+            border: none !important;
+            padding: 0 !important;
+            margin-bottom: 10px !important;
+        }
+        
+        .info-grid {
+            display: block;
+        }
+        
+        .info-item {
+            display: block;
+            margin-bottom: 10px;
+        }
+        /* Оставляем только необходимые стили для читаемости */
+        .section-title {
+            border-bottom: 1px solid #ccc;
+        }
+        
+        .status-badge {
+            border: 1px solid #ccc;
+            background: none !important;
+        }
+    }
+</style>
+
+<!-- Хлебные крошки -->
+<div class="bg-light py-3 no-print">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a asp-page="/Index" class="text-success">Главная</a></li>
+                <li class="breadcrumb-item"><a asp-page="/EmployeeManagement/EmployeeManagementMenu" class="text-success">Панель соискателя</a></li>
+                <li class="breadcrumb-item"><a asp-page="/EmployeeManagement/ResumeManagement/ResumeList" class="text-success">Мои резюме</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Просмотр резюме</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Кнопки действий -->
+<div class="container no-print">
+    <div class="action-buttons">
+        <a href="#" id="downloadPdf" class="btn btn-primary">
+            <i class="bi bi-file-pdf"></i>
+            Скачать PDF
+        </a>
+        <a asp-page="/EmployeeManagement/ResumeManagement/ResumeEdit" asp-route-id="@Model.Resume.Id" class="btn btn-outline-primary">
+            <i class="bi bi-pencil-square"></i>
+            Редактировать
+        </a>
+        <a asp-page="/EmployeeManagement/EmployeeManagementMenu" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i>
+            Назад
+        </a>
+    </div>
+</div>
+
+<!-- Предпросмотр резюме -->
+<section class="py-4">
+    <div class="container">
+        <div class="resume-preview" id="resume-content">
+            <!-- Шапка -->
+            <div class="resume-header">
+                <div class="resume-logo" style="position: static; text-align: center; margin-bottom: 20px;">
+                    <img src="/logo.svg" alt="AgroJob" onerror="this.style.display='none'" style="height: 40px;">
+                </div>
+                <div class="resume-header-content">
+                    <div class="resume-avatar">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <div class="resume-title-section">
+                        <h1>@Model.Resume.LastName @Model.Resume.FirstName @Model.Resume.Patronymic</h1>
+                        <h2>@Model.Resume.Title</h2>
+                        @if (!string.IsNullOrEmpty(Model.Resume.Category))
+                        {
+                            <div class="resume-badge">
+                                <i class="bi bi-briefcase me-1"></i> @Model.Resume.Category
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Контакты -->
+            <div class="resume-contact">
+                @if (!string.IsNullOrEmpty(Model.Resume.Phone))
+                {
+                    <a href="tel:@Model.Resume.Phone" class="contact-item">
+                        <i class="bi bi-telephone"></i>
+                        <span>@Model.Resume.Phone</span>
+                    </a>
+                }
+                @if (!string.IsNullOrEmpty(Model.Resume.Email))
+                {
+                    <a href="mailto:@Model.Resume.Email" class="contact-item">
+                        <i class="bi bi-envelope"></i>
+                        <span>@Model.Resume.Email</span>
+                    </a>
+                }
+                @if (!string.IsNullOrEmpty(Model.Resume.Location))
+                {
+                    <span class="contact-item">
+                        <i class="bi bi-geo-alt"></i>
+                        <span>@Model.Resume.Location</span>
+                    </span>
+                }
+                @if (Model.Resume.BirthDate.HasValue)
+                {
+                    <span class="contact-item">
+                        <i class="bi bi-calendar"></i>
+                        <span>@Model.Resume.BirthDate.Value.ToString("dd MMMM yyyy")</span>
+                    </span>
+                }
+            </div>
+
+            <!-- Основное содержание -->
+            <div class="resume-body">
+                <!-- Статусы -->
+                <div class="d-flex gap-2 mb-4 flex-wrap">
+                    @if (Model.Resume.IsActive)
+                    {
+                        <span class="status-badge status-active">
+                            <i class="bi bi-check-circle"></i>
+                            Активно
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="status-badge status-inactive">
+                            <i class="bi bi-x-circle"></i>
+                            Не активно
+                        </span>
+                    }
+                    
+                    @if (Model.Resume.ReadyToRelocate)
+                    {
+                        <span class="ready-badge">
+                            <i class="bi bi-truck"></i>
+                            Готов к переезду
+                        </span>
+                    }
+                    
+                    @if (Model.Resume.ReadyForBusinessTrips)
+                    {
+                        <span class="ready-badge">
+                            <i class="bi bi-airplane"></i>
+                            Готов к командировкам
+                        </span>
+                    }
+                </div>
+
+                <!-- Ключевая информация -->
+                <div class="info-grid">
+                    @if (Model.Resume.ExperienceYears.HasValue)
+                    {
+                        <div class="info-item">
+                            <div class="info-label">Общий стаж</div>
+                            <div class="info-value">@Model.Resume.ExperienceYears лет</div>
+                        </div>
+                    }
+                    
+                    @if (!string.IsNullOrEmpty(Model.Resume.DesiredSalary))
+                    {
+                        <div class="info-item">
+                            <div class="info-label">Желаемая зарплата</div>
+                            <div class="info-value">@Model.Resume.DesiredSalary</div>
+                        </div>
+                    }
+                    
+                    <div class="info-item">
+                        <div class="info-label">Дата публикации</div>
+                        <div class="info-value">@Model.Resume.CreatedAt.ToString("dd MMMM yyyy")</div>
+                    </div>
+                    
+                    @if (Model.Resume.UpdatedAt.HasValue && Model.Resume.UpdatedAt.Value > Model.Resume.CreatedAt)
+                    {
+                        <div class="info-item">
+                            <div class="info-label">Обновлено</div>
+                            <div class="info-value">@Model.Resume.UpdatedAt.Value.ToString("dd MMMM yyyy")</div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Образование -->
+                @if (!string.IsNullOrEmpty(Model.Resume.Education))
+                {
+                    <div class="resume-section">
+                        <div class="section-title">
+                            <i class="bi bi-journal-text"></i>
+                            Образование
+                        </div>
+                        <div class="info-value-large">@Model.Resume.Education</div>
+                    </div>
+                }
+
+                <!-- Опыт работы -->
+                @if (!string.IsNullOrEmpty(Model.Resume.Experience))
+                {
+                    <div class="resume-section">
+                        <div class="section-title">
+                            <i class="bi bi-briefcase"></i>
+                            Опыт работы
+                        </div>
+                        <div class="info-value-large">@Model.Resume.Experience</div>
+                    </div>
+                }
+
+                <!-- Навыки - полностью убраны все стили -->
+                @if (!string.IsNullOrEmpty(Model.Resume.Skills))
+                {
+                    <div class="resume-section">
+                        <div class="section-title">
+                            <i class="bi bi-stars"></i>
+                            Профессиональные навыки
+                        </div>
+                        <div style="font-size: 15px; line-height: 1.6; color: #495057; white-space: pre-line;">
+                            @Model.Resume.Skills
+                        </div>
+                    </div>
+                }
+
+                <!-- О себе -->
+                @if (!string.IsNullOrEmpty(Model.Resume.About))
+                {
+                    <div class="resume-section">
+                        <div class="section-title">
+                            <i class="bi bi-person"></i>
+                            О себе
+                        </div>
+                        <div class="info-value-large">@Model.Resume.About</div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+        // Функция для транслитерации русских символов
+        function transliterate(text) {
+        var rus = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+        var eng = "abvgdeejzijklmnoprstufhcchshsh'iy'eyua";
+        var result = "";
+                
+        for (var i = 0; i < text.length; i++) {
+        var char = text[i].toLowerCase();
+        var index = rus.indexOf(char);
+        if (index !== -1) {
+        result += eng[index];
+        } else {
+        result += char;
+        }
+        }
+        return result.replace(/[^a-z0-9]/gi, '_');
+        }
+
+        // Обработчик кнопки PDF
+        $('#downloadPdf').on('click', function(e) {
+        e.preventDefault();
+                
+        var element = document.getElementById('resume-content');
+                
+        // Получаем имя и фамилию
+        var lastName = '@Html.Raw(Model.Resume.LastName ?? "")';
+        var firstName = '@Html.Raw(Model.Resume.FirstName ?? "")';
+                
+        // Транслитерируем для имени файла
+        var fileName = 'resume_' + transliterate(lastName) + '_' + transliterate(firstName) + '.pdf';
+                
+        // Улучшенные настройки для PDF с правильными переносами и копируемым текстом
+        var opt = {
+        margin: [0.5, 0.5, 0.5, 0.5],
+        filename: fileName,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+        scale: 2,
+        letterRendering: true,
+        useCORS: true,
+        logging: false,
+        allowTaint: false,
+        foreignObjectRendering: false
+        },
+        jsPDF: {
+        unit: 'in',
+        format: 'a4',
+        orientation: 'portrait'
+        },
+        pagebreak: {
+        mode: ['css', 'legacy'],
+        before: '.page-break',
+        after: ['#resume-content'],
+        avoid: 'img'
+        }
+        };
+                
+        $(this).html('<i class="bi bi-hourglass-split"></i> Генерация PDF...').prop('disabled', true);
+                
+        // Используем Promise для лучшей обработки
+        html2pdf().from(element).set(opt).save()
+        .then(() => {
+        $('#downloadPdf').html('<i class="bi bi-file-pdf"></i> Скачать PDF').prop('disabled', false);
+        })
+        .catch((error) => {
+        console.error('PDF generation error:', error);
+        $('#downloadPdf').html('<i class="bi bi-file-pdf"></i> Скачать PDF').prop('disabled', false);
+        alert('Ошибка при генерации PDF. Пожалуйста, попробуйте еще раз.');
+        });
+        });
+            
+        // Замена переносов строк (только для отображения, не влияет на PDF)
+        $('.info-value-large, .resume-section div[style*="white-space: pre-line"]').each(function() {
+        var text = $(this).text();
+        $(this).html(text.replace(/\n/g, '<br>'));
+        });
+        });
+    </script>
+}

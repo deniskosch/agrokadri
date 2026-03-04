@@ -38,9 +38,16 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
             [Display(Name = "Название резюме")]
             public string Title { get; set; } = string.Empty;
 
-            [Required(ErrorMessage = "Укажите ФИО")]
-            [Display(Name = "ФИО")]
-            public string FullName { get; set; } = string.Empty;
+            [Required(ErrorMessage = "Укажите имя")]
+            [Display(Name = "Имя")]
+            public string FirstName { get; set; } = string.Empty;
+
+            [Required(ErrorMessage = "Укажите фамилию")]
+            [Display(Name = "Фамилия")]
+            public string LastName { get; set; } = string.Empty;
+
+            [Display(Name = "Отчество")]
+            public string? Patronymic { get; set; }
 
             [Display(Name = "Дата рождения")]
             [DataType(DataType.Date)]
@@ -122,7 +129,9 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
                 // Заполняем Input модель
                 Input.Id = resume.Id;
                 Input.Title = resume.Title;
-                Input.FullName = resume.FullName;
+                Input.FirstName = resume.FirstName;
+                Input.LastName = resume.LastName;
+                Input.Patronymic = resume.Patronymic;
                 Input.BirthDate = resume.BirthDate;
                 Input.Phone = resume.Phone;
                 Input.Email = resume.Email;
@@ -137,7 +146,6 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
                 Input.ReadyToRelocate = resume.ReadyToRelocate;
                 Input.ReadyForBusinessTrips = resume.ReadyForBusinessTrips;
                 Input.IsActive = resume.IsActive;
-                Input.IsPublished = resume.IsPublished;
             }
 
             return Page();
@@ -179,7 +187,9 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
 
                     // Обновляем поля
                     resume.Title = Input.Title;
-                    resume.FullName = Input.FullName;
+                    resume.FirstName = Input.FirstName;
+                    resume.LastName = Input.LastName;
+                    resume.Patronymic = Input.Patronymic;
                     resume.BirthDate = Input.BirthDate;
                     resume.Phone = Input.Phone;
                     resume.Email = Input.Email;
@@ -194,7 +204,6 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
                     resume.ReadyToRelocate = Input.ReadyToRelocate;
                     resume.ReadyForBusinessTrips = Input.ReadyForBusinessTrips;
                     resume.IsActive = Input.IsActive;
-                    resume.IsPublished = Input.IsPublished;
                     resume.UpdatedAt = DateTime.UtcNow;
 
                     await _unitOfWork.Resumes.UpdateAsync(resume);
@@ -206,7 +215,9 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
                     var resume = new Resume
                     {
                         Title = Input.Title,
-                        FullName = Input.FullName,
+                        FirstName = Input.FirstName,
+                        LastName = Input.LastName,
+                        Patronymic = Input.Patronymic,
                         BirthDate = Input.BirthDate,
                         Phone = Input.Phone,
                         Email = Input.Email,
@@ -221,7 +232,6 @@ namespace Agrojob.Pages.EmployeeManagement.ResumeManagement
                         ReadyToRelocate = Input.ReadyToRelocate,
                         ReadyForBusinessTrips = Input.ReadyForBusinessTrips,
                         IsActive = Input.IsActive,
-                        IsPublished = Input.IsPublished,
                         UserId = userId,
                         CreatedAt = DateTime.UtcNow
                     };

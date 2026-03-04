@@ -212,7 +212,7 @@
                                     <option value="">-- Выберите резюме --</option>
                                     @foreach (var resume in Model.UserResumes)
                                     {
-                                        <option value="@resume.Id">@resume.Title @(resume.IsPublished ? "" : "(черновик)")</option>
+                                        <option value="@resume.Id">@resume.Title @(resume.IsActive ? "" : "(черновик)")</option>
                                     }
                                 </select>
                                 <div class="mt-2">

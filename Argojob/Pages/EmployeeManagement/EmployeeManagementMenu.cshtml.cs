@@ -57,7 +57,6 @@ namespace Agrojob.Pages.EmployeeManagement
                     : r.DesiredSalary,
 
                 IsActive = r.IsActive,
-                IsPublished = r.IsPublished,
                 UpdatedAt = r.UpdatedAt ?? r.CreatedAt
             }).OrderByDescending(r => r.UpdatedAt).ToList();
         }
@@ -173,7 +172,6 @@ namespace Agrojob.Pages.EmployeeManagement
         public int Experience { get; set; }
         public string DesiredSalary { get; set; } = string.Empty;
         public bool IsActive { get; set; }
-        public bool IsPublished { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
 

@@ -91,31 +91,31 @@
                                         <td style="color: #6B7280;">@resume.Experience лет</td>
                                         <td class="fw-bold" style="color: #1B5E20;">@resume.DesiredSalary</td>
                                         <td>
-                                            @if (resume.IsActive && resume.IsPublished)
+                                            @if (resume.IsActive)
                                             {
                                                 <span class="badge" style="background-color: rgba(46, 125, 50, 0.1); color: #2E7D32;">
                                                     <i class="bi bi-check-circle-fill me-1" style="font-size: 0.7rem;"></i>
                                                     Активно
                                                 </span>
                                             }
-                                            else if (!resume.IsPublished)
+                                            else
                                             {
                                                 <span class="badge" style="background-color: #F3F6F3; color: #6B7280;">
                                                     <i class="bi bi-pencil me-1" style="font-size: 0.7rem;"></i>
                                                     Черновик
                                                 </span>
                                             }
-                                            else
-                                            {
-                                                <span class="badge" style="background-color: #F3F6F3; color: #6B7280;">
-                                                    <i class="bi bi-pause-circle me-1" style="font-size: 0.7rem;"></i>
-                                                    Не активно
-                                                </span>
-                                            }
                                         </td>
                                         <td style="color: #6B7280;">@resume.UpdatedAt.ToString("dd.MM.yyyy")</td>
                                         <td>
-                                            <div class="btn-group btn-group-sm">
+                                            <div class="btn-group btn-group-sm gap-2">
+                                                <a asp-page="/EmployeeManagement/ResumeManagement/ResumePreview"
+                                                       asp-route-id="@resume.Id"
+                                                       class="btn btn-outline-primary"
+                                                       title="Предпросмотр"
+                                                       style="border-color: #2E7D32; color: #2E7D32;">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
                                                 <a asp-page="/EmployeeManagement/ResumeManagement/ResumeEdit"
                                                        asp-route-id="@resume.Id"
                                                        class="btn btn-outline-primary"
