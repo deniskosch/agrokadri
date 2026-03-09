@@ -78,18 +78,20 @@ namespace Agrojob.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Полное имя обязательно для заполнения")]
+            [Display(Name = "Полное имя")]
+            [StringLength(100, ErrorMessage = "Полное имя должно быть не менее {2} и не более {1} символов", MinimumLength = 2)]
+            public string FullName { get; set; }
+
+            [Required(ErrorMessage = "Email обязателен для заполнения")]
+            [EmailAddress(ErrorMessage = "Введите корректный email адрес")]
             public string Email { get; set; }
 
             [Required(ErrorMessage = "Пожалуйста, выберите роль")]
+            [Display(Name = "Роль пользователя")]
             public string UserRole { get; set; }
         }
-        
+
         public IActionResult OnGet() => RedirectToPage("./Login");
 
         public IActionResult OnPost(string provider, string returnUrl = null)
@@ -103,25 +105,29 @@ namespace Agrojob.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
+
             if (remoteError != null)
             {
-                ErrorMessage = $"Error from external provider: {remoteError}";
+                ErrorMessage = $"Ошибка от внешнего провайдера: {remoteError}";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
+
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                ErrorMessage = "Error loading external login information.";
+                ErrorMessage = "Ошибка при загрузке информации внешнего входа.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
             // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+
             if (result.Succeeded)
             {
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 return LocalRedirect(returnUrl);
             }
+
             if (result.IsLockedOut)
             {
                 return RedirectToPage("./Lockout");
@@ -131,6 +137,7 @@ namespace Agrojob.Areas.Identity.Pages.Account
                 // If the user does not have an account, then ask the user to create an account.
                 ReturnUrl = returnUrl;
                 ProviderDisplayName = info.ProviderDisplayName;
+
                 if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
                 {
                     Input = new InputModel
@@ -138,6 +145,17 @@ namespace Agrojob.Areas.Identity.Pages.Account
                         Email = info.Principal.FindFirstValue(ClaimTypes.Email)
                     };
                 }
+
+                // Пытаемся получить имя из внешнего провайдера
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Name))
+                {
+                    var name = info.Principal.FindFirstValue(ClaimTypes.Name);
+                    if (!string.IsNullOrEmpty(name) && Input != null)
+                    {
+                        Input.FullName = name;
+                    }
+                }
+
                 return Page();
             }
         }
@@ -145,11 +163,12 @@ namespace Agrojob.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
+
             // Get the information about the user from the external login provider
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                ErrorMessage = "Error loading external login information during confirmation.";
+                ErrorMessage = "Ошибка при загрузке информации внешнего входа во время подтверждения.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
@@ -157,22 +176,30 @@ namespace Agrojob.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
+                // Устанавливаем FullName
+                user.FullName = Input.FullName;
+
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
                 var result = await _userManager.CreateAsync(user);
+
                 if (result.Succeeded)
                 {
+                    // Добавляем роль в зависимости от выбора
                     if (Input.UserRole == "employer")
                     {
                         await _userManager.AddToRoleAsync(user, "Employer");
+                        _logger.LogInformation("User created with Employer role.");
                     }
                     else
                     {
                         await _userManager.AddToRoleAsync(user, "Employee");
+                        _logger.LogInformation("User created with Employee role.");
                     }
 
                     result = await _userManager.AddLoginAsync(user, info);
+
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
@@ -199,6 +226,7 @@ namespace Agrojob.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);

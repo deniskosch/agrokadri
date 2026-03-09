@@ -317,7 +317,7 @@
                                                         Отклики
                                                     </a>
                                                     <!-- Отдельная форма для деактивации/активации -->
-                                                    @* @if (vacancy.IsActive)
+                                                    @if (vacancy.IsActive)
                                                     {
                                                         <!-- Для деактивации - используем OnPostDeactivateVacancyAsync -->
                                                         <form method="post" asp-page-handler="DeactivateVacancy" style="display: inline;">
@@ -329,6 +329,7 @@
                                                                     onclick="return confirm('Вы уверены, что хотите деактивировать эту вакансию?');"
                                                                     style="border-color: #FF8F00; color: #FF8F00;">
                                                                 <i class="bi bi-pause-circle"></i>
+                                                                Деактивировать
                                                             </button>
                                                         </form>
                                                     }
@@ -344,9 +345,10 @@
                                                                     onclick="return confirm('Вы уверены, что хотите активировать эту вакансию?');"
                                                                     style="border-color: #2E7D32; color: #2E7D32;">
                                                                 <i class="bi bi-play-circle"></i>
+                                                                Активировать
                                                             </button>
                                                         </form>
-                                                    } *@
+                                                    }
                                                 </div>
                                             </td>
                                         </tr>
@@ -413,7 +415,7 @@
             </div>
         </div>
 
-        <div class="col-12 text-center m-4">
+        <div class="text-center m-4">
             <form method="post" asp-page-handler="BecomeEmployee" style="display: inline;">
                 <button type="submit" class="btn btn-outline-secondary">Стать соискателем</button>
             </form>

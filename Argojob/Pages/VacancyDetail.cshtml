@@ -209,7 +209,7 @@
                             @if (Model.UserResumes.Any())
                             {
                                 <select name="resumeId" class="form-select" required style="border-color: var(--border-color);">
-                                    <option value="">-- Выберите резюме --</option>
+                                    <option value="">Выберите резюме</option>
                                     @foreach (var resume in Model.UserResumes)
                                     {
                                         <option value="@resume.Id">@resume.Title @(resume.IsActive ? "" : "(черновик)")</option>

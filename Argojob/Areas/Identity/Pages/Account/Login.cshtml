@@ -65,9 +65,17 @@
                                 <div class="d-flex justify-content-center gap-2">
                                     @foreach (var provider in Model.ExternalLogins!)
                                     {
-                                        <button type="submit" class="btn btn-outline-secondary btn-sm" name="provider" value="@provider.Name" title="Войти через @provider.DisplayName">
-                                            @provider.DisplayName
-                                        </button>
+                                        if (provider.DisplayName == "Yandex")
+                                        {
+                                            <button type="submit"
+                                                    class="btn"
+                                                    name="provider"
+                                                    value="@provider.Name"
+                                                    title="Зарегистрироваться через @provider.DisplayName">
+                                                <img src="~/Yandex_icon.svg" width="50" />
+                                            </button>
+                                        }
+
                                     }
                                 </div>
                             </form>

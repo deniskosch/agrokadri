@@ -9,7 +9,7 @@
         <div class="col-md-6 col-lg-5">
             <div class="card shadow border-0 rounded-4">
                 <div class="card-body p-4">
-                    
+
                     <div class="text-center mb-4">
                         <h3 class="mb-1">@ViewData["Title"]</h3>
                         <p class="text-muted small">Завершите регистрацию через @Model.ProviderDisplayName</p>
@@ -18,17 +18,17 @@
                     <div class="alert alert-success py-2 small mb-4">
                         <i class="bi bi-check-circle-fill me-1"></i>
                         Вы успешно авторизовались через <strong>@Model.ProviderDisplayName</strong>.
-                        Пожалуйста, укажите email и выберите роль для завершения регистрации.
+                        Пожалуйста, укажите полное имя, email и выберите роль для завершения регистрации.
                     </div>
 
                     <form asp-page-handler="Confirmation"
                           asp-route-returnUrl="@Model.ReturnUrl"
                           method="post">
-                          
+
                         <div asp-validation-summary="ModelOnly"
                              class="alert alert-danger py-2 small"
                              role="alert"></div>
-                        
+
                         <!-- Выбор роли -->
                         <div class="mb-4">
                             <label class="form-label small fw-bold text-muted mb-3">
@@ -69,6 +69,17 @@
                                   class="text-danger small"></span>
                         </div>
 
+                        <!-- Полное имя -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.FullName"
+                                   class="form-control"
+                                   placeholder="Иванов Иван Иванович" />
+                            <label asp-for="Input.FullName">Полное имя</label>
+                            <span asp-validation-for="Input.FullName"
+                                  class="text-danger small"></span>
+                        </div>
+
+
                         <!-- Email -->
                         <div class="form-floating mb-3">
                             <input asp-for="Input.Email"
@@ -108,7 +119,7 @@
     .role-radio {
         display: none;
     }
-    
+
         /* стили для активной плитки */
         .role-radio:checked + .role-btn {
             background-color: var(--primary) !important;

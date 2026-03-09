@@ -9,16 +9,19 @@ using Agrojob.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace Agrojob.Pages
 {
     public class VacancyDetailModel : PageModel
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEmailSender _emailSender;
 
-        public VacancyDetailModel(IUnitOfWork unitOfWork)
+        public VacancyDetailModel(IUnitOfWork unitOfWork, IEmailSender emailSender)
         {
             _unitOfWork = unitOfWork;
+            _emailSender = emailSender;
         }
 
         [FromRoute]
@@ -53,9 +56,9 @@ namespace Agrojob.Pages
 
                     HasApplied = await _unitOfWork.Applications.HasUserAppliedToVacancyAsync(userId, id);
 
-                    var apps  = await _unitOfWork.Applications.GetApplicationsByUserAsync(userId);
+                    var apps = await _unitOfWork.Applications.GetApplicationsByUserAsync(userId);
 
-                    if(apps != null && apps?.Count() > 0)
+                    if (apps != null && apps?.Count() > 0)
                     {
                         AppStatus = apps.FirstOrDefault()!.Status;
                     }
@@ -163,6 +166,22 @@ namespace Agrojob.Pages
                 Status = ApplicationStatus.Pending,
                 AppliedAt = DateTime.UtcNow
             };
+
+            var companyUsers = await _unitOfWork.Companies.GetCompanyUsersWithDetailsAsync(vacancy.CompanyId);
+
+            if (companyUsers != null)
+            {
+                foreach (var user in companyUsers)
+                {
+                    if (!string.IsNullOrEmpty(user.User?.Email))
+                    {
+                        var subject = $"Новый отклик - \"{vacancy.Title}\"";
+                        var body = $"На вашу вакансию \"{vacancy.Title}\" пришёл отклик. Ознакомьтесь в <a href=\"базовыйурл.ру/employer-panel\">кабинете работодателя</a>";
+
+                        await _emailSender.SendEmailAsync(user.User.Email, subject, body);
+                    }
+                }
+            }
 
             await _unitOfWork.Applications.AddAsync(application);
 

@@ -80,11 +80,11 @@ namespace Agrojob.ViewModels
             {
                 ApplicationStatus.Pending => "warning",
                 ApplicationStatus.Viewed => "info",
-                ApplicationStatus.Invited => "primary",
+                ApplicationStatus.Invited => "success",
                 ApplicationStatus.Accepted => "success",
                 ApplicationStatus.Rejected => "danger",
-                ApplicationStatus.Withdrawn => "secondary",
-                _ => "secondary"
+                ApplicationStatus.Withdrawn => "warning",
+                _ => "info"
             };
         }
 

@@ -75,8 +75,17 @@ namespace Agrojob.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Полное имя обязательно для заполнения")]
+            [Display(Name = "Полное имя")]
+            [StringLength(100, ErrorMessage = "Полное имя должно быть не менее {2} и не более {1} символов", MinimumLength = 2)]
+            public string FullName { get; set; }
+
+            /// <summary>
+            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+            ///     directly from your code. This API may change or be removed in future releases.
+            /// </summary>
+            [Required(ErrorMessage = "Email обязателен для заполнения")]
+            [EmailAddress(ErrorMessage = "Введите корректный email адрес")]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
@@ -84,10 +93,10 @@ namespace Agrojob.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required(ErrorMessage = "Пароль обязателен для заполнения")]
+            [StringLength(100, ErrorMessage = "Пароль должен быть не менее {2} и не более {1} символов", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Пароль")]
             public string Password { get; set; }
 
             /// <summary>
@@ -95,17 +104,14 @@ namespace Agrojob.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Подтверждение пароля")]
+            [Compare("Password", ErrorMessage = "Пароль и подтверждение пароля не совпадают")]
             public string ConfirmPassword { get; set; }
 
-
-            // ЭТО ПОЛЕ УЖЕ ЕСТЬ В МОДЕЛИ! Не нужно добавлять, оно уже там есть.
-            // Я просто показываю, что оно должно быть.
             [Required(ErrorMessage = "Пожалуйста, выберите роль")]
+            [Display(Name = "Роль пользователя")]
             public string UserRole { get; set; }
         }
-
 
         public async Task OnGetAsync(string returnUrl = null)
         {
@@ -117,27 +123,34 @@ namespace Agrojob.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
 
+                // Устанавливаем FullName
+                user.FullName = Input.FullName;
+
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-
+                    // Добавляем роль в зависимости от выбора
                     if (Input.UserRole == "employer")
                     {
                         await _userManager.AddToRoleAsync(user, "Employer");
+                        _logger.LogInformation("User created with Employer role.");
                     }
                     else
                     {
                         await _userManager.AddToRoleAsync(user, "Employee");
+                        _logger.LogInformation("User created with Employee role.");
                     }
 
-                    _logger.LogInformation($"User created (Role = {Input.UserRole}) a new account with password.");
+                    _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -161,6 +174,7 @@ namespace Agrojob.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
